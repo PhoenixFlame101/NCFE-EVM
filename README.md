@@ -1,2 +1,2 @@
-# NCFE-EVM
+# NCFE EVM
 EVM program for NCFE
