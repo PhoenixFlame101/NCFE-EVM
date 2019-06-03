@@ -1,3 +1,9 @@
+/*
+
+    This is the main file that controls the backend.
+
+*/
+
 #include <stdio.h>
 #include <iostream>
 using namespace std;
