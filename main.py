@@ -40,3 +40,13 @@ elif (c1 == c3) and (c1 != 0):
 	print('Candidate 1 and 3 are tied with', c1, 'votes')
 	print('Candidate 2 has got', c2, 'votes')
 input('Press ENTER to exit')
+
+mydb = mysql.connector.connect(
+		host = "localhost",
+		user = "root",
+		passwd = "admin"
+	)
+
+mycursor = mydb.cursor()
+
+print(mycursor.execute("SHOW DATABASES"))
