@@ -8,7 +8,7 @@ class SplashPage(QWidget):
 
         self.security_code_message = QLabel('Enter Security Code',self)
         self.ipt_box = QLineEdit(self)
-        self.submit_button = QPushButton(self)
+        self.submit_button = QPushButton('Submit',self)
 
         self.security_code_message.move(301,170)
         self.ipt_box.move(301,315)
