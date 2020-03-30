@@ -19,4 +19,3 @@ if sec_code.checks_code(s_code):
 database_linker.add_votes_to_db(candidates)
 
 # Results block
-# print(results())
