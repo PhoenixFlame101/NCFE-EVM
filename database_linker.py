@@ -8,12 +8,18 @@ db = client.EVM
 collection = db.voting_results
 
 
-def initializing(post_name, candidates):
+def initializing(_input):
 	""" Used to add the candidates standing for the election to the DB
 		Is run before the voting begins """
-	rec = dict([[i, 0] for i in candidates])
-	rec['_id'] = post_name
-	id = collection.insert_one(rec)
+	collection.drop()
+
+	# Takes _input in the form {post:{cand1:image}}
+	for tup in _input.items():
+		post_name = tup[0]
+		candidates = [i[0] for i in tup[1].items()]
+		rec = dict([[i, 0] for i in candidates])
+		rec['_id'] = post_name
+		id = collection.insert_one(rec)
 
 
 # initializing('Head Girl', ['Cat', 'Mat'])
@@ -21,15 +27,18 @@ def initializing(post_name, candidates):
 def add_votes_to_db(pointers):
 	""" Used to increment the votes of the candidates who where voted for
 		Is run after each person casts their vote """
-	for vote in pointers.items():
+	for vote in pointers.values():
+		post_name, cand_name = vote[0], vote[1]
 		collection.update_one(
-			{'_id': vote[0]},
-			{'$inc': {vote[1]: 1}},
+			{'_id': post_name},
+			{'$inc': {cand_name: 1}},
 			upsert=False
 		)
 
 
-def results():
-	return (collection.find({}))
+def results_data():
+	return list(collection.find({}))
 
+
+# print(results_data())
 # add_votes_to_db({'Head Boy': 'Rat', 'Head Girl': 'Cat'})
