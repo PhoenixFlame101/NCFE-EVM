@@ -8,11 +8,11 @@ EVM program for NCFE.
 
 These do not have to be installed separately.
 
-**External Python Packages/Modules** — `PySide2`, `pymongo`, `cryptography`.
+**External Python Packages/Modules** — `flask`, `pymongo`, `cryptography`.
 
 These can be installed from the command line using `pip`.
     
-    pip install PySide2 pymono cryptography
+    pip install flask pymono cryptography
 
 **Admin Specific Dependencies (Only required on one computer)** — `pandas`, `pdfkit`, `wkhtmltopdf`.
 
