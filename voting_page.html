@@ -1,0 +1,123 @@
+{% extends 'base_page.html' %}
+    {% block head %}
+    <style>
+      body{
+    background-color: #05b4e6;
+}
+
+
+#container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top:10vh;
+    
+    background-color: #036f96;
+    border: none;
+    border-radius: 20px;
+    max-width: 90%;
+    flex-wrap: nowrap;
+    
+}
+
+h1{
+    margin:auto;
+    color:#000000;
+    font-family: 'Lobster',sans-serif;
+    font-size: 50px;
+    text-transform:uppercase;
+    
+}
+
+p{
+    text-align: center;
+    color: #9ed7f6;
+    text-transform: uppercase;
+    font-family: arial;
+    line-height: 3vh;
+    width:auto;
+    font-size: 18px;
+
+}
+
+img{
+    margin:3vh;
+}
+
+.picbox{
+    margin:6vh;
+}
+
+.picbox:hover{
+    background-color: #049dc8;
+}
+
+button{
+    margin-top:10vh;
+    width:35vh;
+    height:10vh;
+    background-color:#036f96 ;
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'Lobster';
+    color:#9ed7f6;
+    font-size:20px;
+}
+
+    </style>
+    {% endblock %}
+    
+    {% block body%}
+    <center>
+    <h1 id='post'>assistant head boy</h1>
+    <div id='container'>
+      <div class='picbox' onclick="func2(this)">
+        <img src="pic.jpg" alt="user pic">
+        <p>Chinmaya Sahuasdfasdf</p>
+      </div>
+      <div class='picbox' onclick="func2(this)">
+        <img src="pic.jpg" alt="user pic">
+        <p>Chinmaya Sahuasdfasdf</p>
+      </div>
+      <div class='picbox' onclick="func2(this)">
+        <img src="pic.jpg" alt="user pic">
+        <p>Chinmaya Sahuasdfasdf</p>
+      </div>
+      <div class='picbox' onclick="func2(this)">
+        <img src="pic.jpg" alt="user pic">
+        <p>Chinmaya Sahuasdfasdf</p>
+      </div>
+      
+    </div>
+    <button type="button" id='btn'>SUBMIT</button>
+    </center>
+    <script>
+      $(document).ready(function(){
+    $('#btn').click(function(){
+      $('#post').hide('slow');
+      $('#btn').html('NEXT     PAGE')
+      $('#btn').animate({
+        'marginRight':'-40%'
+      },'slow')
+    })
+  });
+
+var is_clicked = false;
+var clicked_obj;
+
+
+function func2(the_obj){
+  if (is_clicked == false){
+      the_obj.style.backgroundColor = "#049dc8";
+      is_clicked = true;
+      clicked_obj = the_obj;
+  } else {
+    clicked_obj.style.backgroundColor = "#036f96";
+    clicked_obj = the_obj;
+    the_obj.style.backgroundColor = "#049dc8";
+  }
+}
+
+    </script>
+    {% endblock %}
