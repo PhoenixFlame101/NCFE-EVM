@@ -1,8 +1,9 @@
 from flask import Flask,redirect,url_for,render_template,request,session
+from sec_code import checks_code
 
 valid_pwd = ['12345']
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder = './GUI/')
 
 @app.route('/',methods=["GET",'POST'])
 def home():
@@ -10,7 +11,7 @@ def home():
         return render_template('entry_page.html')
     else:
         receivedpwd = request.form['pwd_box']
-        if receivedpwd in valid_pwd:
+        if checks_code(receivedpwd):
             print(receivedpwd)
             return redirect(url_for('ahb'))
         else:
