@@ -1,0 +1,27 @@
+{% extends 'base_page.html' %}
+    {% block head %}
+
+    {% endblock %}
+    
+    {% block body%}
+
+    <center>
+    <h1 id='post'>sports captain</h1>
+    <div id='container'>
+      {% for x in range(4) %}
+        <div class='picbox' onclick="single_click(this)">
+          <img src="{{ url_for('static',filename='pic.jpg')}}" alt="user pic">
+          <p>vikas</p>
+        </div>
+      {% endfor %}
+      
+    </div>
+    <form action="{{ url_for('sports_captain') }}" method="post">
+      <input type="submit" id='next_page_btn'  value="NEXT PAGE">
+      <input type="button" id='btn' value="SUBMIT" onclick="btn_click()">
+      <input type="hidden" name="sports_captain_choice" style="display: none;" id="hidden">
+    </form>
+    
+    </center>
+    
+    {% endblock %}
