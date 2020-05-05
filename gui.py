@@ -128,7 +128,7 @@ def final():
 	if request.method == "GET":
 		return render_template('review_page.html',session=dict(session))
 	else:
-		return session # return redirect(url_for('over'))
+		return redirect(url_for('over'))
 
 
 @app.route('/done')
