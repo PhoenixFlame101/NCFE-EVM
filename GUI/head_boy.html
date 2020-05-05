@@ -1,0 +1,141 @@
+{% extends 'base_page.html' %}
+    {% block head %}
+    <style>
+      body{
+    background-color: #05b4e6;
+}
+
+
+#container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top:10vh;
+    
+    background-color: #036f96;
+    border: none;
+    border-radius: 20px;
+    max-width: 90%;
+    flex-wrap: nowrap;
+    
+}
+
+h1{
+    margin:auto;
+    margin-top:3vh;
+    color:#000000;
+    font-family: 'Lobster',sans-serif;
+    font-size: 3.125em;
+    text-transform:uppercase;
+    
+}
+
+p{
+    text-align: center;
+    color: #9ed7f6;
+    text-transform: uppercase;
+    font-family: arial;
+    line-height: 3vh;
+    width:auto;
+    font-size: 18px;
+
+}
+
+img{
+    margin:3vh;
+}
+
+.picbox{
+    margin:6vh;
+}
+
+.picbox:hover{
+    background-color: #049dc8;
+}
+
+#btn{
+    margin-top:10vh;
+    width:35vh;
+    height:10vh;
+    background-color:#036f96 ;
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'Lobster';
+    color:#9ed7f6;
+    font-size:20px;
+}
+#next_page_btn{
+  display: none;
+  margin-top:10vh;
+  margin-left:50vw;
+}
+
+    </style>
+    {% endblock %}
+    
+    {% block body%}
+    <center>
+    <h1 id='post'>head boy</h1>
+    <div id='container'>
+      {% for x in range(4) %}
+        <div class='picbox' onclick="single_click(this)">
+          <img src="{{ url_for('static',filename='pic.jpg')}}" alt="user pic">
+          <p>Chinmaya Sahuasdfasdf</p>
+        </div>
+      {% endfor %}
+      
+    </div>
+    <form action="{{ url_for('head_boy') }}" method="post">
+      <input type="submit" id='next_page_btn'  value="NEXT PAGE">
+      <input type="button" name="head_boy_button" id='btn' value="SUBMIT" onclick="btn_click()">
+      <input type="hidden" name="head_boy_choice" style="display: none;" id="hidden">
+      <!--<input type="text" name="head_boy_choice" style="display:none;" id="hidden">-->
+    </form>
+    
+    </center>
+    <script>
+var is_clicked = false;
+var submitted = false;
+var clicked_obj;
+
+
+  $(document).ready(function(){
+    $('#btn').click(function(){
+      if (clicked_obj){
+      $('#post').hide('slow');
+      $('#btn').html('NEXT PAGE');
+      $('#btn').animate({
+        'marginRight':'-40%'
+      },'slow');
+      $('#btn').fadeOut('slow',function(){
+        $('#next_page_btn').fadeIn('slow');
+      });
+      }
+    })
+  });
+
+function single_click(the_obj){
+  if (submitted == false){
+    if (is_clicked == false){
+        the_obj.style.backgroundColor = "#049dc8";
+        is_clicked = true;
+        clicked_obj = the_obj;
+    } else {
+      clicked_obj.style.backgroundColor = "#036f96";
+      clicked_obj = the_obj;
+      the_obj.style.backgroundColor = "#049dc8";
+    }
+  }
+} 
+
+function btn_click(){
+  //alert(clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent);
+  var selected_candidate = clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent;
+  document.getElementById('hidden').value = selected_candidate;
+  //alert(document.getElementsByName('head_boy_choice').value);
+  submitted = true;
+}
+
+    </script>
+    {% endblock %}

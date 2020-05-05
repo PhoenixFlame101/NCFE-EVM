@@ -1,125 +1,149 @@
-from PySide2.QtWidgets import *
-from GUI import splash_page
-from GUI import voting_page
-from GUI import review_page
+from flask import Flask,redirect,url_for,render_template,request,session
+# from flask.ext.script import Manager
+from sec_code import checks_code
+
+app = Flask(__name__, template_folder='./GUI/')
+app.secret_key = 'abc'
+results = dict([])
+
+@app.route('/',methods=["GET",'POST'])
+def home():
+	if request.method == "GET":
+		return render_template('entry_page.html')
+	else:
+		receivedpwd = request.form['pwd_box']
+		if checks_code(receivedpwd):
+			return redirect(url_for('head_boy'))
+		else:
+			return render_template('entry_page.html')
 
 
-# from PySide2.QtGui import *
-# import os
-# import psutil
-
-a = {}
-
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        self.posts = {'Head Boy': ('Dog', 'Cat'), 'Head Girl': ('Monkey', 'Fish'), 'Asst Head boy': ('Rat', 'Snake')}
-        self.pointers = {}
-
-        self.cw = QWidget(self)
-        self.setCentralWidget(self.cw)
-        self.showFullScreen()
-
-        self.stk = QStackedWidget()
-
-        self.sp_init()
-        self.vp_init()
-        self.added_rp = False
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.stk)
-        self.cw.setLayout(vbox)
-
-    def sp_init(self):
-        self.sp = splash_page.SplashPage()
-        self.stk.addWidget(self.sp)
-        self.sp.submit_button.clicked.connect(self.nxt)
-
-    def vp_init(self):
-        for x in self.posts:
-            vp = voting_page.VotingPage(x, list(self.posts[x]))
-            self.vp_button_connector(vp)
-            self.stk.addWidget(vp)
-
-    def rp_init(self):
-        rp = review_page.ReviewPage(self.pointers)
-        self.stk.addWidget(rp)
-        self.stk.setCurrentIndex(1 + int(self.stk.currentIndex()))
-        self.connect_buttons_for_review_page()
-
-    def connect_buttons_for_review_page(self):
-        def foo(num):
-            self.stk.setCurrentIndex(num)
-
-        for i in range(len(self.pointers)):
-            print(self.stk.currentWidget())
-            self.stk.currentWidget().button_box_list[i].clicked.connect(foo(i + 1))
-            print(i)
-        # btn.clicked.connect(foo(i+1))
-
-    def vp_button_connector(self, vp):
-        vp.submit_button.clicked.connect(self.nxt_for_vp)
-
-    def nxt(self):
-        self.stk.setCurrentIndex(1 + int(self.stk.currentIndex()))
+@app.errorhandler(404)
+def URL_not_found(e):
+	return redirect(url_for('home'))
 
 
-    def nxt_for_vp(self):
-        # print(self.stk.currentWidget())
-        button_of_person_voted_for = self.stk.currentWidget().btn_grp.checkedButton()
-        if button_of_person_voted_for is not None:
-            name = 0
-            for x in self.stk.currentWidget().candidate_list:
-                if x.button is button_of_person_voted_for:
-                    name = x.name
-            self.pointers[self.stk.currentIndex()] = [self.stk.currentWidget().post, name]
-
-            if self.stk.currentIndex() == len(self.posts) and self.added_rp is False:
-                '''
-                def foo(num):
-                    self.stk.setCurrentIndex(num)'''
-
-                self.rp = review_page.ReviewPage(self.pointers)
-                self.rp.submit_button.clicked.connect(lambda: app.exit())
-
-                # Have to manually connect the buttons that are there on the review page that take the voter back to the vote change page
-                self.rp.button_box_list[0].clicked.connect(lambda: self.stk.setCurrentIndex(1))
-                self.rp.button_box_list[1].clicked.connect(lambda: self.stk.setCurrentIndex(2))
-                self.rp.button_box_list[2].clicked.connect(lambda: self.stk.setCurrentIndex(3))
-
-                self.stk.addWidget(self.rp)
-                self.stk.setCurrentWidget(self.rp)
-                self.added_rp = True
-            # self.connect_buttons_for_review_page()
-
-            elif self.stk.currentIndex() == len(self.posts) and self.added_rp is True:
-                self.rp.update()
-                self.stk.setCurrentIndex(1 + int(self.stk.currentIndex()))
-            else:
-                self.stk.setCurrentIndex(1 + int(self.stk.currentIndex()))
-
-        else:
-            msgbox = QMessageBox()
-            msgbox.setText('You have not chosen a candidate to vote for')
-            msgbox.exec_()
-
-        global a
-        a = self.pointers
-    # print(self.pointers)
-
-app = QApplication()
-
-def main():
-    window = MainWindow()
-    window.show()
-    app.exec_()
-    return a
+@app.route('/head-boy',methods=["GET",'POST'])
+def head_boy():
+	if request.method == "POST":
+		head_boy_choice = request.form["head_boy_choice"]
+		session["head_boy_choice"] = head_boy_choice
+		return redirect(url_for('head_girl'))
+	elif request.method == "GET":
+		return render_template('head_boy.html')
 
 
-# main()
+@app.route('/head-girl',methods=["GET",'POST'])
+def head_girl():
+	if request.method == "GET":
+		return render_template('head_girl.html')
+	elif request.method == "POST":
+		head_girl_choice = request.form["head_girl_choice"]
+		session["head_girl_choice"] = head_girl_choice
+		return redirect(url_for('assistant_head_boy'))
 
-'''
-process = psutil.Process(os.getpid())
-print(process.memory_info()[0])
-'''
+
+@app.route('/assistant-head-boy',methods=["GET",'POST'])
+def assistant_head_boy():
+	if request.method == "POST":
+		assistant_head_boy_choice = request.form["assistant_head_boy_choice"]
+		session["assistant_head_boy_choice"] = assistant_head_boy_choice
+		return redirect(url_for('assistant_head_girl'))
+	elif request.method == "GET":
+		return render_template('assistant_head_boy.html')
+
+
+@app.route('/assistant-head-girl',methods=["GET",'POST'])
+def assistant_head_girl():
+	if request.method == "POST":
+		assistant_head_girl_choice = request.form["assistant_head_girl_choice"]
+		session["assistant_head_girl_choice"] = assistant_head_girl_choice
+		return redirect(url_for('cultural_captain'))
+	elif request.method == "GET":
+		return render_template('assistant_head_girl.html')
+
+
+@app.route('/cultural-captain',methods=["GET",'POST'])
+def cultural_captain():
+	if request.method == "POST":
+		cultural_captain_choice = request.form["cultural_captain_choice"]
+		session["cultural_captain_choice"] = cultural_captain_choice
+		return redirect(url_for('cultural_vice_captain'))
+	elif request.method == "GET":
+		return render_template('cultural_captain.html')
+
+
+@app.route('/cultural-vice-captain',methods=["GET",'POST'])
+def cultural_vice_captain():
+	if request.method == "POST":
+		cultural_vice_captain_choice = request.form["cultural_vice_captain_choice"]
+		session["cultural_vice_captain_choice"] = cultural_vice_captain_choice
+		return redirect(url_for('sports_captain'))
+	elif request.method == "GET":
+		return render_template('cultural_vice_captain.html')
+
+
+@app.route('/sports-captain',methods=["GET",'POST'])
+def sports_captain():
+	if request.method == "POST":
+		sports_captain_choice = request.form["sports_captain_choice"]
+		session["sports_captain_choice"] = sports_captain_choice
+		return redirect(url_for('sports_vice_captain'))
+	elif request.method == "GET":
+		return render_template('sports_captain.html')
+
+
+@app.route('/sports-vice-captain',methods=["GET",'POST'])
+def sports_vice_captain():
+	if request.method == "POST":
+		sports_vice_captain_choice = request.form["sports_vice_captain_choice"]
+		session["sports_vice_captain_choice"] = sports_vice_captain_choice
+		return redirect(url_for('kingfisher_captain'))
+	elif request.method == "GET":
+		return render_template('sports_vice_captain.html')
+
+
+@app.route('/kingfisher-captain',methods=["GET",'POST'])
+def kingfisher_captain():
+	if request.method == "POST":
+		kingfisher_captain_choice = request.form["kingfisher_captain_choice"]
+		session["kingfisher_captain_choice"] = kingfisher_captain_choice
+		return redirect(url_for('kingfisher_vice_captain'))
+	elif request.method == "GET":
+		return render_template('kingfisher_captain.html')
+
+
+@app.route('/kingfisher-vice-captain',methods=["GET","POST"])
+def kingfisher_vice_captain():
+	if request.method == "POST":
+		kingfisher_vice_captain_choice = request.form["kingfisher_vice_captain_choice"]
+		session["kingfisher_vice_captain_choice"] = kingfisher_vice_captain_choice
+		return redirect(url_for('final'))
+	elif request.method == "GET":
+		return render_template('kingfisher_vice_captain.html')
+
+
+@app.route('/review',methods=['GET','POST'])
+def final():
+	if request.method == "GET":
+		return render_template('review_page.html',session=dict(session))
+	else:
+		return redirect(url_for('over'))
+
+
+@app.route('/done')
+def over():
+	func = request.environ.get('werkzeug.server.shutdown')
+	if func is None:
+		raise RuntimeError('Not running with the Werkzeug Server')   
+	func()
+	return 'Thank you'
+
+
+def start():
+	app.run(debug=True)
+	return dict(session)
+	redirect(url_for('over'))
+
+
+# start()

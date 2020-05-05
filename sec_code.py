@@ -23,8 +23,11 @@ def code_gen():
 	while len(codes) != num_of_codes:
 		codes.add(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5)))
 
-	with open('codes.txt', 'r+') as text:
-		text.truncate(0)
+	try:
+		with open('codes.txt', 'r+') as text:
+			text.truncate(0)
+	except FileNotFoundError:
+		pass
 
 	# Adds the codes to a text file
 	with open('codes.txt', 'a') as file:
@@ -73,6 +76,4 @@ def checks_code(code):
 	else:
 		return False
 
-
 # code_print()
-# print(checks_code(input()))

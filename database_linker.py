@@ -39,6 +39,3 @@ def add_votes_to_db(pointers):
 def results_data():
 	return list(collection.find({}))
 
-
-# print(results_data())
-# add_votes_to_db({'Head Boy': 'Rat', 'Head Girl': 'Cat'})
