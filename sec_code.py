@@ -13,6 +13,23 @@ from os import remove
 key = Fernet(b'hdQqJb2hS5g07COO1nOasMHhhn_hmDdwPCyHvGSH57c=')
 
 
+def pass_set(_pass):
+	""" Sets the admin password to the string provided as an arguement
+		No password is set by default """
+	with open('admin.encrypted', 'w+') as file:
+		file.write(key.encrypt(_pass.encode('utf-8')).decode('utf-8'))
+
+
+def pass_check(_pass):
+	""" Checks if the entered password is the admin password or not """
+	with open('admin.encrypted', 'r+') as admin_text:
+		password = admin_text.readline()
+	if _pass == key.decrypt(password.encode('utf-8')).decode('utf-8'):
+		return True
+	else:
+		return False
+
+
 def code_gen():
 	""" Generates 2500 unique codes and encrypts and stores them in a text file
 		Run before the voting begins """
@@ -24,13 +41,13 @@ def code_gen():
 		codes.add(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5)))
 
 	try:
-		with open('codes.txt', 'r+') as text:
+		with open('codes.encrypted', 'r+') as text:
 			text.truncate(0)
 	except FileNotFoundError:
 		pass
 
 	# Adds the codes to a text file
-	with open('codes.txt', 'a') as file:
+	with open('codes.encrypted', 'a') as file:
 		for code in list(codes):
 			file.write(key.encrypt(code.encode('utf-8')).decode('utf-8') + ' ')
 	return codes
@@ -65,7 +82,7 @@ def code_print(*args):
 def checks_code(code):
 	""" Checks if the code entered is valid
 		Run before voting to initiate the program """
-	with open('codes.txt', 'r') as file:
+	with open('codes.encrypted', 'r') as file:
 		a = file.readline().split()
 
 	for x in range(len(a)):

@@ -4,7 +4,7 @@ import database_linker
 
 
 def cand_input(*args):
-	""" Runs a GUI window that returns the input as {post:{cand_name:cand_image}}
+	""" Runs a GUI window that returns the input as {post:{cand1, cnad2, ...}}
 		This input is then used to update the database with {cand_name:num_votes} """
 
 	# GUI window code that gives input
@@ -17,8 +17,6 @@ def cand_input(*args):
 def results():
 	""" Runs a GUI window that takes {_id:post, cand1:votes, cand2:votes} as input
 		and displays the output as the final results """
-
-	# return (database_linker.results_data()) #  Placeholder
 
 	final_results = {}
 

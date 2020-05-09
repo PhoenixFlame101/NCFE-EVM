@@ -13,16 +13,14 @@ def initializing(_input):
 		Is run before the voting begins """
 	collection.drop()
 
-	# Takes _input in the form {post:{cand1:image}}
+	# Takes _input in the form {post:{cand1, cand2, ...}}
 	for tup in _input.items():
 		post_name = tup[0]
-		candidates = [i[0] for i in tup[1].items()]
-		rec = dict([[i, 0] for i in candidates])
-		rec['_id'] = post_name
-		id = collection.insert_one(rec)
+		candidates = [i for i in tup[1].items()]
+		record = dict([[i, 0] for i in candidates])
+		record['_id'] = post_name
+		id = collection.insert_one(record)
 
-
-# initializing('Head Girl', ['Cat', 'Mat'])
 
 def add_votes_to_db(pointers):
 	""" Used to increment the votes of the candidates who where voted for
