@@ -1,6 +1,17 @@
 # This file handles all the admin functions
 
 import database_linker
+import sec_code
+
+
+def reset_pass(old_pass, new_pass, confirm_new_pass):
+	if sec_code.pass_check(old_pass):
+		if new_pass == confirm_new_pass:
+			sec_code.pass_set(new_pass)
+		else:
+			raise ValueError('Passwords do not match')
+	else:
+		raise ValueError('Your old password is not correct')
 
 
 def cand_input(*args):
