@@ -3,10 +3,7 @@
 from cryptography.fernet import Fernet
 import random
 import string
-import csv
-from pandas import read_csv as html
-import pdfkit
-from os import remove
+from fpdf import FPDF
 
 
 # A predetermined encryption key
@@ -30,10 +27,10 @@ def pass_check(_pass):
 		return False
 
 
-def code_gen():
+def code_gen(*args):
 	""" Generates 2500 unique codes and encrypts and stores them in a text file
 		Run before the voting begins """
-	num_of_codes = 2500
+	num_of_codes = 2544 if args == () else args[0]
 	codes = set()
 
 	# Generates encrypted codes and adds them to a set 'codes'
@@ -48,7 +45,7 @@ def code_gen():
 
 	# Adds the codes to a text file
 	with open('codes.encrypted', 'a') as file:
-		for code in list(codes):
+		for code in codes:
 			file.write(key.encrypt(code.encode('utf-8')).decode('utf-8') + ' ')
 	return codes
 
@@ -61,22 +58,18 @@ def split(arr, n):
 
 def code_print(*args):
 	""" Generates a PDF of codes """
-	num_column = int([13 if args == () else args[0]][0])  # Number of columns in one page
-	codes = list(split(list(code_gen()), num_column))  # Codes are split into an array of lists with *13* elements
-	codes.insert(0, ['Codes'])  # To generate a heading for the column
+	num_column = 12 if args == () else args[0]  # Number of columns in one page
+	codes = list(split(list(code_gen()), num_column))  # 2D array of 12* codes in each list
 
-	# Writes the codes to a CSV file
-	with open('codes.csv', 'w+') as file:
-		writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-		for line in codes:
-			writer.writerow(line)
-
-	# Converts the CSV to HTML, then to PDF and then deletes the CSV and HTML files
-	html('codes.csv', sep=',').to_html('codes.html')
-	config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-	pdfkit.from_file('codes.html', 'codes.pdf', configuration=config)
-	remove('codes.csv')
-	remove('codes.html')
+	# Writes the codes to a PDF file
+	pdf = FPDF()
+	pdf.add_page()
+	pdf.set_font('Courier', size=12)
+	for row in codes:
+		for code in row:
+			pdf.cell(16, 5, txt=code, border=1, ln=0, align='C')
+		pdf.ln()
+	pdf.output('codes.pdf')
 
 
 def checks_code(code):
@@ -93,4 +86,4 @@ def checks_code(code):
 	else:
 		return False
 
-# code_print()
+code_print()
