@@ -2,7 +2,7 @@ from flask import Flask,redirect,url_for,render_template,request,session
 from flask_wtf.csrf import CSRFProtect
 import os
 
-from csrf_integrator import RegistrationForm
+# from csrf_integrator import RegistrationForm
 #from . import app
 
 csrf = CSRFProtect()
@@ -12,7 +12,7 @@ valid_pwd = ['12345']
 app = Flask(__name__)
 app.secret_key = 'abc'
 #csrf.init_app(app)
-results = dict([])  
+results = dict([])
 
 @app.route('/',methods=["GET",'POST'])
 def home():
@@ -41,7 +41,7 @@ def head_boy():
 @app.route('/head-girl',methods=["GET",'POST'])
 def head_girl():
     try:
-        if session["head_boy_choice"]:      
+        if session["head_boy_choice"]:
             if request.method == "GET":
                 return render_template('head_girl.html')
             elif request.method == "POST":
@@ -67,7 +67,7 @@ def assistant_head_boy():
 @app.route('/assistant-head-girl',methods=["GET",'POST'])
 def assistant_head_girl():
     try:
-        if session["assistant_head_boy_choice"]:        
+        if session["assistant_head_boy_choice"]:
             if request.method == "POST":
                 assistant_head_girl_choice = request.form["assistant_head_girl_choice"]
                 session["assistant_head_girl_choice"] = assistant_head_girl_choice
@@ -107,7 +107,7 @@ def cultural_vice_captain():
 @app.route('/sports-captain',methods=["GET",'POST'])
 def sports_captain():
     try:
-        if session['cultural_vice_captain_choice']:       
+        if session['cultural_vice_captain_choice']:
             if request.method == "POST":
                 sports_captain_choice = request.form["sports_captain_choice"]
                 session["sports_captain_choice"] = sports_captain_choice
@@ -120,7 +120,7 @@ def sports_captain():
 @app.route('/sports-vice-captain',methods=["GET",'POST'])
 def sports_vice_captain():
     try:
-        if session['sports_captain_choice']:       
+        if session['sports_captain_choice']:
             if request.method == "POST":
                 sports_vice_captain_choice = request.form["sports_vice_captain_choice"]
                 session["sports_vice_captain_choice"] = sports_vice_captain_choice
@@ -159,7 +159,7 @@ def kingfisher_vice_captain():
 @app.route('/review',methods=['GET','POST'])
 def final():
     try:
-        if session['kingfisher_vice_captain_choice']:        
+        if session['kingfisher_vice_captain_choice']:
             if request.method == "GET":
                 a = dict(session).pop(Logged)
                 return render_template('review_page.html',session=dict(session))
@@ -172,7 +172,7 @@ def final():
 def over():
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')   
+        raise RuntimeError('Not running with the Werkzeug Server')
     func()
     session.clear()
     return 'Thank you,next'
