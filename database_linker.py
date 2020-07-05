@@ -28,7 +28,7 @@ def add_votes_to_db(pointers):
 	""" Used to increment the votes of the candidates who where voted for
 		Is run after each person casts their vote """
 
-	for vote in pointers.values():
+	for vote in pointers:
 		post_name, cand_name = vote[0], vote[1]
 		collection.update_one(
 			{'_id': post_name},
@@ -61,7 +61,7 @@ def results_print():
 	pdf.output('results.pdf')
 
 	# Drops database
-	client.drop_database('EVM')
+	# client.drop_database('EVM')
 
 # initializing({'Head Boy':{'Cat', 'Bat'}, 'Head Girl':{'Rat', 'Mat'}})
 # results_print()
