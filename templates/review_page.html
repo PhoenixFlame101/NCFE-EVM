@@ -1,0 +1,32 @@
+{% extends "base_page.html" %}
+{% block head %}
+
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/review.css') }}">
+{% endblock %}
+{% block body %}
+
+<center>
+    <h1>The Review</h1>
+    <table class="letable">
+        <tr>
+        <th style="border-right:2px solid #f6c90e;" >Post</th>
+        <th>Selected Candidate</th>
+        </tr>
+
+        {% for post in session %}
+            <tr>
+                <td class="postside">{{ post.replace('_',' ').replace('choice','') }}</td>
+                <td class="candidateside">{{ session[post] }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+    <form action="" method="post">
+        <input type="submit" value="SUBMIT">
+    </form>
+</center>
+<script>
+
+</script>
+{% endblock %}
