@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
 	name='NCFE-EVM',
-	version='0.5.1',
+	version='0.5.2',
 	packages=[''],
 	install_requires=['flask', 'pymongo', 'cryptography'],
 	url='https://github.com/PhoenixFlame101/NCFE-EVM/',
