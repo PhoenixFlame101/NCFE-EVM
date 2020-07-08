@@ -86,4 +86,4 @@ def checks_code(code):
 	else:
 		return False
 
-code_print()
+# code_print()
