@@ -4,9 +4,16 @@ import admin_controls
 import database_linker
 import gui
 
-# We get the votes casts from the GUI after every session
-# The dict is in the form {[post_name, candidate_voted_for]}
-candidates = gui.start()
+# Checks if the voting has been started
+voting_started = True  # Should be False
+candidates = {}
+
+# gui.start()
+
+if voting_started:
+	# We get the votes casts from the GUI after every session
+	# The dict is in the form {[post_name, candidate_voted_for]}	
+	candidates = gui.voting()
 
 # We add the votes received per candidate to the votes of the resp. candidate in MongoDB
-# database_linker.add_votes_to_db(candidates)
+database_linker.add_votes_to_db(candidates)

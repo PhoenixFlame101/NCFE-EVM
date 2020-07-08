@@ -4,21 +4,18 @@ EVM program for NCFE.
 
 ### Dependencies
 
-**Built-in Python Modules** — `random`, `string`, `csv`, `os`.
+**Built-in Python Modules** — `random`, `string`.
 
 These do not have to be installed separately.
 
 **External Python Packages/Modules** — `flask`, `pymongo`, `cryptography`.
 
 These can be installed from the command line using `pip`.
-    
+
     pip install flask pymono cryptography
 
-**Admin Specific Dependencies (Only required on one computer)** — `pandas`, `pdfkit`, `wkhtmltopdf`.
+**Admin Specific Dependencies (Only required on one computer)** — `fpdf`.
 
-`wkhtmltopdf` can be installed from its [website](https://wkhtmltopdf.org/downloads.html, "https://wkhtmltopdf.org/downloads.html").
+`fpdf` can be installed from the command line using `pip`.
 
-
-`pandas` and `pdfkit` can be installed from the command line using `pip`.
-    
-    pip install pandas pdfkit
+    pip install fpdf
