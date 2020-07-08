@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/eagle.css') }}">
+    {% block head %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        {% endblock %}
+    </body>
+    <script>
+        var is_clicked = false;
+        var submitted = false;
+        var clicked_obj;
+        var prev_vote;
+        var bg = "#B81A1C";
+        var box = "#750407";
+        
+        
+        $(document).ready(function(){
+            $('#btn').click(function(){
+              if (clicked_obj){
+              $('#post').hide('slow');
+              $('#btn').html('NEXT PAGE');
+              $('#btn').fadeOut('slow',function(){
+                $('#next_page_btn').fadeIn('slow');
+              });
+              }
+            })
+          });
+        
+        function single_click(the_obj){
+          if (submitted == false){
+            if (is_clicked == false){
+                the_obj.style.backgroundColor = bg;
+                is_clicked = true;
+                clicked_obj = the_obj;
+            } else {
+              clicked_obj.style.backgroundColor = box;
+              clicked_obj = the_obj;
+              the_obj.style.backgroundColor = bg;
+            }
+          }
+        }
+        
+        function color(){
+          if (prev_vote){
+            prev_vote.style.backgroundColor=box;
+          }
+        }
+        
+        function btn_click(){
+          var selected_candidate = clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent;
+          document.getElementById('hidden').value = selected_candidate;
+        
+          submitted = true;
+        }
+        
+        function load(){
+          voted = document.getElementById("lehidden").innerHTML;
+        
+          $("#container").children().each(function () {
+                    var element = $(this).children("p").prop("innerHTML");
+                    if (element == voted){
+                      $(this).css("background-color", bg);
+                      prev_vote = $(this).get(0);
+                    }
+                });
+        }
+        load();
+    </script>
+    </html>

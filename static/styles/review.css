@@ -1,0 +1,74 @@
+body{
+    background-color: #121212;
+}
+@font-face{
+    font-family:'text';
+    src:url('text.ttf');
+}
+@font-face{
+    font-family: 'heading';
+    src:url('heading.ttf');
+}
+h1{
+    font-family:'heading';
+    margin-top:1em;
+    font-size:3em;
+    text-transform: uppercase;
+    color:#f6c90e;
+    font-weight: lighter;
+
+}
+table{
+    background-color: #212121;
+    border-collapse: collapse;
+    border: none;
+    width:60%;
+    margin-top:5%;
+}
+th{
+    color:white;
+    font-family: 'heading';
+    font-size: 2em;
+    padding:3%;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-weight: lighter;
+}
+.postside{
+    border-left:0;
+    border-top:2px solid #f6c90e;
+    border-right:2px solid #f6c90e;
+    text-transform: uppercase;
+}
+td{
+    color:white;
+    font-family: 'text';
+    font-size: 1.5em;
+    text-align:center;
+    padding:3%
+}
+.candidateside{
+    border:none;
+    border-top:2px solid #f6c90e;
+}
+tr:last-child td:last-child{
+    border-radius:0 0 0 15px;
+}
+input{
+    margin-top:5%;
+    background-color:#212121;
+    border:none;
+    height:80px;
+    width:25%;
+    bottom:5%;
+    position: relative;
+    bottom:-60%;
+    color:#f6c90e;
+    font-family: sans-serif;
+    font-size:2.5em;
+    border-radius: 10%/40%;
+}
+input[type="submit"]:hover{
+    border:1px solid #FCED47;
+    outline:none;
+}

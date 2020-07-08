@@ -1,0 +1,49 @@
+body{
+    background-color: #121212;
+    color:#f6c90e;
+}
+@font-face{
+    font-family:'text';
+    src:url('text.ttf');
+}
+@font-face{
+    font-family: 'heading';
+    src:url('heading.ttf');
+}
+#container{
+    display:flex;
+    margin-top:10%;
+    margin-left:-4%;
+    height:60%;
+    width:85%;
+    align-items:stretch;
+    justify-content: space-between;
+}
+h1{
+    font-size:2em;
+    margin-top:5%;
+    font-family:'heading';
+}
+.in{
+    margin-left: 10%;
+    margin-right:6%;
+    padding:10% 10% 5% 10%;
+    width:85%;
+    height:90%;
+    text-decoration: none;
+    /*change the height and width here to change the icon sizes*/
+}
+img{
+    height:90%;
+    width:90%;
+}
+.in:hover{
+    background-color: #161616;
+    border:1px solid #f6c90e;
+}
+a:visited,a:active,h2{
+    text-decoration:none;
+    color:#f6c90e;
+    align-self:center;
+    font-family:'text';
+}
