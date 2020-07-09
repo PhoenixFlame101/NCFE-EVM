@@ -1,7 +1,55 @@
 {% extends "base_page.html" %}
 {% block head %}
+<style>
+body{
+    background-color: #303841;
+}
+h1{
+    font-family:sans-serif;
+    margin-top:1em;
+    font-size:3em;
+    text-transform: uppercase;
+    color:#f6c90e;
+    font-weight: lighter;
 
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/review.css') }}">
+}
+table{
+    background-color: #3a4750;
+    border-collapse: collapse;
+    border: none;
+    width:60%;
+    margin-top:5%;
+}
+th{
+    color:white;
+    font-family: sans-serif;
+    font-size: 2em;
+    padding:3%;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-weight: lighter;
+}
+.postside{
+    border-left:0;
+    border-top:2px solid #f6c90e;
+    border-right:2px solid #f6c90e;
+    text-transform: uppercase;
+}
+td{
+    color:white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.5em;
+    text-align:center;
+    padding:3%
+}
+.candidateside{
+    border:none;
+    border-top:2px solid #f6c90e;
+}
+tr:last-child td:last-child{
+    border-radius:0 0 0 15px;
+}
+</style>
 {% endblock %}
 {% block body %}
 

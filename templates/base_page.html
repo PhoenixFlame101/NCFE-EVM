@@ -3,9 +3,9 @@
   <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!--
+    
     <style>
-body{
+      body{
     background-color: #05b4e6;
 }
 
@@ -46,16 +46,11 @@ p{
 }
 
 img{
-    margin:0vh;
-    padding-top:2vh;
-    height:90%;
-    width:90%;
+    margin:3vh;
 }
 
 .picbox{
     margin:6vh;
-    height:50%;
-    width:50%;
 }
 
 .picbox:hover{
@@ -73,53 +68,22 @@ img{
     font-family:'Lobster';
     color:#9ed7f6;
     font-size:20px;
-    position: absolute;
-    right:6%;
 }
 #next_page_btn{
   display: none;
   margin-top:10vh;
   margin-left:50vw;
-  margin-top:10vh;
-  width:35vh;
-  height:10vh;
-  background-color:#036f96 ;
-  text-align:center;
-  border: none;
-  border-radius:20px;
-  font-family:'Lobster';
-  color:#9ed7f6;
-  font-size:20px;
-  position: absolute;
-  right:6%;
-}
-#lehidden{
-  visibility: hidden;
-}
-#back{
-  position:absolute;
-  left:6%;
-  margin-top:10vh;
-  width:35vh;
-  height:10vh;
-  background-color:#036f96 ;
-  text-align:center;
-  border: none;
-  border-radius:20px;
-  font-family:'Lobster';
-  color:#9ed7f6;
-  font-size:20px;
 }
 
     </style>
--->
+
     {% block head %}{% endblock %}
 
   </head>
   <body>
       {% block body %}
         {% endblock %}
-<!--
+
     <script>
 var is_clicked = false;
 var submitted = false;
@@ -131,9 +95,9 @@ var clicked_obj;
       if (clicked_obj){
       $('#post').hide('slow');
       $('#btn').html('NEXT PAGE');
-      //$('#btn').animate({
-      //  'marginRight':'-40%'
-      //},'slow');
+      $('#btn').animate({
+        'marginRight':'-40%'
+      },'slow');
       $('#btn').fadeOut('slow',function(){
         $('#next_page_btn').fadeIn('slow');
       });
@@ -162,6 +126,6 @@ function btn_click(){
 }
 
     </script>
--->
+
   </body>
 </html>

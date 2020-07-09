@@ -20,11 +20,11 @@ def home():
     else:
         receivedpwd = request.form['pwd_box']
         print(receivedpwd)
-        if receivedpwd in valid_pwd:
-            session['valid'] = True
-            return redirect(url_for('head_boy'))
-        else:
-            return render_template('entry_page.html')
+        #if receivedpwd in valid_pwd:
+        session['valid'] = True
+        return redirect(url_for('head_boy'))
+        #else:
+        return render_template('entry_page.html')
 
 @app.route('/head-boy',methods=["GET",'POST'])
 def head_boy():
@@ -36,13 +36,14 @@ def head_boy():
                     return redirect(url_for('head_girl'))
                 elif request.method == "GET":
                     return render_template('head_boy.html')
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('home'))
 
 @app.route('/head-girl',methods=["GET",'POST'])
 def head_girl():
     try:
-        if session["head_boy_choice"]:      
+        if session["head_boy_choice"]:
             if request.method == "GET":
                 return render_template('head_girl.html')
             elif request.method == "POST":
@@ -68,7 +69,7 @@ def assistant_head_boy():
 @app.route('/assistant-head-girl',methods=["GET",'POST'])
 def assistant_head_girl():
     try:
-        if session["assistant_head_boy_choice"]:        
+        if session["assistant_head_boy_choice"]:
             if request.method == "POST":
                 assistant_head_girl_choice = request.form["assistant_head_girl_choice"]
                 session["assistant_head_girl_choice"] = assistant_head_girl_choice
@@ -107,7 +108,7 @@ def cultural_vice_captain():
 @app.route('/sports-captain',methods=["GET",'POST'])
 def sports_captain():
     try:
-        if session['cultural_vice_captain_choice']:       
+        if session['cultural_vice_captain_choice']:
             if request.method == "POST":
                 sports_captain_choice = request.form["sports_captain_choice"]
                 session["sports_captain_choice"] = sports_captain_choice
@@ -309,7 +310,7 @@ def over():
     '''
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')   
+        raise RuntimeError('Not running with the Werkzeug Server')
     func()
     '''
     session.clear()
