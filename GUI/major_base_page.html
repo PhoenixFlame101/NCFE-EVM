@@ -9,6 +9,7 @@
     <body>
         {% block body %}
         {% endblock %}
+    <a href='{{ url_for("final") }}'><input type='button' value='Back to review page' id="jump_to_review"></a>
     </body>
     <script>
         var is_clicked = false;
