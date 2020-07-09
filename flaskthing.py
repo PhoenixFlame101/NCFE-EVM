@@ -8,6 +8,7 @@ admin_pwd = '123'
 house_choice = 'flamingo'  #Make sure all the house are in lowercase
 candidates = {}
 current_pwd  = None  #This is the password which the voter entered
+valid = False #This is flask's file variable for showing session validity
 
 app = Flask(__name__,template_folder='./GUI/')
 app.secret_key = 'abc'
@@ -26,6 +27,8 @@ def home():
         receivedpwd = request.form['pwd_box']
         if receivedpwd in valid_pwd:
             session['valid'] = True
+            global valid
+            valid = True
             session['current_pwd'] = receivedpwd
             return redirect(url_for('head_boy'))
         else:
@@ -34,7 +37,7 @@ def home():
 @app.route('/head-boy',methods=["GET",'POST'])
 def head_boy():
     try:
-        if session['valid']:
+        if valid or session['valid']:
                 if request.method == "POST":
                     head_boy_choice = request.form["head_boy_choice"]
                     session["head_boy_choice"] = head_boy_choice
@@ -332,6 +335,8 @@ def over():
     func()
     '''
     session.clear()
+    global valid
+    valid = False
     return redirect(url_for('home'))
 
 #Non-decorated functions
@@ -345,7 +350,6 @@ def put_in_file(dt):#We can change this to call the function to send the voter's
             print(e)
         finally:
             dt['current_pwd'] = current_pwd
-            print(dt)
             json.dump(dt, json_file)
 
 def fetch_changed_house_choice():
