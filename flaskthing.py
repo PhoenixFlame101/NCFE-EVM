@@ -19,7 +19,6 @@ def home():
         return render_template('entry_page.html')
     else:
         receivedpwd = request.form['pwd_box']
-        print(receivedpwd)
         if receivedpwd in valid_pwd:
             session['valid'] = True
             return redirect(url_for('head_boy'))
@@ -289,11 +288,17 @@ def voting_toggle():
     except:
         return redirect(url_for('admin_page'))
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 def settings():
     try:
+        global house_choice
         if session['logged'] == True:
-            return render_template('settings.html')
+            if request.method == "GET":
+                print(house_choice)
+                return render_template('settings.html',house_choice=house_choice)
+            elif request.method == "POST":
+                house_choice = request.form['hc']
+                return redirect(url_for('settings'))
     except:
         return redirect(url_for('admin_page'))
 
@@ -326,6 +331,10 @@ def put_in_file(dt):
             pass
         finally:
             json.dump(dt, json_file)
+
+def fetch_changed_house_choice():
+    hc = request.values.get('house_choice')
+    print(hc)
 
 def start():
     #if __name__ == "__main__":
