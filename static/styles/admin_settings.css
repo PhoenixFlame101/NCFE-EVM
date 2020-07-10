@@ -1,0 +1,23 @@
+:root{
+    --text:#FCED47;
+}
+
+@font-face{
+    font-family:'text';
+    src:url('text.ttf');
+}
+@font-face{
+    font-family: 'heading';
+    src:url('heading.ttf');
+}
+body{
+    background-color: #161616;
+    color:var(--text);
+}
+h1{
+    font-family:'heading';
+}
+h2{
+    font-family:'text';
+    margin-left: 15%;
+}
