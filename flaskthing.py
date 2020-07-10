@@ -5,7 +5,7 @@ import json
 valid_pwd = ['12345']
 admin_pwd = '123'
 
-house_choice = 'flamingo'  #Make sure all the house are in lowercase
+house_choice = 'eagle'  #Make sure all the house are in lowercase
 candidates = {}
 current_pwd  = None  #This is the password which the voter entered
 valid = False #This is flask's file variable for showing session validity
@@ -26,7 +26,7 @@ def home():
     else:
         receivedpwd = request.form['pwd_box']
         if receivedpwd in valid_pwd:
-            session['valid'] = True
+            #session['valid'] = True
             global valid
             valid = True
             session['current_pwd'] = receivedpwd
@@ -36,15 +36,24 @@ def home():
 
 @app.route('/head-boy',methods=["GET",'POST'])
 def head_boy():
+    global valid
     try:
-        if valid or session['valid']:
+        if valid:
                 if request.method == "POST":
                     head_boy_choice = request.form["head_boy_choice"]
                     session["head_boy_choice"] = head_boy_choice
                     return redirect(url_for('head_girl'))
                 elif request.method == "GET":
-                    return render_template('head_boy.html',d=candidates)
-    except:
+                    if len(candidates['head_boy']) == 1:
+                        if (house_choice+'_vice_captain_choice') in session:
+                            return redirect(url_for('final'))
+                        else:
+                            session['head_boy_choice'] = candidates['head_boy'][0]
+                            return redirect(url_for('head_girl'))
+                    else:
+                        return render_template('head_boy.html',d=candidates)
+    except Exception as e:
+        print(e)
         return redirect(url_for('home'))
 
 @app.route('/head-girl',methods=["GET",'POST'])
@@ -52,7 +61,14 @@ def head_girl():
     try:
         if session["head_boy_choice"]:      
             if request.method == "GET":
-                return render_template('head_girl.html',d=candidates)
+                if len(candidates["head_girl"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['head_girl_choice'] = candidates["head_girl"][0]
+                        return redirect(url_for('assistant_head_boy'))
+                else:
+                    return render_template('head_girl.html',d=candidates)
             elif request.method == "POST":
                 head_girl_choice = request.form["head_girl_choice"]
                 session["head_girl_choice"] = head_girl_choice
@@ -69,7 +85,14 @@ def assistant_head_boy():
                 session["assistant_head_boy_choice"] = assistant_head_boy_choice
                 return redirect(url_for('assistant_head_girl'))
             elif request.method == "GET":
-                return render_template('assistant_head_boy.html',d=candidates)
+                if len(candidates["assistant_head_boy"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['assistant_head_boy_choice'] = candidates["assistant_head_boy"][0]
+                        return redirect(url_for('assistant_head_girl'))
+                else:
+                    return render_template('assistant_head_boy.html',d=candidates)
     except:
         return redirect(url_for('head_girl'))
 
@@ -82,7 +105,14 @@ def assistant_head_girl():
                 session["assistant_head_girl_choice"] = assistant_head_girl_choice
                 return redirect(url_for('cultural_captain'))
             elif request.method == "GET":
-                return render_template('assistant_head_girl.html',d=candidates)
+                if len(candidates["assistant_head_girl"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['assistant_head_girl_choice'] = candidates["assistant_head_girl"][0]
+                        return redirect(url_for('cultural_captain'))
+                else:
+                    return render_template('assistant_head_girl.html',d=candidates)
     except:
         return redirect(url_for('assistant_head_boy'))
 
@@ -95,7 +125,14 @@ def cultural_captain():
                 session["cultural_captain_choice"] = cultural_captain_choice
                 return redirect(url_for('cultural_vice_captain'))
             elif request.method == "GET":
-                return render_template('cultural_captain.html',d=candidates)
+                if len(candidates["cultural_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['cultural_captain_choice'] = candidates["cultural_captain"][0]
+                        return redirect(url_for('cultural_vice_captain'))
+                else:
+                    return render_template('cultural_captain.html',d=candidates)
     except :
         return redirect(url_for('assistant_head_girl'))
 
@@ -108,7 +145,14 @@ def cultural_vice_captain():
                 session["cultural_vice_captain_choice"] = cultural_vice_captain_choice
                 return redirect(url_for('sports_captain'))
             elif request.method == "GET":
-                return render_template('cultural_vice_captain.html',d=candidates)
+                if len(candidates["cultural_vice_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['cultural_vice_captain_choice'] = candidates["cultural_vice_captain"][0]
+                        return redirect(url_for('sports_captain'))
+                else:
+                    return render_template('cultural_vice_captain.html',d=candidates)
     except:
         return redirect(url_for('cultural_captain'))
 
@@ -121,7 +165,14 @@ def sports_captain():
                 session["sports_captain_choice"] = sports_captain_choice
                 return redirect(url_for('sports_vice_captain'))
             elif request.method == "GET":
-                return render_template('sports_captain.html',d=candidates)
+                if len(candidates["sports_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['sports_captain_choice'] = candidates["sports_captain"][0]
+                        return redirect(url_for('sports_vice_captain'))
+                else:
+                    return render_template('sports_captain.html',d=candidates)
     except:
         return  redirect(url_for('cultural_vice_captain'))
 
@@ -135,7 +186,14 @@ def sports_vice_captain():
 
                 return redirect(url_for(house_choice+'_captain'))
             elif request.method == "GET":
-                return render_template('sports_vice_captain.html',d=candidates)
+                if len(candidates["sports_vice_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['sports_vice_captain_choice'] = candidates["sports_vice_captain"][0]
+                        return redirect(url_for(house_choice+'_captain'))
+                else:
+                    return render_template('sports_vice_captain.html',d=candidates)
     except:
         return redirect(url_for('sports_captain'))
 
@@ -149,7 +207,14 @@ def kingfisher_captain():
                 session["kingfisher_captain_choice"] = kingfisher_captain_choice
                 return redirect(url_for('kingfisher_vice_captain'))
             elif request.method == "GET":
-                return render_template('kingfisher_captain.html',d=candidates)
+                if len(candidates["kingfisher_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['kingfisher_captain_choice'] = candidates["kingfisher_captain"][0]
+                        return redirect(url_for('kingfisher_vice_captain'))
+                else:
+                    return render_template('kingfisher_captain.html',d=candidates)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -160,10 +225,16 @@ def kingfisher_vice_captain():
             if request.method == "POST":
                 kingfisher_vice_captain_choice = request.form["kingfisher_vice_captain_choice"]
                 session["kingfisher_vice_captain_choice"] = kingfisher_vice_captain_choice
-                print(kingfisher_vice_captain_choice)
                 return redirect(url_for('final'))
             elif request.method == "GET":
-                return render_template('kingfisher_vice_captain.html',d=candidates)
+                if len(candidates["kingfisher_vice_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['kingfisher_vice_captain_choice'] = candidates["kingfisher_vice_captain"][0]
+                        return redirect(url_for('final'))
+                else:
+                    return render_template('kingfisher_vice_captain.html',d=candidates)
     except:
         return redirect(url_for('kingfisher_captain'))
 
@@ -176,7 +247,14 @@ def flamingo_captain():
                 session["flamingo_captain_choice"] = flamingo_captain_choice
                 return redirect(url_for('flamingo_vice_captain'))
             elif request.method == "GET":
-                return render_template('flamingo_captain.html',d=candidates)
+                if len(candidates["flamingo_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['flamingo_captain_choice'] = candidates["flamingo_captain"][0]
+                        return redirect(url_for('flamingo_vice_captain'))
+                else:
+                    return render_template('flamingo_captain.html',d=candidates)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -189,7 +267,14 @@ def flamingo_vice_captain():
                 session["flamingo_vice_captain_choice"] = flamingo_vice_captain_choice
                 return redirect(url_for('final'))
             elif request.method == "GET":
-                return render_template('flamingo_vice_captain.html',d=candidates)
+                if len(candidates["flamingo_vice_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['flamingo_vice_captain_choice'] = candidates["flamingo_vice_captain"][0]
+                        return redirect(url_for('final'))
+                else:
+                    return render_template('flamingo_vice_captain.html',d=candidates)
     except:
         return redirect(url_for('flamingo_captain'))
 
@@ -202,7 +287,14 @@ def falcon_captain():
                 session["falcon_captain_choice"] = falcon_captain_choice
                 return redirect(url_for('falcon_vice_captain'))
             elif request.method == "GET":
-                return render_template('falcon_captain.html',d=candidates)
+                if len(candidates["falcon_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['falcon_captain_choice'] = candidates["falcon_captain"][0]
+                        return redirect(url_for('falcon_vice_captain'))
+                else:
+                    return render_template('falcon_captain.html',d=candidates)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -215,7 +307,14 @@ def falcon_vice_captain():
                 session["falcon_vice_captain_choice"] = falcon_vice_captain_choice
                 return redirect(url_for('final'))
             elif request.method == "GET":
-                return render_template('falcon_vice_captain.html',d=candidates)
+                if len(candidates["falcon_vice_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['falcon_vice_captain_choice'] = candidates["falcon_vice_captain"][0]
+                        return redirect(url_for('final'))
+                else:
+                    return render_template('falcon_vice_captain.html',d=candidates)
     except:
         return redirect(url_for('falcon_captain'))
 
@@ -228,7 +327,14 @@ def eagle_captain():
                 session["eagle_captain_choice"] = eagle_captain_choice
                 return redirect(url_for('eagle_vice_captain'))
             elif request.method == "GET":
-                return render_template('eagle_captain.html',d=candidates)
+                if len(candidates["eagle_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['eagle_captain_choice'] = candidates["eagle_captain"][0]
+                        return redirect(url_for('eagle_vice_captain'))
+                else:
+                    return render_template('eagle_captain.html',d=candidates)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -241,12 +347,33 @@ def eagle_vice_captain():
                 session["eagle_vice_captain_choice"] = eagle_vice_captain_choice
                 return redirect(url_for('final'))
             elif request.method == "GET":
-                return render_template('eagle_vice_captain.html',d=candidates)
+                if len(candidates["eagle_vice_captain"]) == 1:
+                    if (house_choice+'_vice_captain_choice') in session:
+                        return redirect(url_for('final'))
+                    else:
+                        session['eagle_vice_captain_choice'] = candidates["eagle_vice_captain"][0]
+                        return redirect(url_for('final'))
+                else:
+                    return render_template('eagle_vice_captain.html',d=candidates)
     except:
         return redirect(url_for('eagle_captain'))
 
 @app.route('/review',methods=['GET','POST'])
 def final():
+    try:
+        if session[house_choice+'_vice_captain_choice']:#Change accordingly
+            if request.method == "GET":
+                '''
+                if 'valid' in session:
+                    del session["valid"]
+                '''
+                return render_template('review_page.html',session=dict(session))
+            else:
+                return redirect(url_for('over'))
+    except Exception as e:
+        print(e)
+        return redirect(url_for(house_choice+'_vice_captain'))
+    '''
     try:
         if session[house_choice+'_vice_captain_choice']:#Change accordingly
             if request.method == "GET":
@@ -264,6 +391,7 @@ def final():
     except Exception as e:
         print(e)
         return redirect(url_for(house_choice+'_vice_captain'))
+    '''
 
 #Admin things
 
@@ -344,12 +472,17 @@ def put_in_file(dt):#We can change this to call the function to send the voter's
     #here dt is the dictionary
     with open('jfile.txt', 'w') as json_file:
         try:
+            '''
             if dt['valid']:
                 dt.pop('valid')
+            '''
         except Exception as e:
             print(e)
         finally:
+            global current_pwd
             dt['current_pwd'] = current_pwd
+            if 'logged' in dt:
+                del dt['logged']
             json.dump(dt, json_file)
 
 def fetch_changed_house_choice():
@@ -359,9 +492,11 @@ def fetch_changed_house_choice():
 def create_candidates():#This is a temporary function just for the sake of creating candidates
     global candidates
     timepass_candidates = ['Sanjay Chidambaram','Parthiv',"Divy","Joe"]
-    posts = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']
+    posts = ['head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']
     for x in posts:
-        candidates[x]  = timepass_candidates
+#        candidates[x]  = timepass_candidates
+        candidates[x] = ['Chumlee']
+    candidates['head_boy'] = ['Vivin']
 
 def start(candidate_dict):
     #if __name__ == "__main__":
