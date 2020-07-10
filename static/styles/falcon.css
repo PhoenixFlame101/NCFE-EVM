@@ -70,7 +70,22 @@ img{
     background-color: var(--bg);
     border:1px solid #ffffff;
 }
-
+#jump_to_review{
+    margin-left:50vw;
+    width:35vh;
+    height:10vh;
+    bottom:15%;
+    background-color: var(--box);
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'text';
+    color:var(--text);
+    font-size:20px;
+    position: absolute;
+    right:6%;
+    outline: none;
+}
 #btn{
     width:35vh;
     height:10vh;
@@ -86,7 +101,7 @@ img{
     right:6%;
     outline: none;
 }
-#btn:hover,#back:hover,#next_page_btn:hover{
+#btn:hover,#back:hover,#next_page_btn:hover,#jump_to_review:hover{
     border:1px solid var(--text);
 }
 #next_page_btn{
