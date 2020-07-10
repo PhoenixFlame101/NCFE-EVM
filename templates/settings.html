@@ -9,21 +9,23 @@
         <h1>Settings</h1>
     </center>
 </br>
-<div id='house_change_box'>
+
 <form method='post' action="{{ url_for('settings') }}">
     <h2 id="house_choice">House choice:{{ house_choice.upper() }}</h2>
-    <input type='button' onclick="ch(1)" value="KINGFISHER">
-    <input type='button' onclick="ch(2)" value="FLAMINGO">
-    <input type='button' onclick="ch(3)" value="FALCON">
-    <input type='button' onclick="ch(4)" value="EAGLE">
+    <div id='house_change_box'>
+    <input type='button' onclick="ch(1)" id="kf" value="KINGFISHER">
+    <input type='button' onclick="ch(2)" id="fl" value="FLAMINGO">
+    <input type='button' onclick="ch(3)" id="fa" value="FALCON">
+    <input type='button' onclick="ch(4)" id="ea" value="EAGLE">
+    </div>
     <input type="hidden" value="" id="temp" name="hc">
-    </br>
+    
     <p>Change the password here: </p>
-    <input type='text' value='' name='changed_pwd'>
+    <input type='text' autocomplete="off" value='' name='changed_pwd'>
     </br>
-    <input type="submit" value="confirm changes">
+    <input type="submit" value="CONFIRM CHANGES">
 </form>
-</div>
+
 
 <script>
 var houses = ['kingfisher','flamingo','falcon','eagle'];
