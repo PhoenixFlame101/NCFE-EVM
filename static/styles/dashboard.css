@@ -41,7 +41,7 @@ img{
     background-color: #161616;
     border:1px solid #f6c90e;
 }
-a:visited,a:active,h2{
+a:visited,a:active,h2,a{
     text-decoration:none;
     color:#f6c90e;
     align-self:center;
