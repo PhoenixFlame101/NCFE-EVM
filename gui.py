@@ -140,10 +140,8 @@ def over():
 	return 'Thank you'
 
 
-def start():
+def voting():
 	app.run(debug=True)
 	return dict(session)
 	redirect(url_for('over'))
 
-
-# start()

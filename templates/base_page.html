@@ -8,22 +8,19 @@
 body{
     background-color: #05b4e6;
 }
-
-
 #container{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     margin-top:10vh;
-    
+
     background-color: #036f96;
     border: none;
     border-radius: 20px;
     max-width: 90%;
     flex-wrap: nowrap;
-    
-}
 
+}
 h1{
     margin:auto;
     margin-top:3vh;
@@ -31,9 +28,8 @@ h1{
     font-family: 'Lobster',sans-serif;
     font-size: 3.125em;
     text-transform:uppercase;
-    
-}
 
+}
 p{
     text-align: center;
     color: #9ed7f6;
@@ -42,26 +38,21 @@ p{
     line-height: 3vh;
     width:auto;
     font-size: 18px;
-
 }
-
 img{
     margin:0vh;
     padding-top:2vh;
     height:90%;
     width:90%;
 }
-
 .picbox{
     margin:6vh;
     height:50%;
     width:50%;
 }
-
 .picbox:hover{
     background-color: #049dc8;
 }
-
 #btn{
     margin-top:10vh;
     width:35vh;
@@ -110,7 +101,6 @@ img{
   color:#9ed7f6;
   font-size:20px;
 }
-
     </style>
 -->
     {% block head %}{% endblock %}
@@ -124,8 +114,6 @@ img{
 var is_clicked = false;
 var submitted = false;
 var clicked_obj;
-
-
   $(document).ready(function(){
     $('#btn').click(function(){
       if (clicked_obj){
@@ -140,7 +128,6 @@ var clicked_obj;
       }
     })
   });
-
 function single_click(the_obj){
   if (submitted == false){
     if (is_clicked == false){
@@ -153,14 +140,12 @@ function single_click(the_obj){
       the_obj.style.backgroundColor = "#049dc8";
     }
   }
-} 
-
+}
 function btn_click(){
   var selected_candidate = clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent;
   document.getElementById('hidden').value = selected_candidate;
   submitted = true;
 }
-
     </script>
 -->
   </body>
