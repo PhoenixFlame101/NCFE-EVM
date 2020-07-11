@@ -28,8 +28,10 @@ def add_votes_to_db(pointers):
 	""" Used to increment the votes of the candidates who where voted for
 		Is run after each person casts their vote """
 
-	for vote in pointers:
+	for vote in pointers.items():
 		post_name, cand_name = vote[0], vote[1]
+		post_name, cand_name = ' '.join(post_name.split('_')[:-1]).title(), cand_name.title()
+		print(post_name, cand_name)
 		collection.update_one(
 			{'_id': post_name},
 			{'$inc': {cand_name: 1}},
@@ -46,16 +48,17 @@ def results_print():
 	# Writes the results to a PDF file
 	pdf = FPDF()
 	pdf.add_page()
-	for post in results:
+	for post in results:  # The results list is a list of MongoDB documents
 		for key, value in post.items():
+			# If the current value contans the post name, use it as a heading
 			if key == '_id':
 				pdf.set_font("Arial", 'U', size=14)
 				pdf.cell(200, 10, txt=value, align='C')
 				pdf.ln(7)
-				continue
-			pdf.set_font("Arial", size=12)
-			pdf.cell(200, 10, txt=f'{key}     {value}', align='C')
-			pdf.ln(7)
+			else:
+				pdf.set_font("Arial", size=12)
+				pdf.cell(200, 10, txt=f'{key}     {value}', align='C')
+				pdf.ln(7)
 		else:
 			pdf.ln()
 	pdf.output('results.pdf')
