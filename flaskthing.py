@@ -59,7 +59,7 @@ def head_boy():
 @app.route('/head-girl',methods=["GET",'POST'])
 def head_girl():
     try:
-        if session["head_boy_choice"]:      
+        if session["head_boy_choice"]:
             if request.method == "GET":
                 if len(candidates["head_girl"]) == 1:
                     if (house_choice+'_vice_captain_choice') in session:
@@ -99,7 +99,7 @@ def assistant_head_boy():
 @app.route('/assistant-head-girl',methods=["GET",'POST'])
 def assistant_head_girl():
     try:
-        if session["assistant_head_boy_choice"]:        
+        if session["assistant_head_boy_choice"]:
             if request.method == "POST":
                 assistant_head_girl_choice = request.form["assistant_head_girl_choice"]
                 session["assistant_head_girl_choice"] = assistant_head_girl_choice
@@ -159,7 +159,7 @@ def cultural_vice_captain():
 @app.route('/sports-captain',methods=["GET",'POST'])
 def sports_captain():
     try:
-        if session['cultural_vice_captain_choice']:       
+        if session['cultural_vice_captain_choice']:
             if request.method == "POST":
                 sports_captain_choice = request.form["sports_captain_choice"]
                 session["sports_captain_choice"] = sports_captain_choice
@@ -459,7 +459,7 @@ def over():
     '''
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')   
+        raise RuntimeError('Not running with the Werkzeug Server')
     func()
     '''
     session.clear()
