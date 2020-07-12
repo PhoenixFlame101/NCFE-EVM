@@ -4,6 +4,7 @@ from cryptography.fernet import Fernet
 import random
 import string
 from fpdf import FPDF
+import database_linker
 
 
 # A predetermined encryption key
@@ -13,61 +14,52 @@ key = Fernet(b'hdQqJb2hS5g07COO1nOasMHhhn_hmDdwPCyHvGSH57c=')
 def pass_set(_pass):
 	""" Sets the admin password to the string provided as an arguement
 		No password is set by default """
-	with open('admin.encrypted', 'w+') as file:
-		file.write(key.encrypt(_pass.encode('utf-8')).decode('utf-8'))
+	database_linker.add_password_to_db(key.encrypt(_pass.encode('utf-8')))
 
 
 def pass_is_valid(_pass):
 	""" Checks if the entered password is the admin password or not """
-	with open('admin.encrypted', 'r+') as admin_text:
-		password = admin_text.read()
-	if _pass == key.decrypt(password.encode('utf-8')).decode('utf-8'):
+	password = database_linker.get_password_from_db()
+	if _pass == key.decrypt(password).decode('utf-8'):
 		return True
 	else:
 		return False
 
 
 def code_gen(*args):
-	""" Generates 2500 unique codes and encrypts and stores them in a text file
+	""" Generates 1936 unique codes and encrypts and stores them in a text file
 		Run before the voting begins """
 	num_of_codes = 1936 if args == () else (484*args[0])
 	codes = set()
 
-	# Generates encrypted codes and adds them to a set 'codes'
+	# Generates codes and adds them to a set 'codes'
 	while len(codes) != num_of_codes:
 		codes.add(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5)))
+	plaintext_codes = codes
 
-	try:
-		with open('codes.encrypted', 'r+') as text:
-			text.truncate(0)
-	except FileNotFoundError:
-		pass
+	# Encrypts the codes
+	codes = list(map(lambda x: key.encrypt(x.encode('utf-8')), list(codes)))
 
-	# Adds the codes to a text file
-	with open('codes.encrypted', 'a') as file:
-		for code in codes:
-			file.write(key.encrypt(code.encode('utf-8')).decode('utf-8')+'\n')
-	return codes
+	# Adds the votes to the db
+	database_linker.add_codes_to_db(codes)
 
+	return plaintext_codes
 
 def code_is_valid(code):
 	""" Checks if the code entered is valid
 		Run before voting to initiate the program """
 
-	# Gets the codes from the text file
-	with open('codes.encrypted', 'r') as file:
-		codes = file.readlines()
+	# Gets the codes from the db
+	codes = database_linker.get_codes_from_db()
 
 	# Decrypts the codes into plaintext
-	for i in range(len(codes)):
-		codes[i] = key.decrypt(codes[i].encode('utf-8')).decode('utf-8')
+	codes = list(map(lambda x: key.decrypt(x).decode('utf-8'), list(codes)))
 
 	if code in set(codes):
 		# Removes the entered codes from the file so it cannot be reused
 		codes.remove(code)
-		with open('codes.encrypted', 'w+') as file:
-			for code in codes:
-				file.write(key.encrypt(code.encode('utf-8')).decode('utf-8')+'\n')
+		codes = list(map(lambda x: key.encrypt(x.encode('utf-8')), list(codes)))
+		database_linker.add_codes_to_db(codes)
 		return True
 	else:
 		return False
@@ -95,4 +87,4 @@ def code_print(*args):
 
 
 # pass_set('')
-code_print()
+# code_print()

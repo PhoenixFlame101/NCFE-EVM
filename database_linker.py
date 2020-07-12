@@ -63,8 +63,21 @@ def results_print():
 			pdf.ln()
 	pdf.output('results.pdf')
 
-	# Drops database
-	# client.drop_database('EVM')
+	# Drops colleciton after voting is over
+	db.drop_collection('voting_results')
+
+
+# Functions to facilitate db actions in sec_code.py
+def add_password_to_db(password):
+	db.admin.drop()
+	db.admin.insert_one({'_id': 'password', 'password': password})
+def add_codes_to_db(codes):
+	db.codes.drop()
+	db.codes.insert_one({'_id': 'codes', 'codes': codes})
+def get_password_from_db():
+	return db.admin.find({})[0]['password']
+def get_codes_from_db():
+	return db.codes.find({})[0]['codes']
 
 # initializing({'Head Boy':{'Cat', 'Bat'}, 'Head Girl':{'Rat', 'Mat'}})
 # results_print()
