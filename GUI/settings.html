@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/admin_settings.css') }}">
+
+{% endblock %}
+
+{% block body %}
+    <center>
+        <h1>Settings</h1>
+    </center>
+</br>
+
+<a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
+
+<form method='post' action="{{ url_for('settings') }}">
+    <h2 id="house_choice">House choice:{{ house_choice.upper() }}</h2>
+    <div id='house_change_box'>
+    <input type='button' onclick="ch(1)" id="kf" value="KINGFISHER">
+    <input type='button' onclick="ch(2)" id="fl" value="FLAMINGO">
+    <input type='button' onclick="ch(3)" id="fa" value="FALCON">
+    <input type='button' onclick="ch(4)" id="ea" value="EAGLE">
+    </div>
+    <input type="hidden" value="" id="temp" name="hc">
+    
+    <p>Change the password here: </p>
+    <input type='text' autocomplete="off" value='' name='changed_pwd'>
+    </br>
+    <input type="submit" value="CONFIRM CHANGES">
+</form>
+
+
+<script>
+var houses = ['kingfisher','flamingo','falcon','eagle'];
+function ch(n){
+    document.getElementById('house_choice').innerHTML = 'House choice: '+houses[n-1].toUpperCase();
+    document.getElementById('temp').value = houses[n-1];
+}
+</script>
+
+{% endblock %}
