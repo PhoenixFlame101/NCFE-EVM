@@ -20,9 +20,10 @@ body{
     justify-content: space-between;
 }
 h1{
-    font-size:2em;
+    font-size:3em;
     margin-top:5%;
     font-family:'heading';
+    font-weight: lighter;
 }
 .in{
     margin-left: 10%;
@@ -31,6 +32,7 @@ h1{
     width:85%;
     height:90%;
     text-decoration: none;
+    outline:none;
     /*change the height and width here to change the icon sizes*/
 }
 img{
@@ -41,9 +43,10 @@ img{
     background-color: #161616;
     border:1px solid #f6c90e;
 }
-a:visited,a:active,h2,a{
+h2,a{
     text-decoration:none;
     color:#f6c90e;
     align-self:center;
-    font-family:'text';
+    font-family:'heading';
+    font-weight:lighter;
 }

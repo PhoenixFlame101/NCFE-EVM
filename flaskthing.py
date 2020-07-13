@@ -9,6 +9,7 @@ house_choice = 'eagle'  #Make sure all the house are in lowercase
 candidates = {}
 current_pwd  = None  #This is the password which the voter entered
 valid = False #This is flask's file variable for showing session validity
+voting_started = True #This is the variable which controls if voting is going on and shows up accordingly on the admin dashboard
 
 app = Flask(__name__,template_folder='./GUI/')
 app.secret_key = 'abc'
@@ -51,7 +52,7 @@ def head_boy():
                             session['head_boy_choice'] = candidates['head_boy'][0]
                             return redirect(url_for('head_girl'))
                     else:
-                        return render_template('head_boy.html',d=candidates)
+                        return render_template('head_boy.html',d=candidates,house_choice=house_choice)
     except Exception as e:
         print(e)
         return redirect(url_for('home'))
@@ -68,7 +69,7 @@ def head_girl():
                         session['head_girl_choice'] = candidates["head_girl"][0]
                         return redirect(url_for('assistant_head_boy'))
                 else:
-                    return render_template('head_girl.html',d=candidates)
+                    return render_template('head_girl.html',d=candidates,house_choice=house_choice)
             elif request.method == "POST":
                 head_girl_choice = request.form["head_girl_choice"]
                 session["head_girl_choice"] = head_girl_choice
@@ -92,7 +93,7 @@ def assistant_head_boy():
                         session['assistant_head_boy_choice'] = candidates["assistant_head_boy"][0]
                         return redirect(url_for('assistant_head_girl'))
                 else:
-                    return render_template('assistant_head_boy.html',d=candidates)
+                    return render_template('assistant_head_boy.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('head_girl'))
 
@@ -112,7 +113,7 @@ def assistant_head_girl():
                         session['assistant_head_girl_choice'] = candidates["assistant_head_girl"][0]
                         return redirect(url_for('cultural_captain'))
                 else:
-                    return render_template('assistant_head_girl.html',d=candidates)
+                    return render_template('assistant_head_girl.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('assistant_head_boy'))
 
@@ -132,7 +133,7 @@ def cultural_captain():
                         session['cultural_captain_choice'] = candidates["cultural_captain"][0]
                         return redirect(url_for('cultural_vice_captain'))
                 else:
-                    return render_template('cultural_captain.html',d=candidates)
+                    return render_template('cultural_captain.html',d=candidates,house_choice=house_choice)
     except :
         return redirect(url_for('assistant_head_girl'))
 
@@ -152,7 +153,7 @@ def cultural_vice_captain():
                         session['cultural_vice_captain_choice'] = candidates["cultural_vice_captain"][0]
                         return redirect(url_for('sports_captain'))
                 else:
-                    return render_template('cultural_vice_captain.html',d=candidates)
+                    return render_template('cultural_vice_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('cultural_captain'))
 
@@ -172,7 +173,7 @@ def sports_captain():
                         session['sports_captain_choice'] = candidates["sports_captain"][0]
                         return redirect(url_for('sports_vice_captain'))
                 else:
-                    return render_template('sports_captain.html',d=candidates)
+                    return render_template('sports_captain.html',d=candidates,house_choice=house_choice)
     except:
         return  redirect(url_for('cultural_vice_captain'))
 
@@ -193,7 +194,7 @@ def sports_vice_captain():
                         session['sports_vice_captain_choice'] = candidates["sports_vice_captain"][0]
                         return redirect(url_for(house_choice+'_captain'))
                 else:
-                    return render_template('sports_vice_captain.html',d=candidates)
+                    return render_template('sports_vice_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('sports_captain'))
 
@@ -214,7 +215,7 @@ def kingfisher_captain():
                         session['kingfisher_captain_choice'] = candidates["kingfisher_captain"][0]
                         return redirect(url_for('kingfisher_vice_captain'))
                 else:
-                    return render_template('kingfisher_captain.html',d=candidates)
+                    return render_template('kingfisher_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -234,7 +235,7 @@ def kingfisher_vice_captain():
                         session['kingfisher_vice_captain_choice'] = candidates["kingfisher_vice_captain"][0]
                         return redirect(url_for('final'))
                 else:
-                    return render_template('kingfisher_vice_captain.html',d=candidates)
+                    return render_template('kingfisher_vice_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('kingfisher_captain'))
 
@@ -254,7 +255,7 @@ def flamingo_captain():
                         session['flamingo_captain_choice'] = candidates["flamingo_captain"][0]
                         return redirect(url_for('flamingo_vice_captain'))
                 else:
-                    return render_template('flamingo_captain.html',d=candidates)
+                    return render_template('flamingo_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -274,7 +275,7 @@ def flamingo_vice_captain():
                         session['flamingo_vice_captain_choice'] = candidates["flamingo_vice_captain"][0]
                         return redirect(url_for('final'))
                 else:
-                    return render_template('flamingo_vice_captain.html',d=candidates)
+                    return render_template('flamingo_vice_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('flamingo_captain'))
 
@@ -294,7 +295,7 @@ def falcon_captain():
                         session['falcon_captain_choice'] = candidates["falcon_captain"][0]
                         return redirect(url_for('falcon_vice_captain'))
                 else:
-                    return render_template('falcon_captain.html',d=candidates)
+                    return render_template('falcon_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -314,7 +315,7 @@ def falcon_vice_captain():
                         session['falcon_vice_captain_choice'] = candidates["falcon_vice_captain"][0]
                         return redirect(url_for('final'))
                 else:
-                    return render_template('falcon_vice_captain.html',d=candidates)
+                    return render_template('falcon_vice_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('falcon_captain'))
 
@@ -334,7 +335,7 @@ def eagle_captain():
                         session['eagle_captain_choice'] = candidates["eagle_captain"][0]
                         return redirect(url_for('eagle_vice_captain'))
                 else:
-                    return render_template('eagle_captain.html',d=candidates)
+                    return render_template('eagle_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('sports_vice_captain'))
 
@@ -354,7 +355,7 @@ def eagle_vice_captain():
                         session['eagle_vice_captain_choice'] = candidates["eagle_vice_captain"][0]
                         return redirect(url_for('final'))
                 else:
-                    return render_template('eagle_vice_captain.html',d=candidates)
+                    return render_template('eagle_vice_captain.html',d=candidates,house_choice=house_choice)
     except:
         return redirect(url_for('eagle_captain'))
 
@@ -419,15 +420,16 @@ def dashboard():
 def enter_candidate():
     try:
         if session['logged'] == True:
-            return render_template('enter_candidate.html')
-    except:
+            return render_template('enter_candidate.html',candidates=candidates,str=str)
+    except Exception as  e:
+        print(e)
         return redirect(url_for('admin_page'))
 
 @app.route('/voting_toggle')
 def voting_toggle():
     try:
         if session['logged'] == True:
-            return render_template('voting_toggle.html')
+            return render_template('voting_toggle.html',valid=voting_started)
     except:
         return redirect(url_for('admin_page'))
 
@@ -492,11 +494,11 @@ def fetch_changed_house_choice():
 def create_candidates():#This is a temporary function just for the sake of creating candidates
     global candidates
     timepass_candidates = ['Sanjay Chidambaram','Parthiv',"Divy","Joe"]
-    posts = ['head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']
+    posts = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']
     for x in posts:
-#        candidates[x]  = timepass_candidates
-        candidates[x] = ['Chumlee']
-    candidates['head_boy'] = ['Vivin']
+        candidates[x]  = timepass_candidates
+        #candidates[x] = ['Chumlee']
+    #candidates['head_boy'] = ['Vivin']
 
 def start(candidate_dict):
     #if __name__ == "__main__":

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block head %}
+<<<<<<< HEAD
 <style>
     body{
         background-color: #121212;
@@ -57,12 +58,24 @@
 
 </div>
 
+=======
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/enter_candidates.css') }}">
+{% endblock %}
+
+{% block body %}
+<a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
+<center>
+>>>>>>> prototyped_gui
 <h1>CANDIDATE REFERENCE</h1>
 <div style="display:flex;" id='main'>
 <div id='col1' class="col">
     {% for x in ['Head Boy','Head Girl','Sports Captain','Cultural Captain'] %}
     <div>
+<<<<<<< HEAD
         <button  class='infirst' >{{ x }}</button>
+=======
+        <button  class='infirst' onclick="show(this);" id="{{ x }}" >{{ x }}</button>
+>>>>>>> prototyped_gui
     </div>
     {% endfor %}
 </div>
@@ -70,6 +83,7 @@
 <div id='col2' class="col">
     {% set x=['Kingfisher','Flamingo','Falcon','Eagle'] %}
     <div>
+<<<<<<< HEAD
         <button class='insecond' style='background-color:#03A9F4'>{{ x[0]+' House Captain' }}</button>
     </div>
     <div>
@@ -80,13 +94,31 @@
     </div>
     <div>
         <button class='insecond' style='background-color:#B71C1C'>{{ x[3]+' House Captain' }}</button>
+=======
+        <button class='insecond' style='background-color:#03A9F4' onclick="show(this);" id="{{ x[0]+' Captain' }}">{{ x[0]+' House Captain' }}</button>
+    </div>
+    <div>
+        <button class='insecond' style='background-color:#FF6D00' onclick="show(this);" id="{{ x[1]+' Captain' }}">{{ x[1]+' House Captain' }}</button>
+    </div>
+    <div>
+        <button class='insecond' style='background-color:#7E57C2' onclick="show(this);" id="{{ x[2]+' Captain' }}">{{ x[2]+' House Captain' }}</button>
+    </div>
+    <div>
+        <button class='insecond' style='background-color:#B71C1C' onclick="show(this);" id="{{ x[3]+' Captain' }}">{{ x[3]+' House Captain' }}</button>
+>>>>>>> prototyped_gui
     </div>
 </div>
 
 <div id='col3' class="col">
+<<<<<<< HEAD
     {% for x in ['Head Boy','Head Girl','Sports Captain','Cultural Captain'] %}
     <div>
         <button  class='inthird'>{{ 'Assistant '+x }}</button>
+=======
+    {% for x in ['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'] %}
+    <div>
+        <button  class='inthird' onclick="show(this);" id="{{ x }}">{{ x }}</button>
+>>>>>>> prototyped_gui
     </div>
     {% endfor %}
 </div>
@@ -94,6 +126,7 @@
 <div id='col4' class="col">
     {% set x=['Kingfisher','Flamingo','Falcon','Eagle'] %}
     <div>
+<<<<<<< HEAD
         <button class='infourth' style='background-color:#03A9F4'>{{ 'Assistant '+x[0]+' House Captain' }}</button>
     </div>
     <div>
@@ -111,6 +144,64 @@
 </center>
 
 <script>
+=======
+        <button class='infourth' style='background-color:#03A9F4' onclick="show(this);" id="{{ x[0]+' Vice Captain' }}">{{ x[0]+' House Vice Captain' }}</button>
+    </div>
+    <div>
+        <button class='infourth' style='background-color:#FF6D00' onclick="show(this);" id="{{ x[1]+' Vice Captain' }}">{{ x[1]+' House Vice Captain' }}</button>
+    </div>
+    <div>
+        <button class='infourth' style='background-color:#7E57C2' onclick="show(this);" id="{{ x[2]+' Vice Captain' }}">{{ x[2]+' House Vice Captain' }}</button>
+    </div>
+    <div>
+        <button class='infourth' style='background-color:#B71C1C' onclick="show(this);" id="{{ x[3]+' Vice Captain' }}">{{ x[3]+' House Vice Captain' }}</button>
+    </div>
+</div>
+</div>
+<p id="storage" style="display: none;">{{ candidates }}</p>
+</center>
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <center>
+            <h1 id="modal_heading"></h1>
+            {% for x in range(5) %}
+                <p id="{{ 'candidate'+str(x) }}" class="in_modal_candidates"></p>
+            {% endfor %}
+        </center>
+    </div>
+  
+  </div>
+<script>
+var data = document.getElementById('storage').innerHTML;
+var modal = document.getElementById("myModal");
+var span = document.getElementsByClassName("close")[0];
+var candidates = JSON.parse(data.replace(/'/g,"\""))
+function show(thing){
+    post = thing.id.toLowerCase().split(' ').join('_');
+    modal.style.display = "block";
+    document.getElementById('modal_heading').innerHTML = thing.id.toUpperCase();
+    var i;
+    var x = candidates[post].length;
+    for (i=0;i<x;i++){
+        document.getElementById('candidate'+i.toString()).innerHTML = candidates[post][i].toUpperCase();
+    
+    }
+    if (post.slice(0,10) == 'kingfisher'){
+        thing.className = 'kf';
+    }
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+>>>>>>> prototyped_gui
 
 
 </script>
