@@ -444,7 +444,8 @@ def over():
     session.clear()
     global valid
     valid = False
-    return redirect(url_for('home'))
+    #return redirect(url_for('home'))
+    return render_template('thank_you.html')
 
 #Non-decorated functions
 def store_result(dt):#We can change this to call the function to store the voter's choices
