@@ -364,35 +364,12 @@ def final():
     try:
         if session[house_choice+'_vice_captain_choice']:#Change accordingly
             if request.method == "GET":
-                '''
-                if 'valid' in session:
-                    del session["valid"]
-                '''
                 return render_template('review_page.html',session=dict(session))
             else:
                 return redirect(url_for('over'))
     except Exception as e:
         print(e)
         return redirect(url_for(house_choice+'_vice_captain'))
-    '''
-    try:
-        if session[house_choice+'_vice_captain_choice']:#Change accordingly
-            if request.method == "GET":
-                if 'valid' in session:
-                    del session["valid"]
-                if 'logged' in session:
-                    del session['logged']
-                if 'current_pwd' in session:
-                    global current_pwd
-                    current_pwd = session['current_pwd']
-                    del session['current_pwd']
-                return render_template('review_page.html',session=dict(session))
-            else:
-                return redirect(url_for('over'))
-    except Exception as e:
-        print(e)
-        return redirect(url_for(house_choice+'_vice_captain'))
-    '''
 
 #Admin things
 
@@ -416,11 +393,11 @@ def dashboard():
     except:
         return redirect(url_for('admin_page'))
 
-@app.route('/enter_candidate')
-def enter_candidate():
+@app.route('/show_candidate')
+def show_candidate():
     try:
         if session['logged'] == True:
-            return render_template('enter_candidate.html',candidates=candidates,str=str)
+            return render_template('show_candidates.html',candidates=candidates,str=str)
     except Exception as  e:
         print(e)
         return redirect(url_for('admin_page'))
@@ -457,7 +434,7 @@ def logout():
 #Final touches
 @app.route('/done')
 def over():
-    put_in_file(dict(session))
+    store_result(dict(session))
     '''
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
@@ -467,25 +444,18 @@ def over():
     session.clear()
     global valid
     valid = False
-    return redirect(url_for('home'))
+    #return redirect(url_for('home'))
+    return render_template('thank_you.html')
 
 #Non-decorated functions
-def put_in_file(dt):#We can change this to call the function to send the voter's choices
+def store_result(dt):#We can change this to call the function to store the voter's choices
     #here dt is the dictionary
-    with open('jfile.txt', 'w') as json_file:
-        try:
-            '''
-            if dt['valid']:
-                dt.pop('valid')
-            '''
-        except Exception as e:
-            print(e)
-        finally:
-            global current_pwd
-            dt['current_pwd'] = current_pwd
-            if 'logged' in dt:
-                del dt['logged']
-            json.dump(dt, json_file)
+    global current_pwd
+    dt['current_pwd'] = current_pwd
+    if 'logged' in dt:
+        del dt['logged']
+    global results
+    results  = dict(dt)
 
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
