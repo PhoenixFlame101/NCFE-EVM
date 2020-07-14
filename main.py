@@ -12,15 +12,15 @@ app.secret_key = 'abc'
 
 results = dict([])
 
-style = ["#000000"]
-
 #Voting page things
 @app.route('/',methods=["GET",'POST'])
 def home():
-    if request.method == "GET":
+    if request.method == "GET": 
+        #This part shows renders the template (get template)
         session["logged"] = False
         return render_template('entry_page.html')
     else:
+        #This part whether the security code is valid by asking the database
         receivedpwd = request.form['pwd_box']
         if sec_code.code_is_valid(receivedpwd):
             global valid
@@ -35,19 +35,27 @@ def head_boy():
     try:
         if valid:
             if request.method == "POST":
+                #This block adds the voter's choice to the session variable
                 head_boy_choice = request.form["head_boy_choice"]
                 session["head_boy_choice"] = head_boy_choice
+                #This redirects to the next page
                 return redirect(url_for('head_girl'))
             elif request.method == "GET":
+                #Here the method is the get method
                 if len(candidates['head_boy']) == 1:
+                    #We dont need to render the page if there is only one candidate
                     if (house_choice+'_vice_captain_choice') in session:
+                        #Prevents some one from rendering from the review page
                         return redirect(url_for('final'))
                     else:
+                        #If the page hasn't been voted through then it registers the choice
                         session['head_boy_choice'] = candidates['head_boy'][0]
                         return redirect(url_for('head_girl'))
                 else:
+                    #If there are more than one candidates then it'll load the template
                     return render_template('head_boy.html',d=candidates,house_choice=house_choice)
     except Exception as e:
+        #If any error occurs, then the program goes back one page
         print(e)
         return redirect(url_for('home'))
 
@@ -186,6 +194,7 @@ def sports_vice_captain():
                         return redirect(url_for('final'))
                     else:
                         session['sports_vice_captain_choice'] = candidates["sports_vice_captain"][0]
+                        #Here the branching of the program takes place with respect to the house chosen by the admin
                         return redirect(url_for(house_choice+'_captain'))
                 else:
                     return render_template('sports_vice_captain.html',d=candidates,house_choice=house_choice)
@@ -358,6 +367,7 @@ def final():
     try:
         if session[house_choice+'_vice_captain_choice']:
             if request.method == "GET":
+                #Here we render the review page by passing the session dictionary as the parameter
                 return render_template('review_page.html',session=dict(session))
             else:
                 return redirect(url_for('over'))
@@ -371,6 +381,7 @@ def admin_page():
     if request.method == 'GET':
         return render_template('admin_landing.html')
     elif request.method =="POST" :
+        #Validation of the admin password
         receivedpwd = request.form['pwd_box']
         if sec_code.pass_is_valid(receivedpwd):
             session['logged'] = True
@@ -382,6 +393,7 @@ def admin_page():
 def dashboard():
     try:
         if session['logged'] == True:
+            #Renders the dashboard only if the admin password is valid
             return render_template('dashboard.html')
     except:
         return redirect(url_for('admin_page'))
@@ -390,6 +402,7 @@ def dashboard():
 def show_candidate():
     try:
         if session['logged'] == True:
+            #This part shows the candidates
             return render_template('show_candidates.html',candidates=candidates,str=str)
     except Exception as  e:
         print(e)
@@ -411,6 +424,8 @@ def settings():
             if request.method == "GET":
                 return render_template('settings.html',house_choice=house_choice)
             elif request.method == "POST":
+                #Here the admin changes the password for the local admin
+                #This block confirms the changes
                 house_choice = request.form['hc']
                 changed_pwd = request.form['changed_pwd']
                 if not sec_code.pass_is_valid(changed_pwd):
@@ -421,16 +436,18 @@ def settings():
 
 @app.route('/logout')
 def logout():
+    #Upon logging out the session and come out of the admin page
     session.clear()
     return redirect(url_for("home"))#while copying this part should redirect to entry page
 
 #Final touches
 @app.route('/done')
 def over():
+    #Once it is over, we store the voter's choices and clear the voter's choices by clearing the session variable
     store_result(dict(session))
     session.clear()
     global valid
-    valid = False
+    valid = False #To express the invalidity of the session of the voter
     return render_template('thank_you.html')
 
 #Non-decorated functions
@@ -446,7 +463,9 @@ def fetch_changed_house_choice():
     print(hc)
 
 def start(candidate_dict):
+    #This is the main method for starting the app
     global candidates
+    #We fetch the list of candidates from the database and continue
     candidates = database_linker.get_cands_from_db()
     app.run(debug=True)
 
