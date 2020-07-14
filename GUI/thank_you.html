@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/major.css') }}">
+    <style>
+        h1{
+            position: absolute;
+            top:40%;
+            left:26.5%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Thank you for voting</h1>
+
+    <script>
+window.setTimeout(function(){
+window.location.href = "{{ url_for('home') }}";
+}, 5000);
+    </script>
+</body>

@@ -72,3 +72,8 @@ input[type="submit"]:hover{
     border:1px solid #FCED47;
     outline:none;
 }
+a{
+    text-decoration: none;
+    font-weight:bold;
+    color:#FCED47;
+}

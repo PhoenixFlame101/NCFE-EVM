@@ -1,0 +1,34 @@
+{% extends 'major_base_page.html' %}
+    {% block head %}
+
+    {% endblock %}
+    
+    {% block body%}
+
+    <center>
+    <h1 id='post'>head girl</h1>
+    <div id='container'>
+      {% for x in d['head_girl'] %}
+        <div class='picbox' onclick="color();single_click(this)">
+          <img src="{{ url_for('static',filename='default_picture.png')}}" alt="user pic">
+          <p>{{ x }}</p>
+        </div>
+      {% endfor %}
+      
+    </div>
+    
+    <form action="{{ url_for('head_girl') }}" method="post">
+      <a href="{{ url_for('head_boy') }}"><input type="button" value="BACK" id='back'></a>
+      <input type="submit" id='next_page_btn'  value="NEXT PAGE">
+      <input type="button" id='btn' value="SUBMIT" onclick="btn_click()">
+      <input type="hidden" name="head_girl_choice" style="display: none;" id="hidden">
+      <p id="lehidden">{{ session['head_girl_choice'] }}</p>
+    </form>
+    
+    </center>
+    
+    <script>
+    
+    </script>
+
+    {% endblock %}
