@@ -19,7 +19,10 @@ def pass_set(_pass):
 
 def pass_is_valid(_pass):
 	""" Checks if the entered password is the admin password or not """
+
+	# Takes the password from the MongoDB database
 	password = database_linker.get_password_from_db()
+
 	if _pass == key.decrypt(password).decode('utf-8'):
 		return True
 	else:
@@ -66,7 +69,7 @@ def code_is_valid(code):
 
 
 def split(arr, n):
-	""" Splits a list into a 2D array """
+	""" Splits a list into a 2D array of lists of n elements each """
 	for i in range(0, len(arr), n):
 		yield arr[i : i+n]
 
@@ -86,5 +89,5 @@ def code_print(*args):
 	pdf.output('codes.pdf')
 
 
-# pass_set('')
+# pass_set('123')
 # code_print()
