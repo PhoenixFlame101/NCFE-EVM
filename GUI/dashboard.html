@@ -17,15 +17,11 @@
         <a href="{{ url_for('voting_toggle') }}"><div id='toggle_voting' class='in'>
             <center>
                 <img src="{{ url_for('static',filename='ballot_picture.png')}}" alt="user pic">
-<<<<<<< HEAD
-            <h2>{{ voting_state }} Voting</h2>
-=======
                 {% if not valid %}
                 <h2>Start Voting</h2>
                 {% else %}
                 <h2>Stop Voting</h2>
                 {% endif %}
->>>>>>> prototyped_gui
             </center>
         </div></a>
         <a href="{{ url_for('settings') }}"><div id='settings' class='in'>

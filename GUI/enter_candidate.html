@@ -1,81 +1,17 @@
 {% extends 'base.html' %}
 {% block head %}
-<<<<<<< HEAD
-<style>
-    body{
-        background-color: #121212;
-        color:#f6e90e;
-        font-family: sans-serif;
-    }
-    #res_window{
-        display:hidden;
-    }
-    h1{
-        font-size: 2.5em;
-        font-weight: lighter;
-    }
-    #main{
-        margin-top: 3%;
-    }
-    .col{
-        margin-right:5%;
-    }
-    #col1{
-        margin-left:5%;
-    }
-    .infirst,.inthird{
-        background-color: #303030;
-        color:#f6e90e;
-        border:1px solid #202020;
-    }
-    .insecond,.infourth{
-        border:none;
-        color:#DEDEDE;
-    }
-    button{
-        margin-top:10%;
-        margin-left:auto;
-        margin-right:auto;
-        /*width:400px;
-        height:120px;
-        */
-        width: 250px;
-        height:130px;
-        border-radius:15%/35%;
-        font-size:2em;
-        outline:none;
-        padding:10px 10px 10px 10px;    
-
-    }
-
-</style>
-{% endblock %}
-
-{% block body %}
-<center>
-<div id='res_window'>
-
-
-</div>
-
-=======
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/enter_candidates.css') }}">
 {% endblock %}
 
 {% block body %}
 <a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
 <center>
->>>>>>> prototyped_gui
 <h1>CANDIDATE REFERENCE</h1>
 <div style="display:flex;" id='main'>
 <div id='col1' class="col">
     {% for x in ['Head Boy','Head Girl','Sports Captain','Cultural Captain'] %}
     <div>
-<<<<<<< HEAD
-        <button  class='infirst' >{{ x }}</button>
-=======
         <button  class='infirst' onclick="show(this);" id="{{ x }}" >{{ x }}</button>
->>>>>>> prototyped_gui
     </div>
     {% endfor %}
 </div>
@@ -83,18 +19,6 @@
 <div id='col2' class="col">
     {% set x=['Kingfisher','Flamingo','Falcon','Eagle'] %}
     <div>
-<<<<<<< HEAD
-        <button class='insecond' style='background-color:#03A9F4'>{{ x[0]+' House Captain' }}</button>
-    </div>
-    <div>
-        <button class='insecond' style='background-color:#FF6D00'>{{ x[1]+' House Captain' }}</button>
-    </div>
-    <div>
-        <button class='insecond' style='background-color:#7E57C2'>{{ x[2]+' House Captain' }}</button>
-    </div>
-    <div>
-        <button class='insecond' style='background-color:#B71C1C'>{{ x[3]+' House Captain' }}</button>
-=======
         <button class='insecond' style='background-color:#03A9F4' onclick="show(this);" id="{{ x[0]+' Captain' }}">{{ x[0]+' House Captain' }}</button>
     </div>
     <div>
@@ -105,20 +29,13 @@
     </div>
     <div>
         <button class='insecond' style='background-color:#B71C1C' onclick="show(this);" id="{{ x[3]+' Captain' }}">{{ x[3]+' House Captain' }}</button>
->>>>>>> prototyped_gui
     </div>
 </div>
 
 <div id='col3' class="col">
-<<<<<<< HEAD
-    {% for x in ['Head Boy','Head Girl','Sports Captain','Cultural Captain'] %}
-    <div>
-        <button  class='inthird'>{{ 'Assistant '+x }}</button>
-=======
     {% for x in ['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'] %}
     <div>
         <button  class='inthird' onclick="show(this);" id="{{ x }}">{{ x }}</button>
->>>>>>> prototyped_gui
     </div>
     {% endfor %}
 </div>
@@ -126,25 +43,6 @@
 <div id='col4' class="col">
     {% set x=['Kingfisher','Flamingo','Falcon','Eagle'] %}
     <div>
-<<<<<<< HEAD
-        <button class='infourth' style='background-color:#03A9F4'>{{ 'Assistant '+x[0]+' House Captain' }}</button>
-    </div>
-    <div>
-        <button class='infourth' style='background-color:#FF6D00'>{{ 'Assistant '+x[1]+' House Captain' }}</button>
-    </div>
-    <div>
-        <button class='infourth' style='background-color:#7E57C2'>{{ 'Assistant '+x[2]+' House Captain' }}</button>
-    </div>
-    <div>
-        <button class='infourth' style='background-color:#B71C1C'>{{ 'Assistant '+x[3]+' House Captain' }}</button>
-    </div>
-</div>
-
-</div>
-</center>
-
-<script>
-=======
         <button class='infourth' style='background-color:#03A9F4' onclick="show(this);" id="{{ x[0]+' Vice Captain' }}">{{ x[0]+' House Vice Captain' }}</button>
     </div>
     <div>
@@ -201,7 +99,6 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
->>>>>>> prototyped_gui
 
 
 </script>

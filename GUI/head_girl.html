@@ -8,11 +8,7 @@
     <center>
     <h1 id='post'>head girl</h1>
     <div id='container'>
-<<<<<<< HEAD
-      {% for x in ['Sanjay','Parthiv',"Divy","Vikas"] %}
-=======
       {% for x in d['head_girl'] %}
->>>>>>> prototyped_gui
         <div class='picbox' onclick="color();single_click(this)">
           <img src="{{ url_for('static',filename='default_picture.png')}}" alt="user pic">
           <p>{{ x }}</p>

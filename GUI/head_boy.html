@@ -82,11 +82,7 @@ img{
     <center>
     <h1 id='post'>head boy</h1>
     <div id='container'>
-<<<<<<< HEAD
-      {% for x in ['Sanjay Chidambaram','Parthiv',"Divy","Joe"] %}
-=======
       {% for x in d['head_boy'] %}
->>>>>>> prototyped_gui
         <div class='picbox' onclick="color();single_click(this);">
           <img src="{{ url_for('static',filename='bdpic.png') }}" alt="user pic">
           <p>{{  x  }}</p>
