@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/voting_settings.css') }}">
+{% endblock %}
+
+{% block body %}
+{% if voting_started %}
+<p>Voting has Started</p>
+<a href="{{ url_for('stop_voting') }}"><input type="button" value="STOP VOTING"></a>
+{% else %}
+<p>Voting has not been Started</p>
+<a href="{{ url_for('start_voting') }}"><input type="button" value="START VOTING"></a>
+{% endif %}
+
+<a href="{{ url_for('generate_code') }}"><input type="button" value="GENERATE CODES"></a>
+
+{% endblock %}

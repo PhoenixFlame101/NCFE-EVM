@@ -408,11 +408,11 @@ def show_candidate():
         print(e)
         return redirect(url_for('admin_page'))
 
-@app.route('/voting_toggle')
+@app.route('/voting_settings')
 def voting_toggle():
     try:
         if session['logged'] == True:
-            return render_template('voting_toggle.html',valid=voting_started)
+            return render_template('voting_settings.html',valid=voting_started)
     except:
         return redirect(url_for('admin_page'))
 
@@ -440,6 +440,22 @@ def logout():
     session.clear()
     return redirect(url_for("home"))#while copying this part should redirect to entry page
 
+#Functions for the voting toggle function
+@app.route('/start_voting')
+def start_voting():#This function is called when then admin presses the start voting button
+    #database_linker.initializing(#idk what to put here)
+    return redirect(url_for("voting_toggle"))
+
+@app.route('/stop_voting')
+def stop_voting():#This function is called when the admin presses the stop voting button
+    database_linker.results_print()
+    return redirect(url_for("voting_toggle"))
+
+@app.route('/generate-code')
+def generate_code():#This function is called when the admin presses the generate security codes button
+    sec_code.code_print()
+    return redirect(url_for('voting_toggle'))
+
 #Final touches
 @app.route('/done')
 def over():
@@ -462,11 +478,35 @@ def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
     print(hc)
 
-def start(candidate_dict):
+def create_candidates():#Temporary testing function to create the candidates dictionary
+    global candidates
+    candidates = {'head_boy': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'assistant_head_boy': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'assistant_head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'cultural_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'cultural_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'sports_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'sports_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'kingfisher_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'kingfisher_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'flamingo_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'flamingo_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'falcon_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'falcon_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'eagle_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    'eagle_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'}}
+
+def t():
+    print('hi')
+    return redirect(url_for("voting_toggle"))
+
+def start():
     #This is the main method for starting the app
     global candidates
+    create_candidates()#temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
     candidates = database_linker.get_cands_from_db()
     app.run(debug=True)
 
-start(candidates)
+start()

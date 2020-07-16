@@ -86,7 +86,7 @@ def results_print():
 	pdf.output('results.pdf')
 
 	# Drops colleciton after voting is over
-	collection.drop()
+	#collection.drop()
 
 
 # Functions to facilitate db actions in sec_code.py

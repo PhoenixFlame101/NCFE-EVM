@@ -1,0 +1,14 @@
+@font-face{
+    font-family:'text';
+    src:url('text.ttf');
+}
+@font-face{
+    font-family: 'heading';
+    src:url('heading.ttf');
+}
+
+body{
+    background-color: #161616;
+    color:#FCED47;
+}
+
