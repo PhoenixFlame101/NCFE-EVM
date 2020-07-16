@@ -45,7 +45,7 @@ def head_boy():
                 p = 'head_boy'
                 pc = p+"_choice"
                 next_p = 'head_girl'
-                if p in session:#It checks if the post exists
+                if p in candidates:#It checks if the post exists
                     if len(candidates[p])==1:#If there is one candidate
                         if (house_choice+'_vice_captain_choice') not in session:#The part makes a temporary storage of candidate show that it doesn't show up on the review page
                             session[pc] = 'DNE'
@@ -57,6 +57,8 @@ def head_boy():
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
+        else:
+            return redirect(url_for('home'))
 
     except Exception as e:
         #If any error occurs, then the program goes back one page
@@ -71,7 +73,7 @@ def head_girl():
                 p = 'head_girl'
                 pc = p+"_choice"
                 next_p = 'assistant_head_boy'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -102,7 +104,7 @@ def assistant_head_boy():
                 p = 'assistant_head_boy'
                 pc = p+"_choice"
                 next_p = 'assistant_head_girl'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -129,7 +131,7 @@ def assistant_head_girl():
                 p = 'assistant_head_girl'
                 pc = p+"_choice"
                 next_p = 'cultural_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -156,7 +158,7 @@ def cultural_captain():
                 p = 'cultural_captain'
                 pc = p+"_choice"
                 next_p = 'cultural_vice_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -183,7 +185,7 @@ def cultural_vice_captain():
                 p = 'cultural_vice_captain'
                 pc = p+"_choice"
                 next_p = 'sports_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -210,7 +212,7 @@ def sports_captain():
                 p = 'sports_captain'
                 pc = p+"_choice"
                 next_p = 'sports_vice_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -238,7 +240,7 @@ def sports_vice_captain():
                 p = 'sports_vice_captain'
                 pc = p+"_choice"
                 next_p = house_choice+"_captain"
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -266,7 +268,7 @@ def kingfisher_captain():
                 p = 'kingfisher_captain'
                 pc = p+"_choice"
                 next_p = 'kingfisher_vice_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -293,7 +295,7 @@ def kingfisher_vice_captain():
                 p = 'kingfisher_vice_captain'
                 pc = p+"_choice"
                 next_p = 'final'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -320,7 +322,7 @@ def flamingo_captain():
                 p = 'flamingo_captain'
                 pc = p+"_choice"
                 next_p = 'flamingo_vice_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -347,7 +349,7 @@ def flamingo_vice_captain():
                 p = 'flamingo_vice_captain'
                 pc = p+"_choice"
                 next_p = 'final'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -374,7 +376,7 @@ def falcon_captain():
                 p = 'falcon_captain'
                 pc = p+"_choice"
                 next_p = 'falcon_vice_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -401,7 +403,7 @@ def falcon_vice_captain():
                 p = 'falcon_vice_captain'
                 pc = p+"_choice"
                 next_p = 'final'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -428,7 +430,7 @@ def eagle_captain():
                 p = 'eagle_captain'
                 pc = p+"_choice"
                 next_p = 'eagle_vice_captain'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -455,7 +457,7 @@ def eagle_vice_captain():
                 p = 'eagle_vice_captain'
                 pc = p+"_choice"
                 next_p = 'final'
-                if p in session:
+                if p in candidates:
                     if len(candidates[p])==1:
                         if (house_choice+'_vice_captain_choice') not in session:
                             session[pc] = 'DNE'
@@ -594,7 +596,7 @@ def fetch_changed_house_choice():
 
 def create_candidates():#Temporary testing function to create the candidates dictionary
     global candidates
-    candidates = {'head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
+    candidates = {'head_boy':{'Jeb','Notch'},'head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
     'assistant_head_boy': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
     'assistant_head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
     'cultural_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
@@ -609,6 +611,11 @@ def create_candidates():#Temporary testing function to create the candidates dic
     'falcon_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
     'eagle_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
     'eagle_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'}}
+
+def cc():
+    global candidates
+    for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
+        candidates[x] = ['A','B','C','D']
 
 def general_get(p,to):
     pc = p+"_choice"
@@ -629,7 +636,7 @@ def general_get(p,to):
 def start():
     #This is the main method for starting the app
     global candidates
-    create_candidates()#temp function to initialize  the candidates variable
+    cc()#temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
     #candidates = database_linker.get_cands_from_db()
     app.run(debug=True)
