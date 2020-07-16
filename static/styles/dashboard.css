@@ -50,3 +50,17 @@ h2,a{
     font-family:'heading';
     font-weight:lighter;
 }
+#logout{
+    position: absolute;
+    left:3%;
+    top:5%;
+    border:none;
+    outline:none;
+    color:#f6c90e;
+    background-color: #333333;
+    height:6%;
+    width:13%;
+}
+#logout:hover{
+    border:1px solid #f6c90e;
+}

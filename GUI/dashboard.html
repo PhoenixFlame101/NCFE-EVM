@@ -6,6 +6,7 @@
 
 {% block body %}
 <center>
+    <a href="{{ url_for('logout') }}"><input value="LOGOUT" type="button" id='logout'></a>
     <h1>NCFE EVM DASHBOARD</h1>
     <div id='container'>
         <a href="{{ url_for('show_candidate') }}"><div id='enter_candidates' class='in'>

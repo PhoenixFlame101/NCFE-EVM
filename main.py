@@ -503,6 +503,8 @@ def dashboard():
         if session['logged'] == True:
             #Renders the dashboard only if the admin password is valid
             return render_template('dashboard.html')
+        else:
+            return redirect(url_for('admin_page'))
     except:
         return redirect(url_for('admin_page'))
 
@@ -512,6 +514,8 @@ def show_candidate():
         if session['logged'] == True:
             #This part shows the candidates
             return render_template('show_candidates.html',candidates=candidates,str=str)
+        else:
+            return redirect(url_for('admin_page'))
     except Exception as  e:
         print(e)
         return redirect(url_for('admin_page'))
@@ -521,6 +525,8 @@ def voting_settings():
     try:
         if session['logged'] == True:
             return render_template('voting_settings.html',valid=voting_started)
+        else:
+            return redirect(url_for('admin_page'))
     except:
         return redirect(url_for('admin_page'))
 
@@ -623,10 +629,9 @@ def general_get(p,to):
 def start():
     #This is the main method for starting the app
     global candidates
-    #create_candidates()#temp function to initialize  the candidates variable
+    create_candidates()#temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
     #candidates = database_linker.get_cands_from_db()
-    candidates = {}
     app.run(debug=True)
 
 start()
