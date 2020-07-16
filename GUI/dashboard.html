@@ -14,7 +14,7 @@
             <h2 style="text-decoration:none;">Show Candidates</h2>
             </center>
         </div></a>
-        <a href="{{ url_for('voting_toggle') }}"><div id='toggle_voting' class='in'>
+        <a href="{{ url_for('voting_settings') }}"><div id='toggle_voting' class='in'>
             <center>
                 <img src="{{ url_for('static',filename='ballot_picture.png')}}" alt="user pic">
                 {% if not valid %}

@@ -14,12 +14,12 @@
         </tr>
 
         {% for post in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain'] %}
-            {% if session[post+'_choice'] %}
+            {% if session[post+'_choice'] and session[post+'_choice'] != 'DNE' %}
                 <tr>
-                
+
                     <td class="postside"><a href="{{ url_for(post) }}">{{ post.replace('_',' ').replace('choice','') }}</a></td>
                     <td class="candidateside">{{ session[post+'_choice'] }}</td>
-                
+
                 </tr>
             {% endif %}
         {% endfor %}
