@@ -6,6 +6,7 @@ house_choice = 'eagle'  #Make sure all the house are in lowercase
 candidates = {}
 valid = False  # Flask's file variable for showing session validity
 voting_started = True  # Status of voting; affects the admin dashboard
+cur_posts =[] #Shows which posts are there for voting
 
 app = Flask(__name__,template_folder='./GUI/')
 app.secret_key = 'abc'
@@ -57,7 +58,7 @@ def head_boy():
                         else:
                             return redirect("final")#This part prevents them from coming from the review page to see
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)#If all is normal then the template gets loaded
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)#If all is normal then the template gets loaded
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -85,7 +86,7 @@ def head_girl():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -116,11 +117,12 @@ def assistant_head_boy():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('head_girl'))
 
 @app.route('/assistant-head-girl',methods=["GET",'POST'])
@@ -143,11 +145,12 @@ def assistant_head_girl():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('assistant_head_boy'))
 
 @app.route('/cultural-captain',methods=["GET",'POST'])
@@ -170,7 +173,7 @@ def cultural_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -197,7 +200,7 @@ def cultural_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -224,7 +227,7 @@ def sports_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -252,7 +255,7 @@ def sports_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -280,7 +283,7 @@ def kingfisher_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -307,7 +310,7 @@ def kingfisher_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -334,7 +337,7 @@ def flamingo_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -361,7 +364,7 @@ def flamingo_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -388,7 +391,7 @@ def falcon_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -415,7 +418,7 @@ def falcon_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -442,7 +445,7 @@ def eagle_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -469,7 +472,7 @@ def eagle_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -598,6 +601,21 @@ def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
     print(hc)
 
+def prev_post(cur_post):#This function tells the back button which page to go back to
+    cur_index = cur_posts.index(cur_post)
+    if cur_index>0:
+        return cur_posts[cur_index-1]
+    else:
+        return 'home'
+
+def add_to_cur_posts():#To create teh current posts variable
+    global cur_posts
+    l = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain',house_choice+'_captain',house_choice+'_vice_captain']
+    for y in l:
+        if y in candidates:
+            if len(candidates[y])>1:
+                cur_posts.append(y)
+
 def create_candidates():#Temporary testing function to create the candidates dictionary
     global candidates
     candidates = {'head_boy':{'Jeb','Notch'},'head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
@@ -618,7 +636,7 @@ def create_candidates():#Temporary testing function to create the candidates dic
 
 def cc():#Temporary testing function to create the candidates dictionary
     global candidates
-    for x in ['head_boy','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
+    for x in ['head_boy','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_vice_captain']:
         candidates[x] = ['A','B','C','D']
 
 def general_get(p,to):
@@ -643,6 +661,7 @@ def start():
     cc()#temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
     #candidates = database_linker.get_cands_from_db()
+    add_to_cur_posts()
     app.run(debug=True)
 
 start()

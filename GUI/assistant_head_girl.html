@@ -17,7 +17,7 @@
       
     </div>
     <form action="{{ url_for('assistant_head_girl') }}" method="post">
-      <a href="{{ url_for('assistant_head_boy') }}"><input type="button" value="BACK" id='back'></a>
+      <a href="{{ url_for(prev_post('assistant_head_girl')) }}"><input type="button" value="BACK" id='back'></a>
       <input type="submit" id='next_page_btn'  value="NEXT PAGE">
       <input type="button" id='btn' value="SUBMIT" onclick="btn_click()">
       <input type="hidden" name="assistant_head_girl_choice" style="display: none;" id="hidden">

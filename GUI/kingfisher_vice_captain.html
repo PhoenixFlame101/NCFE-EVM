@@ -17,7 +17,7 @@
       
     </div>
     <form action="{{ url_for('kingfisher_vice_captain') }}" method="post">
-      <a href="{{ url_for('kingfisher_captain') }}"><input type="button" value="BACK" id='back'></a>
+      <a href="{{ url_for(prev_post('kingfisher_vice_captain')) }}"><input type="button" value="BACK" id='back'></a>
       <input type="submit" id='next_page_btn'  value="NEXT PAGE">
       <input type="button" id='btn' value="SUBMIT" onclick="btn_click()">
       <input type="hidden" name="kingfisher_vice_captain_choice" style="display: none;" id="hidden">
