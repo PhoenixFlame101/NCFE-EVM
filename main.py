@@ -27,7 +27,11 @@ def home():
             valid = True
             return redirect(url_for('head_boy'))
         else:
-            return render_template('entry_page.html')
+            return redirect(url_for('invalid_code'))
+
+@app.route('/invalid_code')
+def invalid_code():
+    return render_template('invalid_page.html')
 
 @app.route('/head-boy',methods=["GET",'POST'])
 def head_boy():
@@ -612,9 +616,9 @@ def create_candidates():#Temporary testing function to create the candidates dic
     'eagle_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
     'eagle_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'}}
 
-def cc():
+def cc():#Temporary testing function to create the candidates dictionary
     global candidates
-    for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
+    for x in ['head_boy','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
         candidates[x] = ['A','B','C','D']
 
 def general_get(p,to):
