@@ -32,7 +32,8 @@
 <script>
 var houses = ['kingfisher','flamingo','falcon','eagle'];
 function ch(n){
-    document.getElementById('house_choice').innerHTML = 'House choice: '+houses[n-1].toUpperCase();
+    document.getElementById('house_choice').innerHTML = 'House choice(unsaved): '+houses[n-1].toUpperCase();
+    document.getElementById('house_choice').style.color ='red';
     document.getElementById('temp').value = houses[n-1];
 }
 </script>
