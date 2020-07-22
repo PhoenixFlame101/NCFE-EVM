@@ -5,7 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/eagle.css') }}">
     {% block head %}{% endblock %}
-    {% if (house_choice+'_vice_captain_choice') in session %}
+    {% if (cur_posts[-1]+'_choice') in session %}
         <style>#jump_to_review{display:block;}</style>
     {% else %}
         <style>#jump_to_review{display:none;}</style>

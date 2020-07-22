@@ -62,7 +62,7 @@ img{
 }
 
 .picbox:hover{
-    background-color: #121212;
+    background-color: #121212!important;
     border:1px solid #FCED47;
 }
 #jump_to_review{

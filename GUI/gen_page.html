@@ -1,0 +1,27 @@
+{% extends 'major_base_page.html' %}
+    </style>
+    {% block head %}
+    {% endblock %}
+
+    {% block body%}
+    <center>
+    <h1 id='post'>{{ "".join(p.split('_')) }}</h1>
+    <div id='container'>
+      {% for x in d[p] %}
+        <div class='picbox' onmouseover="bgcolor();" onclick="color();single_click(this);">
+          <img src="{{ url_for('static',filename='bdpic.png') }}" alt="user pic">
+          <p>{{  x  }}</p>
+        </div>
+      {% endfor %}
+
+    </div>
+    <form action="{{ url_for(p) }}" method="post">
+      <input type="submit" id='next_page_btn'  value="NEXT PAGE">
+      <input type="button" name="{{ p+'_button' }}" id='btn' value="SUBMIT" onclick="btn_click()">
+
+      <input type="hidden" name="{{ p+'_choice' }}" style="display: none;" id="hidden" value="{{ session[p+'_choice'] }}">
+      <p id="lehidden">{{ session[p+'_choice'] }}</p>
+    </form>
+
+    </center>
+    {% endblock %}

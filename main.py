@@ -16,7 +16,7 @@ results = dict([])
 #Voting page things
 @app.route('/',methods=["GET",'POST'])
 def home():
-    if request.method == "GET": 
+    if request.method == "GET":
         #This part shows renders the template (get template)
         session["logged"] = False
         return render_template('entry_page.html')
@@ -52,13 +52,14 @@ def head_boy():
                 next_p = 'head_girl'
                 if p in candidates:#It checks if the post exists
                     if len(candidates[p])==1:#If there is one candidate
-                        if (house_choice+'_vice_captain_choice') not in session:#The part makes a temporary storage of candidate show that it doesn't show up on the review page
+                        if (cur_posts[-1]+'_choice') not in session:#The part makes a temporary storage of candidate show that it doesn't show up on the review page
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))#This part takes them to the next page
+                            return redirect(url_for(next_p))#This part takes them to the next page
                         else:
                             return redirect("final")#This part prevents them from coming from the review page to see
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)#If all is normal then the template gets loaded
+                        return render_template('gen_page.html',p='head_boy',d=candidates,cur_posts=cur_posts,house_choice=house_choice,prev_post=prev_post)
+                        #return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)#If all is normal then the template gets loaded
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -80,13 +81,13 @@ def head_girl():
                 next_p = 'assistant_head_boy'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -111,13 +112,13 @@ def assistant_head_boy():
                 next_p = 'assistant_head_girl'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -139,13 +140,13 @@ def assistant_head_girl():
                 next_p = 'cultural_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -167,13 +168,13 @@ def cultural_captain():
                 next_p = 'cultural_vice_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -194,13 +195,13 @@ def cultural_vice_captain():
                 next_p = 'sports_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -221,13 +222,13 @@ def sports_captain():
                 next_p = 'sports_vice_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -249,13 +250,13 @@ def sports_vice_captain():
                 next_p = house_choice+"_captain"
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -277,13 +278,13 @@ def kingfisher_captain():
                 next_p = 'kingfisher_vice_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -304,13 +305,13 @@ def kingfisher_vice_captain():
                 next_p = 'final'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -331,13 +332,13 @@ def flamingo_captain():
                 next_p = 'flamingo_vice_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -358,13 +359,13 @@ def flamingo_vice_captain():
                 next_p = 'final'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -385,13 +386,13 @@ def falcon_captain():
                 next_p = 'falcon_vice_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -412,13 +413,13 @@ def falcon_vice_captain():
                 next_p = 'final'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -439,13 +440,13 @@ def eagle_captain():
                 next_p = 'eagle_vice_captain'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -466,13 +467,13 @@ def eagle_vice_captain():
                 next_p = 'final'
                 if p in candidates:
                     if len(candidates[p])==1:
-                        if (house_choice+'_vice_captain_choice') not in session:
+                        if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next))
+                            return redirect(url_for(next_p))
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)
+                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -601,7 +602,8 @@ def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
     print(hc)
 
-def prev_post(cur_post):#This function tells the back button which page to go back to
+def prev_post(p):#This function tells the back button which page to go back to
+    cur_post = p
     cur_index = cur_posts.index(cur_post)
     if cur_index>0:
         return cur_posts[cur_index-1]

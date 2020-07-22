@@ -67,7 +67,7 @@ img{
 }
 
 .picbox:hover{
-    background-color: var(--bg);
+    background-color: var(--bg)!important;
     border:1px solid #ffffff;
 }
 #jump_to_review{
