@@ -43,8 +43,11 @@ def head_boy():
                 #This block adds the voter's choice to the session variable
                 head_boy_choice = request.form["head_boy_choice"]
                 session["head_boy_choice"] = head_boy_choice
-                #This redirects to the next page
-                return redirect(url_for('head_girl'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('head_girl'))
+                else:
+                    return redirect(url_for('final'))
 
             elif request.method == "GET":
                 p = 'head_boy'
@@ -58,7 +61,9 @@ def head_boy():
                         else:
                             return redirect("final")#This part prevents them from coming from the review page to see
                     else:
-                        return render_template('gen_page.html',p='head_boy',d=candidates,cur_posts=cur_posts,house_choice=house_choice,prev_post=prev_post)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p='head_boy',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                         #return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)#If all is normal then the template gets loaded
                 else:
                     session[pc] = 'DNE'
@@ -87,14 +92,19 @@ def head_girl():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p='head_girl',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
             elif request.method == "POST":
                 head_girl_choice = request.form["head_girl_choice"]
                 session["head_girl_choice"] = head_girl_choice
-                return redirect(url_for('assistant_head_boy'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    return redirect(url_for('assistant_head_boy'))
+                else:
+                    return redirect(url_for('final'))
     except:
         return redirect(url_for('head_boy'))
 
@@ -105,7 +115,11 @@ def assistant_head_boy():
             if request.method == "POST":
                 assistant_head_boy_choice = request.form["assistant_head_boy_choice"]
                 session["assistant_head_boy_choice"] = assistant_head_boy_choice
-                return redirect(url_for('assistant_head_girl'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('assistant_head_girl'))
+                else:
+                    return redirect(url_for('final'))
             elif request.method == "GET":
                 p = 'assistant_head_boy'
                 pc = p+"_choice"
@@ -118,7 +132,9 @@ def assistant_head_boy():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p='assistant_head_boy',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -133,7 +149,11 @@ def assistant_head_girl():
             if request.method == "POST":
                 assistant_head_girl_choice = request.form["assistant_head_girl_choice"]
                 session["assistant_head_girl_choice"] = assistant_head_girl_choice
-                return redirect(url_for('cultural_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('cultural_captain'))
+                else:
+                    return redirect(url_for('final'))
             elif request.method == "GET":
                 p = 'assistant_head_girl'
                 pc = p+"_choice"
@@ -146,7 +166,9 @@ def assistant_head_girl():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p='assistant_head_girl',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -161,7 +183,11 @@ def cultural_captain():
             if request.method == "POST":
                 cultural_captain_choice = request.form["cultural_captain_choice"]
                 session["cultural_captain_choice"] = cultural_captain_choice
-                return redirect(url_for('cultural_vice_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    return redirect(url_for('cultural_vice_captain'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'cultural_captain'
                 pc = p+"_choice"
@@ -174,7 +200,9 @@ def cultural_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -188,7 +216,11 @@ def cultural_vice_captain():
             if request.method == "POST":
                 cultural_vice_captain_choice = request.form["cultural_vice_captain_choice"]
                 session["cultural_vice_captain_choice"] = cultural_vice_captain_choice
-                return redirect(url_for('sports_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    return redirect(url_for('sports_captain'))
+                else:
+                    return redirect(url_for('final'))
+                
             elif request.method == "GET":
                 p = 'cultural_vice_captain'
                 pc = p+"_choice"
@@ -201,7 +233,9 @@ def cultural_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -215,7 +249,10 @@ def sports_captain():
             if request.method == "POST":
                 sports_captain_choice = request.form["sports_captain_choice"]
                 session["sports_captain_choice"] = sports_captain_choice
-                return redirect(url_for('sports_vice_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    return redirect(url_for('sports_vice_captain'))
+                else:
+                    return redirect(url_for('final'))
             elif request.method == "GET":
                 p = 'sports_captain'
                 pc = p+"_choice"
@@ -228,7 +265,9 @@ def sports_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -242,8 +281,11 @@ def sports_vice_captain():
             if request.method == "POST":
                 sports_vice_captain_choice = request.form["sports_vice_captain_choice"]
                 session["sports_vice_captain_choice"] = sports_vice_captain_choice
-
-                return redirect(url_for(house_choice+'_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for(house_choice+'_captain'))
+                else:
+                    return redirect(url_for('final'))
             elif request.method == "GET":
                 p = 'sports_vice_captain'
                 pc = p+"_choice"
@@ -256,7 +298,9 @@ def sports_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -271,7 +315,12 @@ def kingfisher_captain():
             if request.method == "POST":
                 kingfisher_captain_choice = request.form["kingfisher_captain_choice"]
                 session["kingfisher_captain_choice"] = kingfisher_captain_choice
-                return redirect(url_for('kingfisher_vice_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('kingfisher_vice_captain'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'kingfisher_captain'
                 pc = p+"_choice"
@@ -284,7 +333,9 @@ def kingfisher_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_kf.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -298,7 +349,12 @@ def kingfisher_vice_captain():
             if request.method == "POST":
                 kingfisher_vice_captain_choice = request.form["kingfisher_vice_captain_choice"]
                 session["kingfisher_vice_captain_choice"] = kingfisher_vice_captain_choice
-                return redirect(url_for('final'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('final'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'kingfisher_vice_captain'
                 pc = p+"_choice"
@@ -311,7 +367,9 @@ def kingfisher_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_kf.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -325,7 +383,12 @@ def flamingo_captain():
             if request.method == "POST":
                 flamingo_captain_choice = request.form["flamingo_captain_choice"]
                 session["flamingo_captain_choice"] = flamingo_captain_choice
-                return redirect(url_for('flamingo_vice_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('flamingo_vice_captain'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'flamingo_captain'
                 pc = p+"_choice"
@@ -338,7 +401,9 @@ def flamingo_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_fl.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -352,7 +417,12 @@ def flamingo_vice_captain():
             if request.method == "POST":
                 flamingo_vice_captain_choice = request.form["flamingo_vice_captain_choice"]
                 session["flamingo_vice_captain_choice"] = flamingo_vice_captain_choice
-                return redirect(url_for('final'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('final'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'flamingo_vice_captain'
                 pc = p+"_choice"
@@ -365,7 +435,9 @@ def flamingo_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_fl.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -379,7 +451,12 @@ def falcon_captain():
             if request.method == "POST":
                 falcon_captain_choice = request.form["falcon_captain_choice"]
                 session["falcon_captain_choice"] = falcon_captain_choice
-                return redirect(url_for('falcon_vice_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('falcon_vice_captain'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'falcon_captain'
                 pc = p+"_choice"
@@ -392,7 +469,9 @@ def falcon_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_fa.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -406,7 +485,12 @@ def falcon_vice_captain():
             if request.method == "POST":
                 falcon_vice_captain_choice = request.form["falcon_vice_captain_choice"]
                 session["falcon_vice_captain_choice"] = falcon_vice_captain_choice
-                return redirect(url_for('final'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('final'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'falcon_vice_captain'
                 pc = p+"_choice"
@@ -419,7 +503,9 @@ def falcon_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_fa.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -433,7 +519,13 @@ def eagle_captain():
             if request.method == "POST":
                 eagle_captain_choice = request.form["eagle_captain_choice"]
                 session["eagle_captain_choice"] = eagle_captain_choice
-                return redirect(url_for('eagle_vice_captain'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('eagle_vice_captain'))
+                else:
+                    return redirect(url_for('final'))
+
+                
             elif request.method == "GET":
                 p = 'eagle_captain'
                 pc = p+"_choice"
@@ -446,7 +538,9 @@ def eagle_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_ea.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -460,7 +554,12 @@ def eagle_vice_captain():
             if request.method == "POST":
                 eagle_vice_captain_choice = request.form["eagle_vice_captain_choice"]
                 session["eagle_vice_captain_choice"] = eagle_vice_captain_choice
-                return redirect(url_for('final'))
+                if (cur_posts[-1]+'_choice') not in session:
+                    #This redirects to the next page
+                    return redirect(url_for('final'))
+                else:
+                    return redirect(url_for('final'))
+
             elif request.method == "GET":
                 p = 'eagle_vice_captain'
                 pc = p+"_choice"
@@ -473,7 +572,9 @@ def eagle_vice_captain():
                         else:
                             return redirect("final")
                     else:
-                        return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post,cur_posts=cur_posts)
+                        pname = "".join([x+' ' for x in p.split('_')])
+                        lastthere = (cur_posts[-1]+'_choice') in session
+                        return render_template('gen_page_ea.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
@@ -650,7 +751,7 @@ def create_candidates():#Temporary testing function to create the candidates dic
 
 def cc():#Temporary testing function to create the candidates dictionary
     global candidates
-    for x in ['head_boy','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_vice_captain']:
+    for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_vice_captain']:
         candidates[x] = ['A','B','C','D']
 
 def general_get(p,to):
