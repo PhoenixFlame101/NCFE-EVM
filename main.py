@@ -708,8 +708,12 @@ def store_result(dt):#We can change this to call the function to store the voter
     #here dt is the dictionary
     if 'logged' in dt:
         del dt['logged']
-    global results
-    database_linker.add_votes_to_db(dict(dt))
+    dt1 = {}
+    for x in dt:
+        if dt[x] != 'DNE':
+            dt1[x] = dt[x]
+    print(dt1)
+    database_linker.add_votes_to_db(dict(dt1))
 
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
