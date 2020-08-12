@@ -89,5 +89,5 @@ def code_print(*args):
 	pdf.output('codes.pdf')
 
 
-# pass_set('123')
+pass_set('123')
 # code_print()

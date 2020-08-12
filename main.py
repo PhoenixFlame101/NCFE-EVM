@@ -530,6 +530,18 @@ def show_candidate():
         print(e)
         return redirect(url_for('admin_page'))
 
+@app.route('/enter_candidate')
+def enter_candidate():
+    try:
+        if session['logged'] == True:
+            #This part shows the candidates
+            return render_template('enter_candidates.html',candidates=candidates,str=str,len=len)
+        else:
+            return redirect(url_for('admin_page'))
+    except Exception as e:
+        print(e)
+        return redirect(url_for('admin_page'))
+
 @app.route('/voting_settings')
 def voting_settings():
     try:
