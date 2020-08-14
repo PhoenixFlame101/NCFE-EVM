@@ -88,15 +88,19 @@ def head_girl():
                     if len(candidates[p])==1:
                         if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
+                            print(1)
                             return redirect(url_for(next_p))
                         else:
-                            return redirect("final")
+                            print(2)
+                            return redirect(url_for("final"))
                     else:
                         pname = "".join([x+' ' for x in p.split('_')])
                         lastthere = (cur_posts[-1]+'_choice') in session
+                        print(3)
                         return render_template('gen_page.html',p='head_girl',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
+                    print(4)
                     return redirect(url_for(next_p))
             elif request.method == "POST":
                 head_girl_choice = request.form["head_girl_choice"]
@@ -619,12 +623,19 @@ def dashboard():
     except:
         return redirect(url_for('admin_page'))
 
-@app.route('/show_candidate')
+@app.route('/show_candidate',methods=['GET','POST'])
 def show_candidate():
     try:
         if session['logged'] == True:
             #This part shows the candidates
-            return render_template('show_candidates.html',candidates=candidates,str=str)
+            if request.method == "GET":
+                #global candidates
+                return render_template('show_candidates.html',candidates=candidates,str=str)
+            else:
+                updated_candidates = request.form['candvalue']
+                updated_candidates = eval(updated_candidates)
+                candidates = updated_candidates
+                return redirect(url_for('show_candidate'))
         else:
             return redirect(url_for('admin_page'))
     except Exception as  e:
