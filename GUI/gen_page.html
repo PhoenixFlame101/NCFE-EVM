@@ -16,6 +16,9 @@
 
     </div>
     <form action="{{ url_for(p) }}" method="post">
+      {% if p != 'head_boy' %}
+      <a href="{{ url_for(prev_post(p)) }}"><input type="button" value="BACK" id='back'></a>
+      {% endif %}
       <input type="button" name="{{ p+'_button' }}" id='btn' value="SUBMIT" onclick="btn_click()">
       {% if lastthere %}
       <input type="submit" id='next_page_btn'  value="BACK TO REVIEW PAGE">
