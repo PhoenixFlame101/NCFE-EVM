@@ -77,21 +77,7 @@ button{
   position: absolute;
   outline: none;
 }
-#confirm{
-    margin-left:75vw;
-    width:35vh;
-    height:10vh;
-    background-color: #212121;
-    text-align:center;
-    border: none;
-    border-radius:20px;
-    font-family:'text';
-    color:white;
-    font-size:23px;
-    position: absolute;
-    outline: none;
-  }
-#back:hover,#confirm:hover{
+#back:hover{
     border:1px solid #FCED47;
 }
 #showup_box{
@@ -114,7 +100,7 @@ button{
     /*background-color: black;*/
     margin: auto;
     top:20%;
-    height:70%;
+    height:60%;
     padding: 0;
     /*border: 1px solid #FCED47;*/
     width: 50%;
@@ -145,11 +131,6 @@ button{
     font-family: 'heading';
     color:#fced47;
     font-size:1.5em;
-    margin-top:1vh;
-    border:1px solid white;
-    outline: none;
-    width:30vw;
-    text-align: center;
 }
 #modal_heading{
     font-size:3.5em;
@@ -178,15 +159,4 @@ button{
     color:#FCED47;
     border: 1px solid #FCED47;
     background-color: black;
-}
-#update{
-    height:13vh;
-    width:30vw;
-    font-family: 'text';
-    border-radius: 0px;
-    margin-top:6vh;
-    border:1px solid black;
-}
-#update:hover{
-    font-size:2.5em;
 }
