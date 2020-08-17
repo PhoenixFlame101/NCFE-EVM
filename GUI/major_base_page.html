@@ -23,7 +23,7 @@
         var bg = "#161616";
         var box = "#212121";
         
-        
+        //This part of the code is the animation for the next page button
         $(document).ready(function(){
             $('#btn').click(function(){
               if (clicked_obj){
@@ -36,6 +36,7 @@
             })
           });
         
+        //This changes the value of the dummy element and updates the background color of the div element
         function single_click(the_obj){
           if (submitted == false){
             if (is_clicked == false){
@@ -55,25 +56,27 @@
             prev_vote.style.backgroundColor=box;
           }
         }
-        
+        //This function changes the value of the dummy element
         function btn_click(){
           var selected_candidate = clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent;
           document.getElementById('hidden').value = selected_candidate;
-        
           submitted = true;
         }
-        
+        //This function gets the value of the voted element and then colors the same
         function load(){
           voted = document.getElementById("lehidden").innerHTML;
-        
           $("#container").children().each(function () {
                     var element = $(this).children("p").prop("innerHTML");
                     if (element == voted){
                       $(this).css("background-color", bg);
                       prev_vote = $(this).get(0);
+                      clicked_obj = prev_vote;
                     }
                 });
         }
-        load();
+        //When the document gets loaded it calls the load function
+        $(document).ready(function(){
+          load();
+        });
     </script>
     </html>

@@ -8,7 +8,7 @@
     <h1 id='post'>{{ pname }}</h1>
     <div id='container'>
       {% for x in d[p] %}
-        <div class='picbox' onmouseover="bgcolor();" onclick="color();single_click(this);">
+        <div class='picbox' onclick="color();single_click(this);">
           <img src="{{ url_for('static',filename='bdpic.png') }}" alt="user pic">
           <p>{{  x  }}</p>
         </div>

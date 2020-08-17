@@ -71,9 +71,12 @@
                     if (element == voted){
                       $(this).css("background-color", bg);
                       prev_vote = $(this).get(0);
+                      clicked_obj = prev_vote;
                     }
                 });
         }
-        load();
+        $(document).ready(function(){
+          load();
+        });
     </script>
     </html>

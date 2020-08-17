@@ -279,6 +279,7 @@ def sports_vice_captain():
     try:
         if session['sports_captain_choice']:
             if request.method == "POST":
+                print(house_choice)
                 sports_vice_captain_choice = request.form["sports_vice_captain_choice"]
                 session["sports_vice_captain_choice"] = sports_vice_captain_choice
                 if (cur_posts[-1]+'_choice') not in session:
@@ -407,7 +408,9 @@ def flamingo_captain():
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
-    except:
+    except Exception as e:
+        print(e)
+        print(candidates)
         return redirect(url_for('sports_vice_captain'))
 
 @app.route('/flamingo-vice-captain',methods=["GET",'POST'])
@@ -616,7 +619,8 @@ def dashboard():
             return render_template('dashboard.html')
         else:
             return redirect(url_for('admin_page'))
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('admin_page'))
 
 @app.route('/show_candidate', methods=['GET', 'POST'])
@@ -668,19 +672,25 @@ def voting_settings():
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     try:
-        global house_choice
         if session['logged'] == True:
+            global house_choice
             if request.method == "GET":
                 return render_template('settings.html',house_choice=house_choice)
             elif request.method == "POST":
                 #Here the admin changes the password for the local admin
                 #This block confirms the changes
+                global cur_posts
                 house_choice = request.form['hc']
+                cur_posts = cur_posts[0:-2]
+                cur_posts.extend([house_choice+'_captain',house_choice+'_vice_captain'])
+
+                #This block confirms the changes
                 changed_pwd = request.form['changed_pwd']
                 if not sec_code.pass_is_valid(changed_pwd):
                     sec_code.pass_set(changed_pwd)
                 return redirect(url_for('settings'))
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('admin_page'))
 
 @app.route('/logout')
@@ -767,7 +777,7 @@ def create_candidates():#Temporary testing function to create the candidates dic
 
 def cc():#Temporary testing function to create the candidates dictionary
     global candidates
-    for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_vice_captain']:
+    for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
         candidates[x] = ['A','B','C','D']
 
 def general_get(p,to):
