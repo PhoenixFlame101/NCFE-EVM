@@ -31,6 +31,7 @@ h1{
     padding:10% 10% 5% 10%;
     width:85%;
     height:90%;
+    border:1px solid transparent;
     text-decoration: none;
     outline:none;
     /*change the height and width here to change the icon sizes*/
@@ -42,6 +43,8 @@ img{
 .in:hover{
     background-color: #161616;
     border:1px solid yellow;
+    width:85%-1px;
+    height:90%-1px;
 }
 h2,a{
     text-decoration:none;
