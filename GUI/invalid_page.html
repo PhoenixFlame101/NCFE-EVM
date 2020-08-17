@@ -8,10 +8,30 @@
             left:26.5%;
             color:red;
         }
+        button:hover{
+            background-color: #121212!important;
+            border:1px solid #FCED47;
+        }
+        button{
+            width:35vh;
+            height:10vh;
+            bottom:15%;
+            background-color: #212121;
+            text-align:center;
+            border: none;
+            border-radius:20px;
+            font-family:'text';
+            color:#fced47;
+            font-size:20px;
+            position:absolute;
+            outline: none;
+            margin-left:40vw;
+        }
     </style>
 </head>
 <body>
     <h1>Invalid Code Entered!</h1>
+    <a href="{{ url_for('home') }}"><button>OK</button></a>
 
     <script>
 window.setTimeout(function(){
