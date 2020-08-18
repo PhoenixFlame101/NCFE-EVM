@@ -1,6 +1,6 @@
 body{
     background-color: #121212;
-    color:yellow;
+    color:#FCED47;
 }
 @font-face{
     font-family:'text';
@@ -42,13 +42,13 @@ img{
 }
 .in:hover{
     background-color: #161616;
-    border:1px solid yellow;
+    border:1px solid #FCED47;
     width:85%-1px;
     height:90%-1px;
 }
 h2,a{
     text-decoration:none;
-    color:yellow;
+    color:#FCED47;
     align-self:center;
     font-family:'heading';
     font-weight:lighter;
@@ -59,11 +59,11 @@ h2,a{
     top:5%;
     border:none;
     outline:none;
-    color:yellow;
+    color:#FCED47;
     background-color: #333333;
     height:6%;
     width:13%;
 }
 #logout:hover{
-    border:1px solid yellow;
+    border:1px solid #FCED47;
 }

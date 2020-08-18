@@ -36,6 +36,9 @@ function ch(n){
     document.getElementById('house_choice').style.color ='red';
     document.getElementById('temp').value = houses[n-1];
 }
+$(function(){
+    document.getElementById("temp").value = document.getElementById('house_choice').innerHTML.slice(13);
+});
 </script>
 
 {% endblock %}

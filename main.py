@@ -612,6 +612,7 @@ def admin_page():
             print("yes")
             return redirect(url_for('dashboard'))
         else:
+            print(receivedpwd)
             return redirect(url_for('admin_page'))
 
 @app.route('/dashboard')
@@ -684,6 +685,7 @@ def settings():
                 #This block confirms the changes
                 global cur_posts
                 house_choice = request.form['hc']
+                house_choice = house_choice.lower()
                 cur_posts = cur_posts[0:-2]
                 cur_posts.extend([house_choice+'_captain',house_choice+'_vice_captain'])
 
