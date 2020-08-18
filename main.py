@@ -1,6 +1,7 @@
-from flask import Flask,redirect,url_for,render_template,request,session
+from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
 import database_linker
 import sec_code
+import os,sys
 
 house_choice = 'eagle'  #Make sure all the house are in lowercase
 candidates = {}
@@ -105,7 +106,8 @@ def head_girl():
                     return redirect(url_for('assistant_head_boy'))
                 else:
                     return redirect(url_for('final'))
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('head_boy'))
 
 @app.route('/assistant-head-boy',methods=["GET",'POST'])
@@ -607,6 +609,7 @@ def admin_page():
         receivedpwd = request.form['pwd_box']
         if sec_code.pass_is_valid(receivedpwd):
             session['logged'] = True
+            print("yes")
             return redirect(url_for('dashboard'))
         else:
             return redirect(url_for('admin_page'))
@@ -715,6 +718,12 @@ def generate_code():#This function is called when the admin presses the generate
     sec_code.code_print()
     return redirect(url_for('voting_settings'))
 
+#Function to send photos to the webpage
+@app.route('/uploads/<path:filename>')
+def download_file(filename,ishouse):
+    return send_from_directory(app.config['CANDIDATE_PHOTOS'],filename.upper(), as_attachment=True)
+
+
 #Final touches
 @app.route('/done')
 def over():
@@ -779,6 +788,17 @@ def cc():#Temporary testing function to create the candidates dictionary
     global candidates
     for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
         candidates[x] = ['A','B','C','D']
+    candidates['head_girl'] = ["A","B","X"]
+    candidates['eagle_captain'] = ["A","B","X"]
+
+def set_photos_path():#This function sets the path for the candidates photos in the app.config
+    candidate_pictures = 'candidate_photos'
+    if getattr(sys, 'frozen', False):
+        application_path = os.path.dirname(sys.executable)
+    elif __file__:
+        application_path = os.path.dirname(__file__)
+    photos_path = application_path + '\\' + candidate_pictures 
+    app.config['CANDIDATE_PHOTOS'] = photos_path
 
 def general_get(p,to):
     pc = p+"_choice"
@@ -803,6 +823,7 @@ def start():
     #We fetch the list of candidates from the database and continue
     #candidates = database_linker.get_cands_from_db()
     add_to_cur_posts()
+    set_photos_path()
     app.run(debug=True)
 
 start()

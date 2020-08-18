@@ -9,7 +9,7 @@
     <div id='container'>
       {% for x in d[p] %}
         <div class='picbox' onclick="color();single_click(this);">
-          <img src="{{ url_for('static',filename='bdpic.png') }}" alt="user pic">
+          <img src="{{ url_for('download_file',filename=(x + '.png')) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_white.png') }}">
           <p>{{  x  }}</p>
         </div>
       {% endfor %}
