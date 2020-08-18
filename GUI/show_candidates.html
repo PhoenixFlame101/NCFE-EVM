@@ -5,7 +5,6 @@
 
 {% block body %}
 <a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
-<form method="POST"><input type="submit" value="CONFIRM CHANGES" id='confirm'><input type='hidden' id='candvalue' name='candvalue'></form>
 <center>
 <h1>CANDIDATE REFERENCE</h1>
 <div style="display:flex;" id='main'>
@@ -72,6 +71,7 @@
                 <br>
             {% endfor %}
             <button onclick="update_candidates();" id='update'>UPDATE</button>
+            <form method="POST"><input type="submit" value="CONFIRM CHANGES" id='confirm'><input type='hidden' id='candvalue' name='candvalue'></form>
             </div>
         </center>
     </div>
@@ -150,6 +150,7 @@ function show(thing){
     modal_box.style.border = "1px solid "+ text;
     modal_text_list = document.getElementsByClassName("in_modal_candidates");
     update_button = document.getElementById('update');
+    confirm_button = document.getElementById('confirm');
 
     //In this block we update the input tags individually 
     var x = modal_text_list.length;
@@ -162,9 +163,26 @@ function show(thing){
     //In this block we update the update button
     update_button.style.backgroundColor = bg;
     update_button.style.color = candidates_names;
-    update_button.style.border = '1px solid '+candidates_names;
+
+    //In this block we update the confirm button
+    confirm_button.style.backgroundColor = bg;
+    confirm_button.style.color = candidates_names;
+    
+    //This block changes the class so that we can have the borders
+    if (candidates_names == "white"){
+        $('#update').attr('class','house_border');
+        $('#confirm').attr('class','house_border');
+    }else{
+        $('#update').attr('class','major_border');
+        $('#confirm').attr('class','major_border');
+    }
+
+    //Here we have to hide the confirm button and show the update button
+    $('#confirm').css('display','none');
+    $('#update').show('display','block');
 }
 function update_candidates(){
+    //In this block we get the post by parsing
     heading = document.getElementById("modal_heading").innerHTML;
     x = heading.length;
     for (i=0;i<x;i++){
@@ -172,7 +190,9 @@ function update_candidates(){
     }
     post = heading.toLowerCase();
     var new_candidates= [];
-
+    
+    //In this block we create a dictionary with the post as key and the candidate names as a list which is the key value
+    //It is parsed so that the flask can interpret it 
     modal_text_list = document.getElementsByClassName("in_modal_candidates");
     var x = modal_text_list.length;
     for (i=0;i<x;i++){
@@ -195,22 +215,21 @@ function update_candidates(){
     s  = s + '}';
 
     document.getElementById("candvalue").value = s;
-
+    //Here we capitalize the text in the input boxes to show the update
     var x = modal_text_list.length;
     for (i=0;i<x;i++){
         modal_text_list[i].value = modal_text_list[i].value.toUpperCase();
     }
+
+    //Hide the update buttion
+    $('#update').css('display','none');
+    //Show the confirm button
+    $('#confirm').css('display','block');
 }
 
 span.onclick = function() {
   modal.style.display = "none"; 
 }
-/*
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}*/
 
 </script>
 

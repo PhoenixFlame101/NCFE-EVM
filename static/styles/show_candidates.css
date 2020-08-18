@@ -48,13 +48,10 @@ h1{
     font-family:'heading';
     font-size:1.75em;
 }
-button{
+button,#confirm{
     margin-top:10%;
     margin-left:auto;
     margin-right:auto;
-    /*width:400px;
-    height:120px;
-    */
     width: 250px;
     height:130px;
     border-radius:15%/35%;
@@ -77,6 +74,7 @@ button{
   position: absolute;
   outline: none;
 }
+/*
 #confirm{
     margin-left:75vw;
     width:35vh;
@@ -90,7 +88,7 @@ button{
     font-size:23px;
     position: absolute;
     outline: none;
-  }
+  }*/
 #back:hover,#confirm:hover{
     border:1px solid #FCED47;
 }
@@ -111,12 +109,9 @@ button{
   }
 .modal-content {
     position: relative;
-    /*background-color: black;*/
     margin: auto;
-    top:20%;
-    height:70%;
-    padding: 0;
-    /*border: 1px solid #FCED47;*/
+    top:15%;
+    padding-bottom:5%;
     width: 50%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     animation-name: animatetop;
@@ -139,7 +134,7 @@ button{
 /* Add Animation */
 @keyframes animatetop {
   from {top: -50%; opacity: 0}
-  to {top: 20%; opacity: 1}
+  to {top: 15%; opacity: 1}
 }
 .in_modal_candidates {
     font-family: 'heading';
@@ -179,14 +174,17 @@ button{
     border: 1px solid #FCED47;
     background-color: black;
 }
-#update{
+#update,#confirm{
     height:13vh;
     width:30vw;
     font-family: 'text';
     border-radius: 0px;
     margin-top:6vh;
-    border:1px solid black;
+    border:1px solid transparent;
 }
-#update:hover{
-    font-size:2.5em;
+.major_border:hover{
+    border:1px solid #FCED47!important;
+}
+.house_border:hover{
+    border:1px solid white!important;
 }
