@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
     <script src="{{ url_for('static',filename='jquery.js') }}"></script>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/falcon.css') }}">
+    <script src="{{ url_for('static',filename='inspect_element_disabler.js') }}"></script>
     {% block head %}{% endblock %}
     {% if (cur_posts[-1]+'_choice') in session %}
         <style>#jump_to_review{display:block;}</style>
