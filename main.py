@@ -20,7 +20,7 @@ def home():
     if request.method == "GET":
         #This part shows renders the template (get template)
         session["logged"] = False
-        return render_template('entry_page.html')
+        return render_template('voting_landing.html')
     else:
         #This part whether the security code is valid by asking the database
         receivedpwd = request.form['pwd_box']

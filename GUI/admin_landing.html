@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block head %}
 
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/admin_landing.css') }}">
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/landing.css') }}">
 {% endblock %}
 
 {% block body %}
 <form action="#" method='post' autocomplete="off">
-    <h1>Admin Password</h1>
-    <input type="password" name='pwd_box' spellcheck="false" required>
+    <h1>Enter Admin Password</h1>
+    <input type="password" name='pwd_box' spellcheck="false" placeholder="Enter here" required>
     <input type="submit" value="SUBMIT">
 
 </form>
