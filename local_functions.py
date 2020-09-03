@@ -31,7 +31,11 @@ def store_db_uri(uri):
 
 def get_db_uri():
     with open('local_vars.encrypted', 'r+') as f:
-        return f.readlines()[1][8:]
+        uri = f.readlines()[1][8:]
+        if '/' not in uri:
+            return 'mongodb://localhost:27017/'
+        else:
+            return uri
 
 
 store_house_choice('choice')

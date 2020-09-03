@@ -2,9 +2,10 @@
 
 from pymongo import MongoClient
 from fpdf import FPDF
+from local_functions import get_db_uri
 
 # Connecting to the database from the host computer
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient(get_db_uri())
 db = client.EVM
 collection = db.voting_results
 
