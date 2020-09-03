@@ -722,9 +722,11 @@ def generate_code():#This function is called when the admin presses the generate
 
 #Function to send photos to the webpage
 @app.route('/uploads/<path:filename>')
-def download_file(filename,ishouse):
-    return send_from_directory(app.config['CANDIDATE_PHOTOS'],filename.upper(), as_attachment=True)
-
+def download_file(filename):
+    try:
+        return send_from_directory(app.config['CANDIDATE_PHOTOS'],filename.upper(), as_attachment=True)
+    except:
+        pass
 
 #Final touches
 @app.route('/done')
