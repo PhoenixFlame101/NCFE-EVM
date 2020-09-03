@@ -1,4 +1,4 @@
-# This program connects the program to the Mongo database
+# This module connects the program to the Mongo database
 
 from pymongo import MongoClient
 from fpdf import FPDF
@@ -21,7 +21,7 @@ def initializing(_input):
 		candidates = list(map(lambda x: x.title(), tup[1]))
 		record = dict([[i, 0] for i in candidates])
 		record['_id'] = post_name
-		id = collection.insert_one(record)
+		collection.insert_one(record)
 
 
 def get_cands_from_db():
@@ -55,7 +55,7 @@ def add_votes_to_db(pointers):
 		collection.update_one(
 			{'_id': post_name},
 			{'$inc': {cand_name: 1}},
-			upsert=False
+			upsert=True
 		)
 
 
