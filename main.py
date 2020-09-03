@@ -2,8 +2,9 @@ from flask import Flask,redirect,url_for,render_template,request,session,send_fr
 import database_linker
 import sec_code
 import os,sys
+import local_functions
 
-house_choice = 'eagle'  #Make sure all the house are in lowercase
+house_choice = local_functions.get_house_choice().lower()  #Make sure all the house are in lowercase
 candidates = {}
 valid = False  # Flask's file variable for showing session validity
 voting_started = True  # Status of voting; affects the admin dashboard
@@ -480,7 +481,10 @@ def falcon_captain():
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for(next_p))
-    except:
+    except Exception as e:
+        #print(session)
+        #print(cur_posts)
+        print(e)
         return redirect(url_for('sports_vice_captain'))
 
 @app.route('/falcon-vice-captain',methods=["GET",'POST'])
@@ -686,6 +690,7 @@ def settings():
                 global cur_posts
                 house_choice = request.form['hc']
                 house_choice = house_choice.lower()
+                local_functions.store_house_choice(house_choice)
                 cur_posts = cur_posts[0:-2]
                 cur_posts.extend([house_choice+'_captain',house_choice+'_vice_captain'])
 

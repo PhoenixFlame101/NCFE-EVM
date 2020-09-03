@@ -37,6 +37,7 @@ def get_db_uri():
         else:
             return uri
 
-
-store_house_choice('choice')
+if get_house_choice() not in ['kingfisher','flamingo','eagle','falcon']:
+    store_house_choice('falcon')
+    
 store_db_uri('uri')
