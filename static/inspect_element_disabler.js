@@ -7,34 +7,28 @@ $(document).bind("contextmenu",function(e) {
        }
    });
 document.onkeydown = function(e) {
-    if(event.keyCode == 123) {
-    return false;
+    var x = 222;
+    for (i=0;i<=x;i++){
+        if(e.ctrlKey && e.keyCode == i){
+            return false;
+        }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == i){
+            return false;
+        }
+        if(e.altKey && e.keyCode == i){
+            return false;
+        }
+        if(e.altKey && e.shiftKey && e.keyCode == i){
+            return false;
+        }
     }
-    if(e.ctrlKey && e.keyCode == 'E'.charCodeAt(0)){
-    return false;
+    var x= 123;
+    for (i=112;i<=x;i++){
+        if (e.keyCode == i){
+            return false;
+        }
     }
-    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.keyCode == 'H'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.keyCode == 'A'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.keyCode == 'F'.charCodeAt(0)){
-    return false;
-    }
-    if(e.ctrlKey && e.keyCode == 'E'.charCodeAt(0)){
-    return false;
+    if (e.keyCode == 27){
+        return false;
     }
     }
