@@ -1,14 +1,18 @@
 from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
 import database_linker
 import sec_code
+from sec_code import code_print
 import os,sys
 import local_functions
 
 house_choice = local_functions.get_house_choice().lower()  #Make sure all the house are in lowercase
 candidates = {}
 valid = False  # Flask's file variable for showing session validity
-voting_started = True  # Status of voting; affects the admin dashboard
+voting_started = False  # Status of voting; affects the admin dashboard
+voting_ended = False #Shows if voting has ended
 cur_posts =[] #Shows which posts are there for voting
+no_of_codes = 4 #Stores the number of pages of codes to be generated
+all_candidates_photos_there = None #Tells whether all the candidates' photos are there
 
 app = Flask(__name__,template_folder='./GUI/')
 app.secret_key = 'abc'
@@ -21,7 +25,7 @@ def home():
     if request.method == "GET":
         #This part shows renders the template (get template)
         session["logged"] = False
-        return render_template('voting_landing.html')
+        return render_template('voting_landing.html',voting_started=voting_started)
     else:
         #This part whether the security code is valid by asking the database
         receivedpwd = request.form['pwd_box']
@@ -624,7 +628,7 @@ def dashboard():
     try:
         if session['logged'] == True:
             #Renders the dashboard only if the admin password is valid
-            return render_template('dashboard.html')
+            return render_template('dashboard.html',voting_started=voting_started,voting_ended=voting_ended)
         else:
             return redirect(url_for('admin_page'))
     except Exception as e:
@@ -671,7 +675,8 @@ def enter_candidate():
 def voting_settings():
     try:
         if session['logged'] == True:
-            return render_template('voting_settings.html',valid=voting_started)
+            print(voting_started)
+            return render_template('voting_settings.html',valid=voting_started,no_of_codes=no_of_codes)
         else:
             return redirect(url_for('admin_page'))
     except:
@@ -681,9 +686,9 @@ def voting_settings():
 def settings():
     try:
         if session['logged'] == True:
-            global house_choice
+            global house_choice,no_of_codes
             if request.method == "GET":
-                return render_template('settings.html',house_choice=house_choice)
+                return render_template('settings.html',house_choice=house_choice,no_of_codes=no_of_codes)
             elif request.method == "POST":
                 #Here the admin changes the password for the local admin
                 #This block confirms the changes
@@ -698,6 +703,14 @@ def settings():
                 changed_pwd = request.form['changed_pwd']
                 if not sec_code.pass_is_valid(changed_pwd):
                     sec_code.pass_set(changed_pwd)
+
+                changed_no_of_codes = request.form['changed_no_of_codes']
+                t = eval(changed_no_of_codes)
+                if type(t) is int:
+                    if t>0:
+                        no_of_codes = t
+
+                print(no_of_codes)
                 return redirect(url_for('settings'))
     except Exception as e:
         print(e)
@@ -713,17 +726,18 @@ def logout():
 @app.route('/start_voting')
 def start_voting():#This function is called when then admin presses the start voting button
     #database_linker.initializing(#idk what to put here)
+    global voting_started
+    voting_started = True
+    code_print()
     return redirect(url_for("voting_settings"))
 
 @app.route('/stop_voting')
 def stop_voting():#This function is called when the admin presses the stop voting button
     database_linker.results_print()
-    return redirect(url_for("voting_settings"))
-
-@app.route('/generate-code')
-def generate_code():#This function is called when the admin presses the generate security codes button
-    sec_code.code_print()
-    return redirect(url_for('voting_settings'))
+    global voting_started,voting_ended
+    voting_started = False
+    voting_ended = True
+    return redirect(url_for("dashboard"))
 
 #Function to send photos to the webpage
 @app.route('/uploads/<path:filename>')

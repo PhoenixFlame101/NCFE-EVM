@@ -30,8 +30,8 @@ form{
 input[type="submit"]{
     width:25%;
     height:10%;
-    bottom:10%;
-    right:37.5%;
+    bottom:7%;
+    right:5%;
     background-color: #212121;
     text-align:center;
     border: none;
@@ -46,7 +46,7 @@ input[type="submit"]:hover{
     border:1px solid #fced47;
 }
 div{
-    display:flexbox;
+    display:flex;
     height:15vh;
     width:80vw;
 }

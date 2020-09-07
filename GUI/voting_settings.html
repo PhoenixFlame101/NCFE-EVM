@@ -4,14 +4,24 @@
 {% endblock %}
 
 {% block body %}
-{% if voting_started %}
+<a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
+<center>
+{% if valid %}
+<div class='voting_box'>
 <p>Voting has Started</p>
-<a href="{{ url_for('stop_voting') }}"><input type="button" value="STOP VOTING"></a>
+<div>
+<a href="{{ url_for('stop_voting') }}"><input type="button" value="STOP VOTING" class='button'></a>
+</div>
+</div>
+
 {% else %}
+<div class='voting_box'>
 <p>Voting has not been Started</p>
-<a href="{{ url_for('start_voting') }}"><input type="button" value="START VOTING"></a>
+</div></div>
+<div>
+    <a href="{{ url_for('start_voting') }}"><input type="button" value="START VOTING" class='button'></a>
+    </div>
+<P style='font-size:2em;font-family:"text";'>Number of pages of codes to be generated:{{ no_of_codes }}</P>
 {% endif %}
-
-<a href="{{ url_for('generate_code') }}"><input type="button" value="GENERATE CODES"></a>
-
+</center>
 {% endblock %}

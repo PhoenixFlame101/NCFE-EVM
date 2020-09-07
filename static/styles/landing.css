@@ -56,3 +56,18 @@ input[type="submit"]{
 input[type="submit"]:hover{
     border:1px solid #FCED47;
 }
+#voting_not_allowed{
+    color:grey;
+    border:1px solid grey;
+}
+#voting_allowed{
+    color:#f6c90e;
+}
+#voting_not_started{
+    margin-top:11vh;
+    margin-left:15vw;
+    font-family:'heading';
+    font-size:2em;
+    color:grey;
+    position: absolute;
+}

@@ -15,16 +15,25 @@
             <h2 style="text-decoration:none;">Show Candidates</h2>
             </center>
         </div></a>
+        {% if not voting_ended %}
         <a href="{{ url_for('voting_settings') }}"><div id='toggle_voting' class='in'>
             <center>
-                <img src="{{ url_for('static',filename='ballot_picture.png')}}" alt="user pic">
-                {% if not valid %}
-                <h2>Start Voting</h2>
-                {% else %}
-                <h2>Stop Voting</h2>
-                {% endif %}
+                    <img src="{{ url_for('static',filename='ballot_picture.png')}}" alt="user pic">
+                    {% if not voting_started %}
+                    <h2>Start Voting</h2>
+                    {% else %}
+                    <h2>Stop Voting</h2>
+                    {% endif %}
             </center>
         </div></a>
+        {% else %}
+            <center>
+                <div id='toggle_voting' class='in'>
+                    <h2>Voting is over</h2>
+                    <h2>Check the results in results.pdf</h2>
+                </div>
+            </center>
+        {% endif %}
         <a href="{{ url_for('settings') }}"><div id='settings' class='in'>
             <center>
                 <img src="{{ url_for('static',filename='settings.png')}}" alt="user pic">
