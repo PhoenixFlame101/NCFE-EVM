@@ -8,9 +8,11 @@
 <center>
 {% if valid %}
 <div class='voting_box'>
-<p>Voting has Started</p>
+<p class='hide_after_confirm'>Voting has Started</p>
+<p class='hide_before_confirm'>Are you Sure?</p>
 <div>
-<a href="{{ url_for('stop_voting') }}"><input type="button" value="STOP VOTING" class='button'></a>
+<input type="button" value="STOP VOTING" class='button' class='hide_after_confirm' id='confirm_button' onclick="confirm()">
+<a href="{{ url_for('stop_voting') }}" class='hide_before_confirm'><input type="button" value="STOP VOTING" class='button' class='hide_before_confirm'></a>
 </div>
 </div>
 
@@ -24,4 +26,17 @@
 <P style='font-size:2em;font-family:"text";'>Number of pages of codes to be generated:{{ no_of_codes }}</P>
 {% endif %}
 </center>
+
+<script>
+$(document).ready(function(){
+    $('.hide_before_confirm').hide();
+});
+function confirm(){
+    $('.hide_after_confirm').hide();
+    $('#confirm_button').hide();
+    $('.hide_before_confirm').show();
+}
+</script>
+
+
 {% endblock %}
