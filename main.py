@@ -675,8 +675,8 @@ def enter_candidate():
 def voting_settings():
     try:
         if session['logged'] == True:
-            print(voting_started)
-            return render_template('voting_settings.html',valid=voting_started,no_of_codes=no_of_codes)
+            not_there = all_photo_check()
+            return render_template('voting_settings.html',valid=voting_started,no_of_codes=no_of_codes,not_there=not_there,makeupper=makeupper,len=len,underscore_remove=underscore_remove)
         else:
             return redirect(url_for('admin_page'))
     except:
@@ -748,6 +748,26 @@ def download_file(filename):
     except:
         pass
 
+#Function to check if all the candidates' photos are there
+def all_photo_check():
+    not_there = {}
+    for post in candidates:
+        t = []
+        for name in candidates[post]:
+            check_var = photo_check(name)
+            if check_var is False:
+                t.append(name)
+        not_there[post] = t
+    return not_there
+
+#Function to check whether one candidate's photo is present
+def photo_check(filename):
+    filename += '.png'
+    try:
+        return send_from_directory(app.config['CANDIDATE_PHOTOS'],filename.upper(), as_attachment=True)
+    except:
+        return False
+
 #Final touches
 @app.route('/done')
 def over():
@@ -769,6 +789,17 @@ def store_result(dt):#We can change this to call the function to store the voter
             dt1[x] = dt[x]
     print(dt1)
     database_linker.add_votes_to_db(dict(dt1))
+
+def underscore_remove(t):#This function is used to remove all the underscores in string and return it in captial
+    t = t.split('_')
+    l = ''
+    for x in t:
+        l+=x
+        l+=' '
+    return l.upper()
+
+def makeupper(t):#returns the uppercase string
+    return t.upper()
 
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
@@ -811,7 +842,7 @@ def create_candidates():#Temporary testing function to create the candidates dic
 def cc():#Temporary testing function to create the candidates dictionary
     global candidates
     for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
-        candidates[x] = ['A','B','C','D']
+        candidates[x] = ['Bleep','B','C','D']
     candidates['head_girl'] = ["A","B","X"]
     candidates['eagle_captain'] = ["A","B","X"]
 
@@ -843,9 +874,10 @@ def general_get(p,to):
 def start():
     #This is the main method for starting the app
     global candidates
-    cc()#temp function to initialize  the candidates variable
+    #cc()#temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
-    #candidates = database_linker.get_cands_from_db()
+    candidates = database_linker.get_cands_from_db()
+    #print(database_linker.get_cands_from_db())
     add_to_cur_posts()
     set_photos_path()
     app.run(debug=True)
