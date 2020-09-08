@@ -9,7 +9,7 @@
     <input type="text" placeholder="Enter code here" name='pwd_box' spellcheck="false" maxlength="5">
     {% if not voting_started %}
     <p id='voting_not_started'>VOTING HAS NOT BEEN STARTED</p>
-    <input type="submit" value="SUBMIT" id='voting_not_allowed'>
+    <input type="button" value="SUBMIT" id='voting_not_allowed'>
     {% else %}
     <input type="submit" value="SUBMIT" id='voting_allowed'>
     {% endif %}

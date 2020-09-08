@@ -28,7 +28,7 @@
         </div></a>
         {% else %}
             <center>
-                <div id='toggle_voting' class='in'>
+                <div id='toggle_voting' class='in' style="height:300px;widht:300px;">
                     <h2>Voting is over</h2>
                     <h2>Check the results in results.pdf</h2>
                 </div>
@@ -42,4 +42,11 @@
         </div></a>
     </div>
 </center>
+{% if not voting_started and not voting_ended %}
+    <p id='voting_state' style='color:#FCED47;'>VOTING STATE:AWAITING</p>
+{% elif voting_started and not voting_ended %}
+    <p id='voting_state' style='color:#7CFC00;'>VOTING STATE:STARTED</p>
+{% else %}
+    <p id='voting_state' style='color:red;'>VOTING STATE:ENDED</p>
+{% endif %}
 {% endblock %}

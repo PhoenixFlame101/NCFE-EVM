@@ -57,6 +57,14 @@ input[type="submit"]:hover{
     border:1px solid #FCED47;
 }
 #voting_not_allowed{
+    margin-left:83%;
+    margin-top:5%;
+    background-color:#212121;
+    border-radius:1%;
+    padding: 3% 5% 3% 5%;
+    font-family: 'heading';
+    border-radius:25%/50%;
+    font-size:2.5em;
     color:grey;
     border:1px solid grey;
 }

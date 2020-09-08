@@ -12,7 +12,7 @@ body{
 }
 #container{
     display:flex;
-    margin-top:10%;
+    margin-top:7%;
     margin-left:-4%;
     height:60%;
     width:85%;
@@ -66,4 +66,11 @@ h2,a{
 }
 #logout:hover{
     border:1px solid #FCED47;
+}
+#voting_state{
+    font-family:'heading';
+    position:absolute;
+    font-size:2.5em;
+    margin-left:60vw;
+    margin-top:10vh;
 }

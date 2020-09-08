@@ -726,8 +726,9 @@ def logout():
 @app.route('/start_voting')
 def start_voting():#This function is called when then admin presses the start voting button
     #database_linker.initializing(#idk what to put here)
-    global voting_started
+    global voting_started,voting_ended
     voting_started = True
+    voting_ended = False
     code_print()
     return redirect(url_for("voting_settings"))
 
