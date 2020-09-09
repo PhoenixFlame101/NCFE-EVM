@@ -29,10 +29,9 @@ def pass_is_valid(_pass):
 		return False
 
 
-def code_gen(*args):
+def code_gen(num_of_codes):
 	""" Generates 1936 unique codes and encrypts and stores them in a text file
 		Run before the voting begins """
-	num_of_codes = 1936 if args == () else (484*args[0])
 	codes = set()
 
 	# Generates codes and adds them to a set 'codes'
@@ -45,12 +44,14 @@ def code_gen(*args):
 
 	# Adds the votes to the db
 	database_linker.add_codes_to_db(codes)
+	database_linker.add_codes_to_used([])
 
 	return plaintext_codes
 
 def code_is_valid(code):
 	""" Checks if the code entered is valid
 		Run before voting to initiate the program """
+	code = code.upper()
 
 	# Gets the codes from the db
 	codes = database_linker.get_codes_from_db()
@@ -63,9 +64,11 @@ def code_is_valid(code):
 		codes.remove(code)
 		codes = list(map(lambda x: key.encrypt(x.encode('utf-8')), list(codes)))
 		database_linker.add_codes_to_db(codes)
+		database_linker.add_codes_to_used(database_linker.get_used_codes()+[key.encrypt(code.encode('utf-8'))])
 		return True
 	else:
-		return False
+		used_codes = list(map(lambda x: key.decrypt(x).decode('utf-8'), database_linker.get_used_codes()))
+		return ('Already Used' if code in used_codes else 'Invalid')
 
 
 def split(arr, n):
@@ -76,7 +79,8 @@ def split(arr, n):
 
 def code_print(*args):
 	""" Generates a PDF of codes """
-	codes = list(split(list(code_gen()), 11))  # 2D array of 12 codes in each list
+	num_of_codes = 1936 if args == () else (484*args[0])
+	codes = list(split(list(code_gen(num_of_codes)), 11))  # 2D array of 11 codes in each list
 
 	# Writes the codes to a PDF file
 	pdf = FPDF()
@@ -89,5 +93,5 @@ def code_print(*args):
 	pdf.output('codes.pdf')
 
 
-pass_set('123')
+# pass_set('123')
 # code_print()
