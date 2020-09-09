@@ -5,7 +5,7 @@ from fpdf import FPDF
 from local_functions import get_db_uri
 
 # Connecting to the database from the host computer
-client = MongoClient(get_db_uri())
+client = MongoClient('mongodb://localhost:27017/')
 db = client.EVM
 collection = db.voting_results
 
@@ -87,7 +87,7 @@ def results_print():
 	pdf.output('results.pdf')
 
 	# Drops colleciton after voting is over
-	#collection.drop()
+	collection.drop()
 
 
 # Functions to facilitate db actions in sec_code.py
@@ -95,29 +95,29 @@ def add_password_to_db(password):
 	db.admin.drop()
 	db.admin.insert_one({'_id': 'password', 'password': password})
 def add_codes_to_db(codes):
-	db.codes.drop()
+	db.codes.delete_one({'_id': 'codes'})
 	db.codes.insert_one({'_id': 'codes', 'codes': codes})
+def add_codes_to_used(codes):
+	db.codes.delete_one({'_id': 'used_codes'})
+	db.codes.insert_one({'_id': 'used_codes', 'used_codes': codes})
 def get_password_from_db():
 	return db.admin.find({})[0]['password']
 def get_codes_from_db():
-	return db.codes.find({})[0]['codes']
+	return db.codes.find_one({'_id': 'codes'})['codes']
+def get_used_codes():
+	return db.codes.find_one({'_id': 'used_codes'})['used_codes']
 
 
 '''
-initializing({'head_boy': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'assistant_head_boy': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'assistant_head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'cultural_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'cultural_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'sports_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'sports_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'kingfisher_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'kingfisher_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'flamingo_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'flamingo_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'falcon_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'falcon_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'eagle_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-'eagle_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'}})'''
+posts = {'head_boy','head_girl','assistant_head_boy','assistant_head_girl',
+'cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain',
+'kingfisher_captain','kingfisher_vice_captain','flamingo_captain',
+'flamingo_vice_captain','falcon_captain','falcon_vice_captain',
+'eagle_captain','eagle_vice_captain'}
+temp_cands = {'A','B','C','D'}
+x = {}
+for post in posts:
+	x[post] = temp_cands
+initializing(x)'''
+
 # results_print()
