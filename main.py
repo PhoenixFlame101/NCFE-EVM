@@ -29,7 +29,7 @@ def home():
     else:
         #This part whether the security code is valid by asking the database
         receivedpwd = request.form['pwd_box']
-        if sec_code.code_is_valid(receivedpwd):
+        if sec_code.code_is_valid(receivedpwd) is True:
             global valid
             valid = True
             return redirect(url_for('head_boy'))
