@@ -642,7 +642,7 @@ def show_candidate():
         if session['logged'] == True:
             if request.method == "GET":
                 global candidates
-                return render_template('show_candidates.html',candidates=candidates,str=str)
+                return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started)
             else:
                 updated_candidates = request.form['candvalue']#fetches the parsed new candidates list
                 updated_candidates = eval(updated_candidates)

@@ -231,6 +231,13 @@ span.onclick = function() {
   modal.style.display = "none"; 
 }
 
+{% if voting_started %}
+$(document).ready(function(){
+    $('.in_modal_candidates').prop('disabled',true);
+});
+{% endif %}
+
+
 </script>
 
 
