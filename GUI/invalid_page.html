@@ -4,9 +4,8 @@
     <script src="{{ url_for('static',filename='inspect_element_disabler.js') }}"></script>
     <style>
         h1{
-            position: absolute;
-            top:40%;
-            left:26.5%;
+            /*position: absolute;*/
+            margin-top:35vh;
             color:red;
         }
         button:hover{
@@ -16,7 +15,7 @@
         button{
             width:35vh;
             height:10vh;
-            bottom:15%;
+            margin-top:18%;
             background-color: #212121;
             text-align:center;
             border: none;
@@ -24,16 +23,15 @@
             font-family:'text';
             color:#fced47;
             font-size:20px;
-            position:absolute;
+            /*position:absolute;*/
             outline: none;
-            margin-left:40vw;
         }
     </style>
 </head>
-<body>
-    <h1>Invalid Code Entered!</h1>
+<body><center>
+    <h1>CODE {{ msg }}</h1>
     <a href="{{ url_for('home') }}"><button>OK</button></a>
-
+</center>
     <script>
 window.setTimeout(function(){
 window.location.href = "{{ url_for('home') }}";

@@ -29,16 +29,17 @@ def home():
     else:
         #This part whether the security code is valid by asking the database
         receivedpwd = request.form['pwd_box']
-        if sec_code.code_is_valid(receivedpwd) is True:
+        validity = sec_code.code_is_valid(receivedpwd)
+        if validity is True:
             global valid
             valid = True
             return redirect(url_for('head_boy'))
         else:
-            return redirect(url_for('invalid_code'))
+            return redirect(url_for('invalid_code',msg=validity))
 
-@app.route('/invalid_code')
-def invalid_code():
-    return render_template('invalid_page.html')
+@app.route('/invalid_code/<msg>')
+def invalid_code(msg):
+    return render_template('invalid_page.html',msg=msg)
 
 @app.route('/head-boy',methods=["GET",'POST'])
 def head_boy():
@@ -650,8 +651,9 @@ def show_candidate():
                     for y in l:
                         if y == '':
                             updated_candidates[post].remove(y)
-                print(updated_candidates)
                 candidates = updated_candidates
+                database_linker.initializing(candidates)
+                print(database_linker.get_cands_from_db())
                 return redirect(url_for('show_candidate'))
         else:
             return redirect(url_for('admin_page'))
@@ -874,7 +876,7 @@ def general_get(p,to):
 def start():
     #This is the main method for starting the app
     global candidates
-    #cc()#temp function to initialize  the candidates variable
+    cc()#temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
     candidates = database_linker.get_cands_from_db()
     #print(database_linker.get_cands_from_db())
