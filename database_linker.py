@@ -32,12 +32,12 @@ def get_cands_from_db():
 
 	values = list(collection.find({}))
 	for post in values:
-		cands = set()
+		cands = []
 		for key, value in post.items():
 			if key == '_id':
 				post_name = '_'.join(value.split()).lower()
 			else:
-				cands.add(key)
+				cands.append(key)
 		else:
 			temp[post_name] = cands
 
