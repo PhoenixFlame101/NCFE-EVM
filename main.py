@@ -1,7 +1,8 @@
 from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
+from os import walk
 import database_linker
 import sec_code
-from sec_code import code_print
+#from sec_code import code_print
 import os,sys
 import local_functions
 
@@ -731,7 +732,7 @@ def start_voting():#This function is called when then admin presses the start vo
     global voting_started,voting_ended
     voting_started = True
     voting_ended = False
-    code_print()
+    sec_code.code_print()
     return redirect(url_for("voting_settings"))
 
 @app.route('/stop_voting')
@@ -744,11 +745,20 @@ def stop_voting():#This function is called when the admin presses the stop votin
 
 #Function to send photos to the webpage
 @app.route('/uploads/<path:filename>')
-def download_file(filename):
+def download_file(filename):#Function to download the file
     try:
-        return send_from_directory(app.config['CANDIDATE_PHOTOS'],filename.upper(), as_attachment=True)
+        x = get_image_folder_path(app.config['CANDIDATE_PHOTOS'],filename)
+        folder = "".join([y+'/' for y in x.split('/')[:-1]])
+        filename = x.split('/')[-1]
+        return send_from_directory(folder,filename, as_attachment=True)
     except:
         pass
+
+def get_image_folder_path(path,cand_name):#Function that returns file with any extension
+    for root, dirs, files in walk(path):
+        for file in files:
+            if file.lower().startswith(cand_name.lower()):
+                return root.replace('\\', '/')+'/'+file
 
 #Function to check if all the candidates' photos are there
 def all_photo_check():
@@ -876,10 +886,9 @@ def general_get(p,to):
 def start():
     #This is the main method for starting the app
     global candidates
-    cc()#temp function to initialize  the candidates variable
+    #cc() #temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
     candidates = database_linker.get_cands_from_db()
-    #print(database_linker.get_cands_from_db())
     add_to_cur_posts()
     set_photos_path()
     app.run(debug=True)
