@@ -90,8 +90,7 @@ def code_print(*args):
 		for code in row:
 			pdf.cell(17, 6, txt=code, border=True, ln=0, align='C')
 		pdf.ln()
-	#pdf.output('codes.pdf')
-	pdf.output('./codes.pdf')
+	pdf.output('codes.pdf')
 
 
 # pass_set('123')

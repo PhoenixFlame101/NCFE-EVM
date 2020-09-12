@@ -101,7 +101,12 @@ def add_codes_to_used(codes):
 	db.codes.delete_one({'_id': 'used_codes'})
 	db.codes.insert_one({'_id': 'used_codes', 'used_codes': codes})
 def get_password_from_db():
-	return db.admin.find({})[0]['password']
+	password = ''
+	try:
+		password = db.admin.find({})[0]['password']
+	except:
+		password = b'gAAAAABfXL5Ybnv-R3EhqXOT631KnHKNOo4wVFP6f8upJq4vxOsaUQhiu6iN-43Uk94RA0B78WPigKe0VVPrGbyaa2ol9wJR8w=='
+	return password
 def get_codes_from_db():
 	return db.codes.find_one({'_id': 'codes'})['codes']
 def get_used_codes():
