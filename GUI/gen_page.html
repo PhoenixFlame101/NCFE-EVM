@@ -1,4 +1,4 @@
-{% extends 'major_base_page.html' %}
+{% extends base_page_name+'_base_page.html' %}
     </style>
     {% block head %}
     {% endblock %}
@@ -9,22 +9,29 @@
     <div id='container'>
       {% for x in d[p] %}
         <div class='picbox' onclick="color();single_click(this);">
-        <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_picture.svg') }}">
-          <p>{{  x  }}</p>
+        {% if base_page_name == 'major' %}
+          <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_picture.svg') }}">
+        {% else %}
+          <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_white.svg') }}">
+        {% endif %}
+            <p>{{  x  }}</p>
         </div>
       {% endfor %}
 
     </div>
-    <form action="{{ url_for(p) }}" method="post">
-      {% if p != 'head_boy' %}
-      <a href="{{ url_for(prev_post(p)) }}"><input type="button" value="BACK" id='back'></a>
+    <form action="{{ url_for('load_post',post=p) }}" method="post">
+      {% if p != 'head_boy' and not lastthere %}
+      <a href="{{ url_for('load_post',post=prev_post(p)) }}"><input type="button" value="BACK" id='back'></a>
       {% endif %}
+
       <input type="button" name="{{ p+'_button' }}" id='btn' value="SUBMIT" onclick="btn_click()">
+
       {% if lastthere %}
       <input type="submit" id='next_page_btn'  value="BACK TO REVIEW PAGE">
       {% else %}
       <input type="submit" id='next_page_btn'  value="NEXT PAGE">
       {% endif %}
+
       <input type="hidden" name="{{ p+'_choice' }}" style="display: none;" id="hidden" value="{{ session[p+'_choice'] }}">
       <p id="lehidden">{{ session[p+'_choice'] }}</p>
     </form>

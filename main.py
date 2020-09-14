@@ -2,7 +2,6 @@ from flask import Flask,redirect,url_for,render_template,request,session,send_fr
 from os import walk
 import database_linker
 import sec_code
-#from sec_code import code_print
 import os,sys
 import local_functions
 
@@ -34,7 +33,8 @@ def home():
         if validity is True:
             global valid
             valid = True
-            return redirect(url_for('head_boy'))
+            session['home_choice'] = True
+            return redirect(url_for('load_post',post=cur_posts[0]))
         else:
             return redirect(url_for('invalid_code',msg=validity))
 
@@ -42,572 +42,83 @@ def home():
 def invalid_code(msg):
     return render_template('invalid_page.html',msg=msg)
 
-@app.route('/head-boy',methods=["GET",'POST'])
-def head_boy():
-    global valid
+@app.route('/post/<post>',methods=["GET",'POST'])
+def load_post(post):
+    global cur_posts
+    p = post
+    pc = post+'_choice'
+    next_p = next_post(p)
+    prev_p = prev_post(p)
+    prev_pc = prev_p+'_choice'
+    if p == 'home':
+        return redirect(url_for('home'))
     try:
-        if valid:
+        if session[prev_pc]:
             if request.method == "POST":
-                #This block adds the voter's choice to the session variable
-                head_boy_choice = request.form["head_boy_choice"]
-                session["head_boy_choice"] = head_boy_choice
+                post_choice = request.form[pc]
+                session[pc] = post_choice
                 if (cur_posts[-1]+'_choice') not in session:
                     #This redirects to the next page
-                    return redirect(url_for('head_girl'))
+                    if next_p == 'final':
+                        return redirect(url_for('final'))
+                    else:
+                        return redirect(url_for('load_post',post=next_p))
                 else:
                     return redirect(url_for('final'))
-
             elif request.method == "GET":
-                p = 'head_boy'
-                pc = p+"_choice"
-                next_p = 'head_girl'
-                if p in candidates:#It checks if the post exists
-                    if len(candidates[p])==1:#If there is one candidate
-                        if (cur_posts[-1]+'_choice') not in session:#The part makes a temporary storage of candidate show that it doesn't show up on the review page
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))#This part takes them to the next page
-                        else:
-                            return redirect("final")#This part prevents them from coming from the review page to see
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p='head_boy',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                        #return render_template(p+'.html',d=candidates,house_choice=house_choice,prev_post=prev_post)#If all is normal then the template gets loaded
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-        else:
-            return redirect(url_for('home'))
-
-    except Exception as e:
-        #If any error occurs, then the program goes back one page
-        print(e)
-        return redirect(url_for('home'))
-
-@app.route('/head-girl',methods=["GET",'POST'])
-def head_girl():
-    try:
-        if session["head_boy_choice"]:
-            if request.method == "GET":
-                p = 'head_girl'
-                pc = p+"_choice"
-                next_p = 'assistant_head_boy'
                 if p in candidates:
-                    if len(candidates[p])==1:
+                    if len(candidates[p])<=1:
                         if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
+                            return redirect(url_for('load_post',post=next_p))
                         else:
                             return redirect(url_for("final"))
                     else:
                         pname = "".join([x+' ' for x in p.split('_')])
                         lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p='head_girl',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
+                        house_keys={'kingfisher':'kf','flamingo':'fl','falcon':'fa','eagle':'ea'}
+                        for house in house_keys:
+                            if p.startswith(house):
+                                return render_template('gen_page.html',base_page_name=house,p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
+                        return render_template('gen_page.html',p=p,pname=pname,base_page_name='major',d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
                 else:
                     session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-            elif request.method == "POST":
-                head_girl_choice = request.form["head_girl_choice"]
-                session["head_girl_choice"] = head_girl_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    return redirect(url_for('assistant_head_boy'))
-                else:
-                    return redirect(url_for('final'))
+                    return redirect(url_for('load_post',post=next_p))
     except Exception as e:
         print(e)
-        return redirect(url_for('head_boy'))
+        if prev_p == 'home':
+            return redirect(url_for('home'))
+        else:
+            return redirect(url_for('load_post',post=prev_p))
 
-@app.route('/assistant-head-boy',methods=["GET",'POST'])
-def assistant_head_boy():
-    try:
-        if session["head_girl_choice"]:
-            if request.method == "POST":
-                assistant_head_boy_choice = request.form["assistant_head_boy_choice"]
-                session["assistant_head_boy_choice"] = assistant_head_boy_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('assistant_head_girl'))
-                else:
-                    return redirect(url_for('final'))
-            elif request.method == "GET":
-                p = 'assistant_head_boy'
-                pc = p+"_choice"
-                next_p = 'assistant_head_girl'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p='assistant_head_boy',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except Exception as e:
-        print(e)
-        return redirect(url_for('head_girl'))
+def prev_post(p):#This function tells the back button which page to go back to
+    cur_post = p
+    cur_index = cur_posts.index(cur_post)
+    if cur_index>0:
+        return cur_posts[cur_index-1]
+    else:
+        return 'home'
 
-@app.route('/assistant-head-girl',methods=["GET",'POST'])
-def assistant_head_girl():
-    try:
-        if session["assistant_head_boy_choice"]:
-            if request.method == "POST":
-                assistant_head_girl_choice = request.form["assistant_head_girl_choice"]
-                session["assistant_head_girl_choice"] = assistant_head_girl_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('cultural_captain'))
-                else:
-                    return redirect(url_for('final'))
-            elif request.method == "GET":
-                p = 'assistant_head_girl'
-                pc = p+"_choice"
-                next_p = 'cultural_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p='assistant_head_girl',pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except Exception as e:
-        print(e)
-        return redirect(url_for('assistant_head_boy'))
-
-@app.route('/cultural-captain',methods=["GET",'POST'])
-def cultural_captain():
-    try:
-         if session['assistant_head_girl_choice']:
-            if request.method == "POST":
-                cultural_captain_choice = request.form["cultural_captain_choice"]
-                session["cultural_captain_choice"] = cultural_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    return redirect(url_for('cultural_vice_captain'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'cultural_captain'
-                pc = p+"_choice"
-                next_p = 'cultural_vice_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except :
-        return redirect(url_for('assistant_head_girl'))
-
-@app.route('/cultural-vice-captain',methods=["GET",'POST'])
-def cultural_vice_captain():
-    try:
-        if session['cultural_captain_choice']:
-            if request.method == "POST":
-                cultural_vice_captain_choice = request.form["cultural_vice_captain_choice"]
-                session["cultural_vice_captain_choice"] = cultural_vice_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    return redirect(url_for('sports_captain'))
-                else:
-                    return redirect(url_for('final'))
-                
-            elif request.method == "GET":
-                p = 'cultural_vice_captain'
-                pc = p+"_choice"
-                next_p = 'sports_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('cultural_captain'))
-
-@app.route('/sports-captain',methods=["GET",'POST'])
-def sports_captain():
-    try:
-        if session['cultural_vice_captain_choice']:
-            if request.method == "POST":
-                sports_captain_choice = request.form["sports_captain_choice"]
-                session["sports_captain_choice"] = sports_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    return redirect(url_for('sports_vice_captain'))
-                else:
-                    return redirect(url_for('final'))
-            elif request.method == "GET":
-                p = 'sports_captain'
-                pc = p+"_choice"
-                next_p = 'sports_vice_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return  redirect(url_for('cultural_vice_captain'))
-
-@app.route('/sports-vice-captain',methods=["GET",'POST'])
-def sports_vice_captain():
-    try:
-        if session['sports_captain_choice']:
-            if request.method == "POST":
-                print(house_choice)
-                sports_vice_captain_choice = request.form["sports_vice_captain_choice"]
-                session["sports_vice_captain_choice"] = sports_vice_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for(house_choice+'_captain'))
-                else:
-                    return redirect(url_for('final'))
-            elif request.method == "GET":
-                p = 'sports_vice_captain'
-                pc = p+"_choice"
-                next_p = house_choice+"_captain"
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('sports_captain'))
-
-#The house functions
-@app.route('/kingfisher-captain',methods=["GET",'POST'])
-def kingfisher_captain():
-    try:
-        if session['sports_vice_captain_choice']:
-            if request.method == "POST":
-                kingfisher_captain_choice = request.form["kingfisher_captain_choice"]
-                session["kingfisher_captain_choice"] = kingfisher_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('kingfisher_vice_captain'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'kingfisher_captain'
-                pc = p+"_choice"
-                next_p = 'kingfisher_vice_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_kf.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('sports_vice_captain'))
-
-@app.route('/kingfisher-vice-captain',methods=["GET","POST"])
-def kingfisher_vice_captain():
-    try:
-        if session['kingfisher_captain_choice']:
-            if request.method == "POST":
-                kingfisher_vice_captain_choice = request.form["kingfisher_vice_captain_choice"]
-                session["kingfisher_vice_captain_choice"] = kingfisher_vice_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('final'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'kingfisher_vice_captain'
-                pc = p+"_choice"
-                next_p = 'final'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_kf.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('kingfisher_captain'))
-
-@app.route('/flamingo-captain',methods=["GET",'POST'])
-def flamingo_captain():
-    try:
-        if session['sports_vice_captain_choice']:
-            if request.method == "POST":
-                flamingo_captain_choice = request.form["flamingo_captain_choice"]
-                session["flamingo_captain_choice"] = flamingo_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('flamingo_vice_captain'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'flamingo_captain'
-                pc = p+"_choice"
-                next_p = 'flamingo_vice_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_fl.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except Exception as e:
-        print(e)
-        print(candidates)
-        return redirect(url_for('sports_vice_captain'))
-
-@app.route('/flamingo-vice-captain',methods=["GET",'POST'])
-def flamingo_vice_captain():
-    try:
-        if session['flamingo_captain_choice']:
-            if request.method == "POST":
-                flamingo_vice_captain_choice = request.form["flamingo_vice_captain_choice"]
-                session["flamingo_vice_captain_choice"] = flamingo_vice_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('final'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'flamingo_vice_captain'
-                pc = p+"_choice"
-                next_p = 'final'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_fl.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('flamingo_captain'))
-
-@app.route('/falcon-captain',methods=["GET",'POST'])
-def falcon_captain():
-    try:
-        if session['sports_vice_captain_choice']:
-            if request.method == "POST":
-                falcon_captain_choice = request.form["falcon_captain_choice"]
-                session["falcon_captain_choice"] = falcon_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('falcon_vice_captain'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'falcon_captain'
-                pc = p+"_choice"
-                next_p = 'falcon_vice_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_fa.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except Exception as e:
-        #print(session)
-        #print(cur_posts)
-        print(e)
-        return redirect(url_for('sports_vice_captain'))
-
-@app.route('/falcon-vice-captain',methods=["GET",'POST'])
-def falcon_vice_captain():
-    try:
-        if session['falcon_captain_choice']:
-            if request.method == "POST":
-                falcon_vice_captain_choice = request.form["falcon_vice_captain_choice"]
-                session["falcon_vice_captain_choice"] = falcon_vice_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('final'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'falcon_vice_captain'
-                pc = p+"_choice"
-                next_p = 'final'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_fa.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('falcon_captain'))
-
-@app.route('/eagle-captain',methods=["GET",'POST'])
-def eagle_captain():
-    try:
-        if session['sports_vice_captain_choice']:
-            if request.method == "POST":
-                eagle_captain_choice = request.form["eagle_captain_choice"]
-                session["eagle_captain_choice"] = eagle_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('eagle_vice_captain'))
-                else:
-                    return redirect(url_for('final'))
-
-                
-            elif request.method == "GET":
-                p = 'eagle_captain'
-                pc = p+"_choice"
-                next_p = 'eagle_vice_captain'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_ea.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('sports_vice_captain'))
-
-@app.route('/eagle-vice-captain',methods=["GET",'POST'])
-def eagle_vice_captain():
-    try:
-        if session['eagle_captain_choice']:
-            if request.method == "POST":
-                eagle_vice_captain_choice = request.form["eagle_vice_captain_choice"]
-                session["eagle_vice_captain_choice"] = eagle_vice_captain_choice
-                if (cur_posts[-1]+'_choice') not in session:
-                    #This redirects to the next page
-                    return redirect(url_for('final'))
-                else:
-                    return redirect(url_for('final'))
-
-            elif request.method == "GET":
-                p = 'eagle_vice_captain'
-                pc = p+"_choice"
-                next_p = 'final'
-                if p in candidates:
-                    if len(candidates[p])==1:
-                        if (cur_posts[-1]+'_choice') not in session:
-                            session[pc] = 'DNE'
-                            return redirect(url_for(next_p))
-                        else:
-                            return redirect("final")
-                    else:
-                        pname = "".join([x+' ' for x in p.split('_')])
-                        lastthere = (cur_posts[-1]+'_choice') in session
-                        return render_template('gen_page_ea.html',p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                else:
-                    session[pc] = 'DNE'
-                    return redirect(url_for(next_p))
-    except:
-        return redirect(url_for('eagle_captain'))
+def next_post(p):#This function tells which page to go to next
+    cur_post = p
+    cur_index = cur_posts.index(cur_post)
+    if cur_index != len(cur_posts)-1:
+        return cur_posts[cur_index + 1]
+    else:
+        return 'final'
 
 @app.route('/review',methods=['GET','POST'])
 def final():
     try:
-        if session[house_choice+'_vice_captain_choice']:
+        if session[cur_posts[-1]+'_choice']:
             if request.method == "GET":
                 #Here we render the review page by passing the session dictionary as the parameter
-                return render_template('review_page.html',session=dict(session))
+                return render_template('review_page.html',session=dict(session),cur_posts=cur_posts)
             else:
                 return redirect(url_for('over'))
     except Exception as e:
         print(e)
-        return redirect(url_for(house_choice+'_vice_captain'))
+        return redirect(url_for('load_post',post=cur_posts[-1]))
 
 # Admin things
 @app.route('/admin',methods=['GET','POST'])
@@ -795,6 +306,8 @@ def store_result(dt):#We can change this to call the function to store the voter
     #here dt is the dictionary
     if 'logged' in dt:
         del dt['logged']
+    if 'home_choice' in dt:
+        del dt['home_choice']
     dt1 = {}
     for x in dt:
         if dt[x] != 'DNE':
@@ -816,14 +329,6 @@ def makeupper(t):#returns the uppercase string
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
     print(hc)
-
-def prev_post(p):#This function tells the back button which page to go back to
-    cur_post = p
-    cur_index = cur_posts.index(cur_post)
-    if cur_index>0:
-        return cur_posts[cur_index-1]
-    else:
-        return 'home'
 
 def add_to_cur_posts():#To create teh current posts variable
     global cur_posts
@@ -855,8 +360,11 @@ def cc():#Temporary testing function to create the candidates dictionary
     global candidates
     for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
         candidates[x] = ['Bleep','B','C','D']
+    candidates["head_boy"]  = ['A','Y']
     candidates['head_girl'] = ["A","B","X"]
+    candidates['assistant_head_boy'] = []
     candidates['eagle_captain'] = ["A","B","X"]
+    candidates['assistant_head_girl'] = ["A","B","X","C","D"]
 
 def set_photos_path():#This function sets the path for the candidates photos in the app.config
     candidate_pictures = 'candidate_photos'
@@ -867,28 +375,12 @@ def set_photos_path():#This function sets the path for the candidates photos in 
     photos_path = application_path + '\\' + candidate_pictures 
     app.config['CANDIDATE_PHOTOS'] = photos_path
 
-def general_get(p,to):
-    pc = p+"_choice"
-    #Here the method is the get method
-    if p in candidates and len(candidates[p]) >1:
-        #If there are more than one candidates then it'll load the template
-        return render_template(p+'.html',d=candidates,house_choice=house_choice)
-    #We dont need to render the page if there is only one candidate
-    else:
-        if pc not in session:
-            #If the page hasn't been voted through then it registers the choice
-            session[pc] = 'DNE'
-            return redirect(url_for(to))
-        elif (house_choice+'_vice_captain_choice') in session:
-            #Prevents some one from rendering from the review page
-            return redirect(url_for('final'))
-
 def start():
     #This is the main method for starting the app
     global candidates
-    #cc() #temp function to initialize  the candidates variable
+    cc() #temp function to initialize  the candidates variable
     #We fetch the list of candidates from the database and continue
-    candidates = database_linker.get_cands_from_db()
+    #candidates = database_linker.get_cands_from_db()
     add_to_cur_posts()
     set_photos_path()
     app.run(debug=True)
