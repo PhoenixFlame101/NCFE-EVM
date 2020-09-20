@@ -1,8 +1,4 @@
-:root{
-    --bg:#E05707;
-    --box:#A63A0F;
-    --text:#ffffff;
-}
+
 @font-face{
     font-family:'text';
     src:url('text.ttf');
@@ -33,11 +29,10 @@ body{
 h1{
     margin:auto;
     margin-top:3vh;
-    color:#ffffff;
+    color:var(--text);
     font-family: 'heading';
     font-size: 3.125em;
     text-transform:uppercase;
-    
 }
 
 p{
@@ -64,11 +59,12 @@ img{
     margin:3vh;
     height:50%;
     width:50%;
+    border:1px solid transparent;
 }
 
 .picbox:hover{
     background-color: var(--bg)!important;
-    border:1px solid #ffffff;
+    border:1px solid var(--text);
 }
 
 #btn{
@@ -80,22 +76,6 @@ img{
     border: none;
     border-radius:20px;
     font-family:'Lobster';
-    color:var(--text);
-    font-size:20px;
-    position: absolute;
-    right:6%;
-    outline: none;
-}
-#jump_to_review{
-    margin-left:50vw;
-    width:35vh;
-    height:10vh;
-    bottom:15%;
-    background-color: var(--box);
-    text-align:center;
-    border: none;
-    border-radius:20px;
-    font-family:'text';
     color:var(--text);
     font-size:20px;
     position: absolute;
@@ -137,6 +117,22 @@ img{
   color:var(--text);
   font-size:20px;
   outline: none;
+}
+#jump_to_review{
+    margin-left:50vw;
+    width:35vh;
+    height:10vh;
+    bottom:15%;
+    background-color: var(--box);
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'text';
+    color:var(--text);
+    font-size:20px;
+    position: absolute;
+    right:6%;
+    outline: none;
 }
 #back,#btn,#next_page_btn{
     position: absolute;

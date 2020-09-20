@@ -4,27 +4,67 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
     <script src="{{ url_for('static',filename='jquery.js') }}"></script>
     <!--<script src="{{ url_for('static',filename='inspect_element_disabler.js') }}"></script>-->
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/major.css') }}">
-    {% block head %}{% endblock %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/gen.css') }}">
+
+    <style>
+        :root{
+            --bg:{{ color_scheme[base_page_name][0] }};
+            --box:{{ color_scheme[base_page_name][1] }};
+            --text:{{ color_scheme[base_page_name][2] }};
+        }
+    </style>
+
+
     {% if (cur_posts[-1]+'_choice') in session %}
         <style>#jump_to_review{display:block;}</style>
     {% else %}
         <style>#jump_to_review{display:none;}</style>
     {% endif %}
     </head>
-    <body>
-        {% block body %}
-        {% endblock %}
-    </body>
+<body>
+        <center>
+            <h1 id='post'>{{ pname }}</h1>
+            <div id='container'>
+              {% for x in d[p] %}
+                <div class='picbox' onclick="color();single_click(this);">
+                {% if base_page_name == 'major' %}
+                  <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_picture.svg') }}">
+                {% else %}
+                  <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_white.svg') }}">
+                {% endif %}
+                    <p>{{  x  }}</p>
+                </div>
+              {% endfor %}
+        
+            </div>
+            <form action="{{ url_for('load_post',post=p) }}" method="post">
+              {% if p != 'head_boy' and not lastthere %}
+              <a href="{{ url_for('load_post',post=prev_post(p)) }}"><input type="button" value="BACK" id='back'></a>
+              {% endif %}
+        
+              <input type="button" name="{{ p+'_button' }}" id='btn' value="SUBMIT" onclick="btn_click()">
+        
+              {% if lastthere %}
+              <input type="submit" id='next_page_btn'  value="BACK TO REVIEW PAGE">
+              {% else %}
+              <input type="submit" id='next_page_btn'  value="NEXT PAGE">
+              {% endif %}
+
+              <input type="hidden" name="{{ p+'_choice' }}" style="display: none;" id="hidden" value="{{ session[p+'_choice'] }}">
+              <p id="lehidden">{{ session[p+'_choice'] }}</p>
+            </form>
+
+            </center>
+</body>
     <script>
         var is_clicked = false;
         var submitted = false;
         var clicked_obj;
         var prev_vote;
-        var bg = "#161616";
-        var box = "#212121";
+        var bg = '{{ color_scheme[base_page_name][0] }}';
+        var box = '{{ color_scheme[base_page_name][1] }}';
         
-        //This part of the code is the animation for the next page button
+        
         $(document).ready(function(){
             $('#btn').click(function(){
               if (clicked_obj){
@@ -37,7 +77,6 @@
             })
           });
         
-        //This changes the value of the dummy element and updates the background color of the div element
         function single_click(the_obj){
           if (submitted == false){
             if (is_clicked == false){
@@ -51,21 +90,23 @@
             }
           }
         }
+        
         function color(){
           if (prev_vote){
-            prev_vote.style
             prev_vote.style.backgroundColor=box;
           }
         }
-        //This function changes the value of the dummy element
+        
         function btn_click(){
           var selected_candidate = clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent;
           document.getElementById('hidden').value = selected_candidate;
+        
           submitted = true;
         }
-        //This function gets the value of the voted element and then colors the same
+        
         function load(){
           voted = document.getElementById("lehidden").innerHTML;
+        
           $("#container").children().each(function () {
                     var element = $(this).children("p").prop("innerHTML");
                     if (element == voted){
@@ -75,7 +116,6 @@
                     }
                 });
         }
-        //When the document gets loaded it calls the load function
         $(document).ready(function(){
           load();
         });

@@ -13,6 +13,7 @@ voting_ended = False #Shows if voting has ended
 cur_posts =[] #Shows which posts are there for voting
 no_of_codes = 4 #Stores the number of pages of codes to be generated
 all_candidates_photos_there = None #Tells whether all the candidates' photos are there
+color_scheme = {}#Stores the various colors of the different houses
 
 app = Flask(__name__,template_folder='./GUI/')
 app.secret_key = 'abc'
@@ -79,8 +80,8 @@ def load_post(post):
                         house_keys={'kingfisher':'kf','flamingo':'fl','falcon':'fa','eagle':'ea'}
                         for house in house_keys:
                             if p.startswith(house):
-                                return render_template('gen_page.html',base_page_name=house,p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
-                        return render_template('gen_page.html',p=p,pname=pname,base_page_name='major',d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post)
+                                return render_template('gen_base_page.html',base_page_name=house,p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme)
+                        return render_template('gen_base_page.html',p=p,pname=pname,base_page_name='major',d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for('load_post',post=next_p))
@@ -130,7 +131,6 @@ def admin_page():
         receivedpwd = request.form['pwd_box']
         if sec_code.pass_is_valid(receivedpwd):
             session['logged'] = True
-            print("yes")
             return redirect(url_for('dashboard'))
         else:
             print(receivedpwd)
@@ -269,7 +269,8 @@ def get_image_folder_path(path,cand_name):#Function that returns file with any e
     for root, dirs, files in walk(path):
         for file in files:
             if file.lower().startswith(cand_name.lower()):
-                return root.replace('\\', '/')+'/'+file
+                if not file.lower().startswith('default'):
+                    return root.replace('\\', '/')+'/'+file
 
 #Function to check if all the candidates' photos are there
 def all_photo_check():
@@ -375,6 +376,16 @@ def set_photos_path():#This function sets the path for the candidates photos in 
     photos_path = application_path + '\\' + candidate_pictures 
     app.config['CANDIDATE_PHOTOS'] = photos_path
 
+def colors_set():
+    global color_scheme
+    #Format: (background_color,box,text)
+    color_scheme['kingfisher'] = ('#30a4e2','#036f96','#ffffff')
+    color_scheme['flamingo']  = ('#E05707','#A63A0F','#ffffff')
+    color_scheme['falcon']  = ('#7E58BF','#432A73','#ffffff')
+    color_scheme['eagle']  = ('#B81A1C','#750407','#ffffff')
+    color_scheme['major']  = ('#161616','#212121','#FCED47')
+
+
 def start():
     #This is the main method for starting the app
     global candidates
@@ -383,6 +394,7 @@ def start():
     #candidates = database_linker.get_cands_from_db()
     add_to_cur_posts()
     set_photos_path()
+    colors_set()
     app.run(debug=True)
 
 start()
