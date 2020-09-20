@@ -12,6 +12,13 @@
             --box:{{ color_scheme[base_page_name][1] }};
             --text:{{ color_scheme[base_page_name][2] }};
         }
+        .picbox{
+            {% if len(d[p]) == 5 %}
+                height:33vh;
+            {% else %}
+                height:40vh;
+            {% endif %}
+        }
     </style>
 
 

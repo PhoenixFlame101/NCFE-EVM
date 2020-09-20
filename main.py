@@ -80,8 +80,8 @@ def load_post(post):
                         house_keys={'kingfisher':'kf','flamingo':'fl','falcon':'fa','eagle':'ea'}
                         for house in house_keys:
                             if p.startswith(house):
-                                return render_template('gen_base_page.html',base_page_name=house,p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme)
-                        return render_template('gen_base_page.html',p=p,pname=pname,base_page_name='major',d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme)
+                                return render_template('gen_base_page.html',base_page_name=house,p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme,len=len)
+                        return render_template('gen_base_page.html',p=p,pname=pname,base_page_name='major',d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme,len=len)
                 else:
                     session[pc] = 'DNE'
                     return redirect(url_for('load_post',post=next_p))
