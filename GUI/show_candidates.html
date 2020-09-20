@@ -152,7 +152,7 @@ function show(thing){
     update_button = document.getElementById('update');
     confirm_button = document.getElementById('confirm');
 
-    //In this block we update the input tags individually 
+    //In this block we update the input tags individually
     var x = modal_text_list.length;
     for (i=0;i<x;i++){
         modal_text_list[i].style.color = candidates_names;
@@ -180,6 +180,15 @@ function show(thing){
     //Here we have to hide the confirm button and show the update button
     $('#confirm').css('display','none');
     $('#update').show('display','block');
+
+    //Here, if the voting has been started, then the color of the text in the update button is grey
+    {% if voting_started %}
+        $(document).ready(function(){
+            $('.in_modal_candidates').prop('disabled',true);
+            $('#update').css('pointer-events','none');
+            $('#update').css('color','#808080');
+        });
+    {% endif %}
 }
 function update_candidates(){
     //In this block we get the post by parsing
@@ -190,9 +199,9 @@ function update_candidates(){
     }
     post = heading.toLowerCase();
     var new_candidates= [];
-    
+
     //In this block we create a dictionary with the post as key and the candidate names as a list which is the key value
-    //It is parsed so that the flask can interpret it 
+    //It is parsed so that the flask can interpret it
     modal_text_list = document.getElementsByClassName("in_modal_candidates");
     var x = modal_text_list.length;
     for (i=0;i<x;i++){
@@ -234,6 +243,7 @@ span.onclick = function() {
 {% if voting_started %}
 $(document).ready(function(){
     $('.in_modal_candidates').prop('disabled',true);
+    $('#update').css('pointer-events','none');
 });
 {% endif %}
 

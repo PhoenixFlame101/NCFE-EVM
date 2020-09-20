@@ -26,7 +26,7 @@ def home():
     if request.method == "GET":
         #This part shows renders the template (get template)
         session["logged"] = False
-        return render_template('voting_landing.html',voting_started=voting_started)
+        return render_template('voting_landing.html',voting_started=voting_started,voting_ended=voting_ended)
     else:
         #This part whether the security code is valid by asking the database
         receivedpwd = request.form['pwd_box']
@@ -141,7 +141,7 @@ def dashboard():
     try:
         if session['logged'] == True:
             #Renders the dashboard only if the admin password is valid
-            return render_template('dashboard.html',voting_started=voting_started,voting_ended=voting_ended)
+            return render_template('dashboard.html',voting_started=voting_started,voting_ended=voting_ended,no_of_codes=no_of_codes,house_choice=house_choice,color_scheme=color_scheme,makeupper=makeupper)
         else:
             return redirect(url_for('admin_page'))
     except Exception as e:
@@ -173,24 +173,12 @@ def show_candidate():
         print(e)
         return redirect(url_for('admin_page'))
 
-@app.route('/enter_candidate')
-def enter_candidate():
-    try:
-        if session['logged'] == True:
-            #This part shows the candidates
-            return render_template('enter_candidates.html',candidates=candidates,str=str,len=len)
-        else:
-            return redirect(url_for('admin_page'))
-    except Exception as e:
-        print(e)
-        return redirect(url_for('admin_page'))
-
 @app.route('/voting_settings')
 def voting_settings():
     try:
         if session['logged'] == True:
             not_there = all_photo_check()
-            return render_template('voting_settings.html',valid=voting_started,no_of_codes=no_of_codes,not_there=not_there,makeupper=makeupper,len=len,underscore_remove=underscore_remove)
+            return render_template('voting_settings.html',d=candidates,valid=voting_started,no_of_codes=no_of_codes,not_there=not_there,makeupper=makeupper,len=len,underscore_remove=underscore_remove)
         else:
             return redirect(url_for('admin_page'))
     except:
@@ -219,7 +207,7 @@ def settings():
                     sec_code.pass_set(changed_pwd)
 
                 changed_no_of_codes = request.form['changed_no_of_codes']
-                t = eval(changed_no_of_codes)
+                t = eval(changed_no_of_codes.split()[0])
                 if type(t) is int:
                     if t>0:
                         no_of_codes = t
@@ -252,7 +240,13 @@ def stop_voting():#This function is called when the admin presses the stop votin
     global voting_started,voting_ended
     voting_started = False
     voting_ended = True
-    return redirect(url_for("dashboard"))
+    #return redirect(url_for('result'))
+    return redirect(url_for('dashboard'))
+
+@app.route('/results')
+def result():
+    return render_template('results.html',dr=download_results)
+    #return redirect('C:/Users/USER/Documents/GitHub/NCFE-EVM/results.pdf')
 
 #Function to send photos to the webpage
 @app.route('/uploads/<path:filename>')
@@ -271,6 +265,17 @@ def get_image_folder_path(path,cand_name):#Function that returns file with any e
             if file.lower().startswith(cand_name.lower()):
                 if not file.lower().startswith('default'):
                     return root.replace('\\', '/')+'/'+file
+
+def download_results():
+    x = "".join([y+'\\' for y in app.config['CANDIDATE_PHOTOS'].split('\\')[:-1]])
+
+    return x+'/results.pdf'
+    '''
+    try:
+        return send_from_directory(x,'results.pdf',as_attachment=True)
+    except:
+        pass
+    '''
 
 #Function to check if all the candidates' photos are there
 def all_photo_check():

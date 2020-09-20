@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <head>
     <script src="{{ url_for('static',filename='inspect_element_disabler.js') }}"></script>
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/major.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/gen.css') }}">
     <style>
+        body{
+            background-color: #212121;
+        }
         h1{
             position: absolute;
             top:40%;
             left:26.5%;
+            margin:auto;
+            margin-top:3vh;
+            color:#FCED47;
+            font-family: 'heading';
+            font-size: 3.125em;
+            text-transform:uppercase;
         }
     </style>
 </head>

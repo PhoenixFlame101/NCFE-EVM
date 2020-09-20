@@ -71,7 +71,7 @@ input[type="submit"]:hover{
 #voting_allowed{
     color:#f6c90e;
 }
-#voting_not_started{
+#session_invalid{
     margin-top:11vh;
     margin-left:15vw;
     font-family:'heading';
