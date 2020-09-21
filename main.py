@@ -215,7 +215,7 @@ def settings():
 
                 #This block confirms the changes
                 changed_pwd = request.form['changed_pwd']
-                if not sec_code.pass_is_valid(changed_pwd):
+                if not sec_code.pass_is_valid(changed_pwd) and changed_pwd != '':
                     sec_code.pass_set(changed_pwd)
 
                 changed_no_of_codes = request.form['changed_no_of_codes']
