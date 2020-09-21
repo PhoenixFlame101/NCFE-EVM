@@ -28,14 +28,16 @@
 
 <h1 class='missing_photos'><u>MISSING PHOTOS:</u></h1>
 {% for post in not_there %}
-    <div class='missing_photos'>
-    {% if len(not_there[post]) != 0 %}
-    <h2 style='display:inline-block;'>{{ underscore_remove(post) }}:</h2>
+    {% if len(d[post]) > 1 %}
+        <div class='missing_photos'>
+        {% if len(not_there[post]) != 0 %}
+        <h2 style='display:inline-block;'>{{ underscore_remove(post) }}:</h2>
+        {% endif %}
+        {% for name in not_there[post] %}
+            <h3 style='display:inline-block;'>{{ makeupper(name) }}</h3>
+        {% endfor %}
+        </div>
     {% endif %}
-    {% for name in not_there[post] %}
-        <h3 style='display:inline-block;'>{{ makeupper(name) }}</h3>
-    {% endfor %}
-    </div>
 {% endfor %}
 
 </center>
@@ -48,6 +50,7 @@ function confirm(){
     $('#confirm_button').hide();
     $('.hide_before_confirm').show();
 }
+
 </script>
 
 

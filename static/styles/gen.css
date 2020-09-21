@@ -1,8 +1,4 @@
-:root{
-    --bg:#E05707;
-    --box:#A63A0F;
-    --text:#ffffff;
-}
+
 @font-face{
     font-family:'text';
     src:url('text.ttf');
@@ -20,24 +16,23 @@ body{
 #container{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
     margin-top:10vh;
     background-color: var(--box);
     border: none;
     border-radius: 20px;
-    max-width: 90%;
     flex-wrap: nowrap;
+    max-width: 90%;
     max-height: 60vh;
 }
 
 h1{
     margin:auto;
     margin-top:3vh;
-    color:#ffffff;
+    color:var(--text);
     font-family: 'heading';
     font-size: 3.125em;
     text-transform:uppercase;
-    
 }
 
 p{
@@ -56,46 +51,29 @@ img{
     padding-top:10%;
     max-height:75%;
     max-width:75%;
-    /*height:90%;
-    width:90%;*/
 }
 
 .picbox{
-    margin:3vh;
-    height:50%;
-    width:50%;
+    margin:2vh;
+    /*max-height:50%;
+    max-width:50%;*/
+    width:20vw;
+    border:1px solid transparent;
 }
 
 .picbox:hover{
     background-color: var(--bg)!important;
-    border:1px solid #ffffff;
+    border:1px solid var(--text);
 }
 
 #btn{
     width:35vh;
     height:10vh;
-    /*background-color:var(--text) ;*/
     background-color: var(--box);
     text-align:center;
     border: none;
     border-radius:20px;
     font-family:'Lobster';
-    color:var(--text);
-    font-size:20px;
-    position: absolute;
-    right:6%;
-    outline: none;
-}
-#jump_to_review{
-    margin-left:50vw;
-    width:35vh;
-    height:10vh;
-    bottom:15%;
-    background-color: var(--box);
-    text-align:center;
-    border: none;
-    border-radius:20px;
-    font-family:'text';
     color:var(--text);
     font-size:20px;
     position: absolute;
@@ -137,6 +115,22 @@ img{
   color:var(--text);
   font-size:20px;
   outline: none;
+}
+#jump_to_review{
+    margin-left:50vw;
+    width:35vh;
+    height:10vh;
+    bottom:15%;
+    background-color: var(--box);
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'text';
+    color:var(--text);
+    font-size:20px;
+    position: absolute;
+    right:6%;
+    outline: none;
 }
 #back,#btn,#next_page_btn{
     position: absolute;

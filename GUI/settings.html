@@ -27,7 +27,7 @@
     </br>
 
     <p>Change the number of pages of codes to generate here: </p>
-    <input type='text' autocomplete="off" value='{{ no_of_codes }}' name='changed_no_of_codes'>
+    <input type='text' autocomplete="off" value='{{ no_of_codes }}' id='no_of_codes_box' name='changed_no_of_codes' style='display:inline-block;'><p style='display:inline-block;' id='no_of_multiplied_codes'>({{ no_of_codes*484 }} codes)</p>
     <input type="submit" value="CONFIRM CHANGES">
 </form>
 
@@ -41,6 +41,16 @@ function ch(n){
 }
 $(function(){
     document.getElementById("temp").value = document.getElementById('house_choice').innerHTML.slice(13);
+});
+$("#no_of_codes_box").on("input", function(){
+    opt=$(this).val()*484;
+    opt = opt.toString();
+    if (opt == "NaN"){
+        opt = '';
+    } else {
+        opt = '('+opt+' codes)';
+    }
+    $("#no_of_multiplied_codes").text(opt);
 });
 </script>
 
