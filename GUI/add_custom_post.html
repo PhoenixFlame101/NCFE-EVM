@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/add_custom_post.css') }}">
+<script src="{{ url_for('static',filename='jquery.js') }}"></script>
+<script src="{{ url_for('static',filename='jquery-ui.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<center>
+    <h1>ADD CUSTOM POST</h1>
+</center>
+<form>
+    <button value='ADD POST' id='add_post'>ADD POST</button>
+    <div>
+        <h1 style='display:inline-block;'>POST NAME:&nbsp;&nbsp;</h1><input type="text" style='display:inline-block;' name="new_post_name" id='new_post_name'>
+        <div>
+            <h1 style='display:inline-block;'>FOR HOUSE? </h1>&nbsp;
+            <input type='checkbox' style='display:inline-block;height:3vh;width:3vh;' id="for_house_button"/><!--<h2 style='display:inline-block;font-size:2em;font-family:"text";'>YES</h2>-->
+        </div>
+        <div style='display: flex;'>
+        <div id='candidate_box' style='display:none;'>
+            <h1>CANDIDATE NAMES:</h1>
+            {% for x in range(5) %}
+                <input type="text" id="{{ 'candiate'+str(x-1) }}">
+            {% endfor %}
+        </div>
+        <div id='cur_post_list'>
+            <h1><u>VOTING ORDER:</u></h1>
+            <ol id="sortable">
+                {% for post in cur_post %}
+                    <li id="{{ post }}">{{ u(post) }}</li>
+                {% endfor %}
+                <li id='new_post'></li>
+            </ol>
+        </div>
+        </div>
+    </div>
+</form>
+<p id='as'></p>
+<script>
+$(document).ready(function() {
+    $('#sortable').sortable();
+
+    $('#add_post').click(function (){
+        var post_name = $('#new_post_name').val();                              //Stores the name of the new post
+        var for_house = document.getElementById("for_house_button").checked;    //Stores whether the post is a house post
+        var cur_posts_order = $("#sortable").sortable("toArray");               //Stores the order of the cur_post
+        var names = [];                                                         //Stores the names of the candidates
+        $("#candidate_box").children().each(function(index){                    //Adds the names of the candidates to the names array
+            if (index != 0){
+                names[index] = $(this).val();
+            }
+        });
+
+        $.ajax({
+            url: "http://127.0.0.1:5000/add_custom_post",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "post_name":post_name,
+                "for_house":for_house,
+                'cur_posts_order':cur_posts_order,
+                "names":names
+            })
+        }).done(function(data) {
+            console.log(data);
+        });
+
+        window.setTimeout(function(){
+        window.location.href = "{{ url_for('show_candidate') }}";
+        }, 1);
+
+    });
+});
+$('#new_post_name').on('input',function(){
+    $('#new_post_name').val($('#new_post_name').val().toUpperCase());
+    $('#new_post').text($('#new_post_name').val().toUpperCase());
+});
+
+</script>
+{% endblock %}

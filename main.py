@@ -173,6 +173,45 @@ def show_candidate():
         print(e)
         return redirect(url_for('admin_page'))
 
+@app.route('/add_custom_post',methods=['GET', 'POST'])
+def add_custom_post():
+    try:
+        if session['logged'] == True:
+            global cur_posts
+            if request.method== 'GET':
+                return render_template('add_custom_post.html',str=str,cur_post=cur_posts,u=underscore_remove)
+            else:
+                response = request.get_json()
+                new_post_name = response['post_name'].lower()
+                cur_posts_order = []
+                if new_post_name != '':
+                    if not response['for_house']:
+                        cur_posts_order = [new_post_name if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                    else:
+                        cur_posts_order = [house_choice+'_'+new_post_name if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                        new_post_name = house_choice+'_'+new_post_name
+
+                    cur_posts = cur_posts_order
+                else:
+                    return redirect(url_for('add_custom_post'))
+                #return redirect(url_for('show_candidate'))
+                '''
+                candidates_of_new_post =[]
+                for pname in response['names']:
+                    if pname is not None:
+                        candidates_of_new_post.append(pname)
+
+                global cur_posts,candidates
+                cur_posts = cur_posts_order
+                candidates[new_post_name] = candidates_of_new_post
+                '''
+        else:
+            return redirect(url_for('admin_page'))
+    except Exception as  e:
+        print(e)
+        return redirect(url_for('admin_page'))
+
+
 @app.route('/voting_settings')
 def voting_settings():
     try:
@@ -195,11 +234,11 @@ def settings():
                 #Here the admin changes the password for the local admin
                 #This block confirms the changes
                 global cur_posts
+                old_house_choice = house_choice
                 house_choice = request.form['hc']
                 house_choice = house_choice.lower()
                 local_functions.store_house_choice(house_choice)
-                cur_posts = cur_posts[0:-2]
-                cur_posts.extend([house_choice+'_captain',house_choice+'_vice_captain'])
+                update_cur_post(old_house_choice,house_choice)
 
                 #This block confirms the changes
                 changed_pwd = request.form['changed_pwd']
@@ -343,6 +382,17 @@ def add_to_cur_posts():#To create teh current posts variable
         if y in candidates:
             if len(candidates[y])>1:
                 cur_posts.append(y)
+
+def update_cur_post(old_choice,cur_choice):#To update the house posts
+    global cur_posts
+    temp_posts = []
+    for post in cur_posts:
+        temp = post.split('_')
+        if temp[0] == old_choice:
+            temp_posts.append(cur_choice +'_'+ ''.join(temp[1:]))
+        else:
+            temp_posts.append(post)
+    cur_posts = temp_posts
 
 def create_candidates():#Temporary testing function to create the candidates dictionary
     global candidates
