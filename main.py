@@ -45,14 +45,21 @@ def invalid_code(msg):
 
 @app.route('/post/<post>',methods=["GET",'POST'])
 def load_post(post):
+    if post == 'home':
+        return redirect(url_for('home'))
+    if post == 'final':
+        return redirect(url_for('final'))
+
     global cur_posts
     p = post
     pc = post+'_choice'
     next_p = next_post(p)
     prev_p = prev_post(p)
     prev_pc = prev_p+'_choice'
-    if p == 'home':
-        return redirect(url_for('home'))
+    print(post,cur_posts,candidates)
+    print(prev_p,next_p)
+    print(dict(session))
+
     try:
         if session[prev_pc]:
             if request.method == "POST":
@@ -154,18 +161,23 @@ def show_candidate():
         if session['logged'] == True:
             if request.method == "GET":
                 global candidates
-                return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started)
+                load_list = [['Head Boy','Head Girl','Sports Captain','Cultural Captain'],['Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain'],['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'],['Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']]
+                custom_post_load_list = get_custom_post_load_list()
+                return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started,getcolor=getcolor,load_list=load_list,title=title,startswith=startswith,custom_posts=custom_post_load_list,len=len)
             else:
                 updated_candidates = request.form['candvalue']#fetches the parsed new candidates list
                 updated_candidates = eval(updated_candidates)
                 for post in updated_candidates:#filters the candidates
                     l = updated_candidates[post]
+                    new_l = []
                     for y in l:
-                        if y == '':
-                            updated_candidates[post].remove(y)
+                        y = y.strip()
+                        if y != '':
+                            new_l.append(y)
+                    updated_candidates[post] = new_l
+                print(updated_candidates)
                 candidates = updated_candidates
                 database_linker.initializing(candidates)
-                print(database_linker.get_cands_from_db())
                 return redirect(url_for('show_candidate'))
         else:
             return redirect(url_for('admin_page'))
@@ -177,40 +189,32 @@ def show_candidate():
 def add_custom_post():
     try:
         if session['logged'] == True:
-            global cur_posts
+            global cur_posts,candidates
             if request.method== 'GET':
                 return render_template('add_custom_post.html',str=str,cur_post=cur_posts,u=underscore_remove)
             else:
                 response = request.get_json()
-                new_post_name = response['post_name'].lower()
+                new_post_name = response['post_name'].lower().strip()
                 cur_posts_order = []
                 if new_post_name != '':
                     if not response['for_house']:
-                        cur_posts_order = [new_post_name if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                        cur_posts_order = [new_post_name.replace(' ','_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                        candidates[new_post_name.replace(' ','_')] = []
                     else:
-                        cur_posts_order = [house_choice+'_'+new_post_name if pname == 'new_post' else pname for pname in response['cur_posts_order']]
-                        new_post_name = house_choice+'_'+new_post_name
-
+                        cur_posts_order = [house_choice+'_'+new_post_name.replace(' ','_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                        for house in ['kingfisher','falcon','flamingo','eagle']:
+                            candidates[house+'_'+new_post_name.replace(' ','_')] = []
+                        new_post_name = house_choice+'_'+new_post_name.replace(' ','_')
+                    database_linker.initializing(candidates)
                     cur_posts = cur_posts_order
+                    print(cur_posts)
                 else:
                     return redirect(url_for('add_custom_post'))
-                #return redirect(url_for('show_candidate'))
-                '''
-                candidates_of_new_post =[]
-                for pname in response['names']:
-                    if pname is not None:
-                        candidates_of_new_post.append(pname)
-
-                global cur_posts,candidates
-                cur_posts = cur_posts_order
-                candidates[new_post_name] = candidates_of_new_post
-                '''
         else:
             return redirect(url_for('admin_page'))
     except Exception as  e:
         print(e)
         return redirect(url_for('admin_page'))
-
 
 @app.route('/voting_settings')
 def voting_settings():
@@ -371,6 +375,26 @@ def underscore_remove(t):#This function is used to remove all the underscores in
 def makeupper(t):#returns the uppercase string
     return t.upper()
 
+def title(t):
+    return t.title().replace('_',' ')
+
+def startswith(a,b):
+    return a.startswith(b)
+
+def getcolor(t):
+    t = t.split()[0].lower()
+    house_color = {'kingfisher':'kf','flamingo':'fl','falcon':'fa','eagle':'ea','major':'ma'}
+    for x in house_color:
+        if x == t:
+            return house_color[t]
+    return house_color['major']
+
+def get_custom_post_load_list():
+    load_list = ['Head Boy','Head Girl','Sports Captain','Cultural Captain','Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain','Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain','Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']
+    load_list = [y.lower().replace(' ',"_") for y in load_list]
+    cp = candidates.keys()
+    return list(set(load_list)^set(cp))
+
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
     print(hc)
@@ -389,7 +413,7 @@ def update_cur_post(old_choice,cur_choice):#To update the house posts
     for post in cur_posts:
         temp = post.split('_')
         if temp[0] == old_choice:
-            temp_posts.append(cur_choice +'_'+ ''.join(temp[1:]))
+            temp_posts.append(cur_choice + ''.join(['_'+y for y in temp[1:]]))
         else:
             temp_posts.append(post)
     cur_posts = temp_posts
