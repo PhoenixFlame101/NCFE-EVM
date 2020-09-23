@@ -159,9 +159,9 @@ button,#confirm{
     font-size:1.75em;
     border:1px solid transparent;
 }
-.kf:hover,.fa:hover,.fl:hover,.ea:hover{
+.kf:hover,.fa:hover,.fl:hover,.ea:hover,.house_border:hover{
     border:1px solid white!important;
 }
-.ma:hover{
+.ma:hover,.major_border:hover{
     border:1px solid #FCED47!important;
 }
