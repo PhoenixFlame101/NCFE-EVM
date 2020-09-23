@@ -161,7 +161,7 @@ def show_candidate():
         if session['logged'] == True:
             if request.method == "GET":
                 global candidates
-                load_list = [['Head Boy','Head Girl','Sports Captain','Cultural Captain'],['Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain'],['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'],['Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']]
+                load_list = [['Head Boy','Head Girl','Sports Captain','Cultural Captain'],['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'],['Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain'],['Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']]
                 custom_post_load_list = get_custom_post_load_list()
                 return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started,getcolor=getcolor,load_list=load_list,title=title,startswith=startswith,custom_posts=custom_post_load_list,len=len)
             else:
@@ -393,7 +393,28 @@ def get_custom_post_load_list():
     load_list = ['Head Boy','Head Girl','Sports Captain','Cultural Captain','Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain','Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain','Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']
     load_list = [y.lower().replace(' ',"_") for y in load_list]
     cp = candidates.keys()
-    return list(set(load_list)^set(cp))
+    result = list(set(load_list)^set(cp))
+    final = []
+    temp = []
+    temp1 = []
+    for post in result:
+        if is_house_post(post):
+            if post.startswith('kingfisher'):
+                temp1.append(post)
+        else:
+            temp.append(post)
+    for post in temp1:
+        post = post.split('_')[1:]
+        for house in ["kingfisher",'flamingo','falcon','eagle']:
+            final.append(house+"".join(['_'+y for y in post]))
+    final.extend(temp)
+    return final
+
+def is_house_post(t):
+    for x in ["kingfisher",'falcon','flamingo','eagle']:
+        if t.lower().startswith(x):
+            return True
+    return False
 
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')

@@ -11,13 +11,11 @@
         <h1>CANDIDATE REFERENCE</h1>
         <div style="display:flex;" id='main'>
             {% for x in range(4) %}
-                <div id='{{ "col"+str(x+1) }}' class='col'>
-                    {% for y in load_list[x] %}
-                        <div>
-                            <button onclick="show(this);" id="{{ y }}" class="{{ getcolor(y) }}">{{ title(y) }}</button>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% for y in load_list[x] %}
+                    <div class='default'>
+                        <button onclick="show(this);" id="{{ y }}" class="{{ getcolor(y) }}">{{ title(y) }}</button>
+                    </div>
+                {% endfor %}
             {% endfor %}
         </div>
         {% if len(custom_posts) != 0 %}

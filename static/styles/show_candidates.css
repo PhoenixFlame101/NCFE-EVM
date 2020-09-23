@@ -24,6 +24,11 @@ h1{
 }
 #main{
     margin-top: 3%;
+    flex-wrap: wrap;
+    margin-left:5%;
+}
+.default{
+    margin-right:5%;
 }
 .col{
     margin-right:5%;
@@ -129,7 +134,7 @@ button,#confirm{
     flex-wrap:wrap;
 }
 .custom{
-    margin-right:5.25%;
+    margin-right:5%;
     margin-bottom:5%;
     margin-top:-4%;
 }
