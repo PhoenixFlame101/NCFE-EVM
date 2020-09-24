@@ -70,20 +70,21 @@ def results_print():
 	pdf = FPDF()
 	pdf.add_page()
 	for post in results:  # The results list is a list of MongoDB documents
-		for key, value in post.items():
-			# If the current value contans the post name, use it as a heading
-			if key == '_id':
-				pdf.set_font("Arial", 'U', size=14)
-				pdf.cell(200, 10, txt=value, align='C')
-				pdf.ln(7)
+		if len(post.items()) > 2:
+			for key, value in post.items():
+				# If the current value contans the post name, use it as a heading
+					if key == '_id':
+						pdf.set_font("Arial", 'U', size=14)
+						pdf.cell(200, 10, txt=value, align='C')
+						pdf.ln(7)
+					else:
+						pdf.set_font("Arial", size=12)
+						pdf.cell(55, 10)
+						pdf.cell(75, 10, txt=key, align='L')
+						pdf.cell(10, 10, txt=str(value), align='C')
+						pdf.ln(7)
 			else:
-				pdf.set_font("Arial", size=12)
-				pdf.cell(55, 10)
-				pdf.cell(75, 10, txt=key, align='L')
-				pdf.cell(10, 10, txt=str(value), align='C')
-				pdf.ln(7)
-		else:
-			pdf.ln()
+				pdf.ln()
 	pdf.output('results.pdf')
 
 	# Drops colleciton after voting is over
