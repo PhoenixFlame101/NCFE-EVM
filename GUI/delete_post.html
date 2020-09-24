@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/delete_post.css') }}">
+<script src="{{ url_for('static',filename='jquery.js') }}"></script>
+<script src="{{ url_for('static',filename='jquery-ui.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
+<center>
+    <h1> DELETE CUSTOM POST</h1>
+</center>
+
+    <div id='cur_post_list'>
+        <h1><u>VOTING ORDER:</u></h1>
+        <ol id="sortable">
+            {% for post in cur_post %}
+                <li id="{{ post }}" class='posts'>{{ u(post) }}</li>
+            {% endfor %}
+            <li id='new_post'></li>
+        </ol>
+    </div>
+
+    <h2>POST TO DELETE: <p id='todelete'></p></h2>
+
+
+    <input type="button" value='DELETE' ID='delete'>
+
+    <script>
+        var post_to_delete;
+
+        $('.posts').click(function(){
+            if (post_to_delete !== undefined){
+                post_to_delete.css('color','#f6c90e');
+            }
+            post_to_delete = $(this);
+            post_to_delete.css('color','red');
+            $('#todelete').html(post_to_delete.text());
+        });
+
+        $('#delete').click(function(){
+            $.ajax({
+            url: "http://127.0.0.1:5000/delete_post",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                'post_to_delete':post_to_delete.text()
+            })
+            }).done(function(data) {
+                console.log(data);
+            });
+
+            window.setTimeout(function(){
+            window.location.href = "{{ url_for('delete_post') }}";
+            }, 1);
+        });
+    </script>
+
+{% endblock %}

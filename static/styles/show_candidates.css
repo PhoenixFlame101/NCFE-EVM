@@ -170,3 +170,22 @@ button,#confirm{
 .ma:hover,.major_border:hover{
     border:1px solid #FCED47!important;
 }
+#plus_button{
+    margin-left:87vw;
+    position: absolute;
+    border:1px solid transparent;
+    border-radius:50%;
+    padding:10px;
+    background-color: #94979c;
+}
+#plus_button:hover,#delete_button:hover{
+    background-color: #cacdd3;
+}
+#delete_button{
+    margin-left:82vw;
+    position: absolute;
+    border:1px solid transparent;
+    border-radius:50%;
+    padding:10px;
+    background-color: #94979c;
+}

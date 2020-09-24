@@ -216,6 +216,36 @@ def add_custom_post():
         print(e)
         return redirect(url_for('admin_page'))
 
+@app.route('/delete_post',methods=['GET', 'POST'])
+def delete_post():
+    try:
+        global cur_posts,candidates
+        if session['logged'] == True:
+            if request.method == 'GET':
+                return render_template('delete_post.html',cur_post=cur_posts,u=underscore_remove)
+            else:
+                response = request.get_json()
+                post_to_delete = response['post_to_delete'].strip()
+                post_to_delete = post_to_delete.replace(' ','_').lower()
+
+                try:
+                    cur_posts.remove(post_to_delete)
+                    for post in candidates:
+                        if post_to_delete.startswith(house_choice):
+                            post = post.split('_')
+                            if post.endswith("".join(['_'+y for y in post[1:]])):
+                                candidates[post] = []
+                        else:
+                            if post == post_to_delete:
+                                candidates[post] =[]
+                except Exception as e:
+                    print(e)
+                    pass
+        else:
+            return redirect(url_for('admin_page'))
+    except:
+        return redirect(url_for('admin_page'))
+
 @app.route('/voting_settings')
 def voting_settings():
     try:
