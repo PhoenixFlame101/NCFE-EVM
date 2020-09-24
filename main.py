@@ -335,7 +335,7 @@ def download_file(filename):#Function to download the file
 def get_image_folder_path(path,cand_name):#Function that returns file with any extension
     for root, dirs, files in walk(path):
         for file in files:
-            if file.lower().startswith(cand_name.lower()):
+            if file.lower()[:len(file)-file[::-1].index('.')-1] == cand_name.lower():
                 if not file.lower().startswith('default'):
                     return root.replace('\\', '/')+'/'+file
 
