@@ -28,7 +28,7 @@
         <div id='cur_post_list'>
             <h1><u>VOTING ORDER:</u></h1>
             <ol id="sortable">
-                {% for post in cur_post %}
+                {% for post in replace_house_name(cur_post) %}
                     <li id="{{ post }}">{{ u(post) }}</li>
                 {% endfor %}
                 <li id='new_post'></li>

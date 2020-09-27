@@ -191,7 +191,7 @@ def add_custom_post():
         if session['logged'] == True:
             global cur_posts,candidates
             if request.method== 'GET':
-                return render_template('add_custom_post.html',str=str,cur_post=cur_posts,u=underscore_remove)
+                return render_template('add_custom_post.html',str=str,cur_post=cur_posts,u=underscore_remove,replace_house_name=replace_house_name)
             else:
                 response = request.get_json()
                 new_post_name = response['post_name'].lower().strip()
@@ -205,6 +205,8 @@ def add_custom_post():
                         for house in ['kingfisher','falcon','flamingo','eagle']:
                             candidates[house+'_'+new_post_name.replace(' ','_')] = []
                         new_post_name = house_choice+'_'+new_post_name.replace(' ','_')
+                    cur_posts_order = [post.replace('house',house_choice) if post.startswith('house') else post for post in cur_posts_order]
+
                     database_linker.initializing(candidates)
                     cur_posts = cur_posts_order
                     print(cur_posts)
@@ -222,11 +224,13 @@ def delete_post():
         global cur_posts,candidates
         if session['logged'] == True:
             if request.method == 'GET':
-                return render_template('delete_post.html',cur_post=cur_posts,u=underscore_remove)
+                return render_template('delete_post.html',cur_post=cur_posts,u=underscore_remove,replace_house_name=replace_house_name)
             else:
                 response = request.get_json()
                 post_to_delete = response['post_to_delete'].strip()
                 post_to_delete = post_to_delete.replace(' ','_').lower()
+                if post_to_delete.startswith('house'):
+                    post_to_delete = post_to_delete.replace('house',house_choice)
 
                 try:
                     cur_posts.remove(post_to_delete)
@@ -445,6 +449,9 @@ def is_house_post(t):
         if t.lower().startswith(x):
             return True
     return False
+
+def replace_house_name(l):
+    return [post.replace(house_choice,'house') if post.startswith(house_choice) else post for post in l]
 
 def fetch_changed_house_choice():
     hc = request.values.get('house_choice')
