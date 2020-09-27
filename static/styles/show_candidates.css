@@ -171,7 +171,7 @@ button,#confirm{
     border:1px solid #FCED47!important;
 }
 #plus_button{
-    margin-left:87vw;
+    margin-left:82vw;
     position: absolute;
     border:1px solid transparent;
     border-radius:50%;
@@ -182,10 +182,9 @@ button,#confirm{
     background-color: #cacdd3;
 }
 #delete_button{
-    margin-left:82vw;
+    margin-left:87vw;
     position: absolute;
     border:1px solid transparent;
-    border-radius:50%;
     padding:10px;
     background-color: #94979c;
 }
