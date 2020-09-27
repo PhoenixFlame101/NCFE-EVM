@@ -45,7 +45,7 @@
         
             </div>
             <form action="{{ url_for('load_post',post=p) }}" method="post">
-              {% if p != 'head_boy' and not lastthere %}
+              {% if p != cur_posts[0] and not lastthere %}
               <a href="{{ url_for('load_post',post=prev_post(p)) }}"><input type="button" value="BACK" id='back'></a>
               {% endif %}
         
