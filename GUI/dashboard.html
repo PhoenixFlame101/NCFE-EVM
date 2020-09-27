@@ -42,7 +42,7 @@
         </div></a>
     </div>
 {% if not voting_started and not voting_ended %}
-<p id='voting_state' style='color:#FCED47;display:inline-block;'>VOTING STATE: AWAITING &nbsp;&nbsp; CODES: {{ no_of_codes*484 }}</p><p id='voting_state' style="color:{{ color_scheme[house_choice][0] }};display:inline-block;"> &nbsp;&nbsp; HOUSE: {{ makeupper(house_choice) }}</p>
+<p id='voting_state' style='color:#FCED47;display:inline-block;'>VOTING STATE: AWAITING &nbsp;</p><p id='voting_state' style="color:{{ color_scheme[house_choice][0] }};display:inline-block;"> &nbsp;&nbsp; HOUSE: {{ makeupper(house_choice) }}</p>
 {% elif voting_started and not voting_ended %}
     <p id='voting_state' style='color:#7CFC00;display: inline-block;'>VOTING STATE: STARTED</p><p id='voting_state' style="color:{{ color_scheme[house_choice][0] }};display:inline-block;"> &nbsp;&nbsp; HOUSE: {{ makeupper(house_choice) }}</p>
 {% else %}
