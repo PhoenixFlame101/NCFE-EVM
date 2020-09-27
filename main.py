@@ -175,7 +175,7 @@ def show_candidate():
                         if y != '':
                             new_l.append(y)
                     updated_candidates[post] = new_l
-                print(updated_candidates)
+                
                 candidates = updated_candidates
                 database_linker.initializing(candidates)
                 return redirect(url_for('show_candidate'))

@@ -3,10 +3,15 @@
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/add_custom_post.css') }}">
 <script src="{{ url_for('static',filename='jquery.js') }}"></script>
 <script src="{{ url_for('static',filename='jquery-ui.js') }}"></script>
+<style>
+ul{
+    list-style-image: url("{{ url_for('static',filename='drag_handle_icon.svg') }}");
+}
+</style>
 {% endblock %}
 
 {% block body %}
-<a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
+<a href="{{ url_for('show_candidate') }}"><input type="button" value="BACK" id='back'></a>
 <center>
     <h1>ADD CUSTOM POST</h1>
 </center>
@@ -27,12 +32,14 @@
         </div>
         <div id='cur_post_list'>
             <h1><u>VOTING ORDER:</u></h1>
-            <ol id="sortable">
+            <ul id="sortable">
                 {% for post in replace_house_name(cur_post) %}
-                    <li id="{{ post }}">{{ u(post) }}</li>
+                    <li id="{{ post }}">
+                        <div>{{ u(post) }}</div>
+                    </li>
                 {% endfor %}
                 <li id='new_post'></li>
-            </ol>
+            </ul>
         </div>
         </div>
     </div>
@@ -73,10 +80,15 @@ $(document).ready(function() {
 
     });
 });
-$('#new_post_name').on('input',function(){
+function update_box(){
+    var for_house = document.getElementById("for_house_button").checked; 
     $('#new_post_name').val($('#new_post_name').val().toUpperCase());
     $('#new_post').text($('#new_post_name').val().toUpperCase());
-});
-
+    if (for_house === true){
+        $('#new_post').text('HOUSE '+$('#new_post_name').val().toUpperCase());
+    }
+}
+$('#new_post_name').on('input',update_box);
+$('#for_house_button').click(update_box);
 </script>
 {% endblock %}
