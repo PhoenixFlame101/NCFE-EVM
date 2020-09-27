@@ -234,17 +234,17 @@ def delete_post():
 
                 try:
                     cur_posts.remove(post_to_delete)
-                    for post in candidates:
+                    for post in list(candidates.keys()):
                         if post_to_delete.startswith(house_choice):
-                            post = post.split('_')
-                            if post.endswith("".join(['_'+y for y in post[1:]])):
-                                candidates[post] = []
+                            if post.endswith("".join(["_"+x for x in post_to_delete.split('_')[1:]])):
+                                del candidates[post]
                         else:
                             if post == post_to_delete:
-                                candidates[post] =[]
+                                del candidates[post]
                 except Exception as e:
                     print(e)
                     pass
+
         else:
             return redirect(url_for('admin_page'))
     except:
