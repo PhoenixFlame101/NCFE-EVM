@@ -6,9 +6,11 @@
 
 {% block body %}
     <a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
-    <a href="{{ url_for('add_custom_post') }}"><img src="{{ url_for('static',filename='plus_icon.svg')}}" alt="user pic" id='plus_button'></a>
-    <a href="{{ url_for('delete_post') }}"><img src="{{ url_for('static',filename='delete_icon.svg')}}" alt="user pic" id='delete_button'></a>
-    <center>
+    {% if not voting_started and not voting_ended %}
+        <a href="{{ url_for('add_custom_post') }}"><img src="{{ url_for('static',filename='plus_icon.svg')}}" alt="user pic" id='plus_button'></a>
+        <a href="{{ url_for('delete_post') }}"><img src="{{ url_for('static',filename='delete_icon.svg')}}" alt="user pic" id='delete_button'></a>
+    {% endif %}
+        <center>
         <h1>CANDIDATE REFERENCE</h1>
         <div style="display:flex;" id='main'>
             {% for x in range(4) %}

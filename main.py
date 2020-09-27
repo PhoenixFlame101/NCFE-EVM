@@ -163,7 +163,7 @@ def show_candidate():
                 global candidates
                 load_list = [['Head Boy','Head Girl','Sports Captain','Cultural Captain'],['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'],['Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain'],['Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']]
                 custom_post_load_list = get_custom_post_load_list()
-                return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started,getcolor=getcolor,load_list=load_list,title=title,startswith=startswith,custom_posts=custom_post_load_list,len=len)
+                return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started,voting_ended=voting_ended,getcolor=getcolor,load_list=load_list,title=title,startswith=startswith,custom_posts=custom_post_load_list,len=len)
             else:
                 updated_candidates = request.form['candvalue']#fetches the parsed new candidates list
                 updated_candidates = eval(updated_candidates)
