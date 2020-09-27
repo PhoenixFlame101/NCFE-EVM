@@ -18,10 +18,10 @@
     {% endif %}
 </form>
 <script>
-$(document).bind('keydown', function(event) {
-    if( event.which === 192 ) {
+document.onkeydown  = function(e){
+    if (e.which == 192 && e.shiftKey){
         window.location.href = "{{ url_for('admin_page') }}";
     }
-});
+}
 </script>
 {% endblock %}
