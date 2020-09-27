@@ -317,12 +317,12 @@ def stop_voting():#This function is called when the admin presses the stop votin
     global voting_started,voting_ended
     voting_started = False
     voting_ended = True
-    #return redirect(url_for('result'))
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('result'))
+    #return redirect(url_for('dashboard'))
 
 @app.route('/results')
 def result():
-    return render_template('results.html',dr=download_results)
+    return render_template('results.html')
     #return redirect('C:/Users/USER/Documents/GitHub/NCFE-EVM/results.pdf')
 
 #Function to send photos to the webpage
@@ -343,16 +343,15 @@ def get_image_folder_path(path,cand_name):#Function that returns file with any e
                 if not file.lower().startswith('default'):
                     return root.replace('\\', '/')+'/'+file
 
+@app.route('/download_results')
 def download_results():
     x = "".join([y+'\\' for y in app.config['CANDIDATE_PHOTOS'].split('\\')[:-1]])
-
-    return x+'/results.pdf'
-    '''
+    print(x)
     try:
-        return send_from_directory(x,'results.pdf',as_attachment=True)
-    except:
-        pass
-    '''
+        return send_from_directory(x,filename='results.pdf')
+    except Exception as e:
+        print(e)
+        return str(e)
 
 #Function to check if all the candidates' photos are there
 def all_photo_check():

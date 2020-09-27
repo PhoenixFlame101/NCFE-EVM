@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <head></head>
 <body>
-    <a href="C:/Users/USER/Documents/GitHub/NCFE-EVM/results.pdf">asdf</p>
 </body>
 <script>
     window.setTimeout(function(){
-    window.open("C:/Users/USER/Documents/GitHub/NCFE-EVM/results.pdf");
+        window.open("/download_results");
+        window.location.href = '{{ url_for("dashboard") }}';
     }, 1);
 </script>
