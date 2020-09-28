@@ -6,7 +6,9 @@
     font-family: 'heading';
     src:url('heading.ttf');
 }
-
+::-webkit-scrollbar{
+    visibility: hidden;
+}
 body{
     background-color: #161616;
     color:#FCED47;

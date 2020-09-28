@@ -2,6 +2,9 @@ body{
     background-color: #121212;
     color:#FCED47;
 }
+*{
+    outline:none;
+}
 @font-face{
     font-family:'text';
     src:url('text.ttf');
