@@ -94,13 +94,13 @@
             var text,bg,candidates_names;
             //Here we modify the background and the text colours according to the post
             if (post.slice(0,10) == 'kingfisher'){
-                text = "#9ed7f6";
+                text = "#03A9F4";
                 bg = "#036f96";
                 candidates_names = "white";
             }
             else if (post.slice(0,8) == 'flamingo'){
                 bg = "#E05707";
-                text = "#A63A0F";
+                text = "#FF6D00";
                 candidates_names = "white";
             }
             else if (post.slice(0,6) == 'falcon'){
@@ -123,6 +123,8 @@
             modal_box.style.color = text;
             modal_box.style.backgroundColor= bg ;
             modal_box.style.border = "1px solid "+ text;
+            modal_heading = document.getElementById("modal_heading");
+            modal_heading.style.color = candidates_names;
             modal_text_list = document.getElementsByClassName("in_modal_candidates");
             update_button = document.getElementById('update');
             confirm_button = document.getElementById('confirm');
@@ -136,7 +138,10 @@
             }
 
             //In this block we update the update button
-            update_button.style.backgroundColor = bg;
+            update_button.style.backgroundColor = text;
+            if (bg == "black"){
+                update_button.style.backgroundColor = "#151515";
+            }
             update_button.style.color = candidates_names;
 
             //In this block we update the confirm button
