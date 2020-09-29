@@ -1,5 +1,16 @@
 # This module contains functions that are device specific
 
+from PIL import Image
+
+
+def resize_image(picture_path):
+	pic = Image.open(picture_path)
+	aspect_ratio = pic.size[1]/pic.size[0]
+	pic = pic.resize((300, int(300*aspect_ratio)))
+	pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
+	pic.save(picture_path)
+
+
 def store_house_choice(choice):
 	try:
 		with open('local_vars.encrypted', 'r+') as f:
