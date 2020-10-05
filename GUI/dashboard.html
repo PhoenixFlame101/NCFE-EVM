@@ -6,30 +6,51 @@
 
 {% block body %}
 <center>
+    <a href="{{ url_for('logout') }}"><input value="LOGOUT" type="button" id='logout'></a>
     <h1>NCFE EVM DASHBOARD</h1>
     <div id='container'>
         <a href="{{ url_for('show_candidate') }}"><div id='enter_candidates' class='in'>
             <center>
-                <img src="{{ url_for('static',filename='default_picture.png')}}" alt="user pic">
-            <h2 style="text-decoration:none;">Show Candidates</h2>
-            </center>
-        </div></a>
-        <a href="{{ url_for('voting_toggle') }}"><div id='toggle_voting' class='in'>
-            <center>
-                <img src="{{ url_for('static',filename='ballot_picture.png')}}" alt="user pic">
-                {% if not valid %}
-                <h2>Start Voting</h2>
+                <img src="{{ url_for('static',filename='default_picture.svg')}}" alt="user pic">
+                {% if not voting_started %}
+                    <h2 style="text-decoration:none;">Enter Candidates</h2>
                 {% else %}
-                <h2>Stop Voting</h2>
+                    <h2 style="text-decoration:none;">Show Candidates</h2>
                 {% endif %}
             </center>
         </div></a>
+        {% if not voting_ended %}
+        <a href="{{ url_for('voting_settings') }}"><div id='toggle_voting' class='in'>
+            <center>
+                    <img src="{{ url_for('static',filename='ballot_picture.svg')}}" alt="user pic">
+                    {% if not voting_started %}
+                    <h2>Start Voting</h2>
+                    {% else %}
+                    <h2>Stop Voting</h2>
+                    {% endif %}
+            </center>
+        </div></a>
+        {% else %}
+            <center>
+                <div id='toggle_voting' class='in' style="height:300px;width:300px;">
+                    <h2>Voting is over</h2>
+                    <h2>Check the results in results.pdf</h2>
+                </div>
+            </center>
+        {% endif %}
         <a href="{{ url_for('settings') }}"><div id='settings' class='in'>
             <center>
-                <img src="{{ url_for('static',filename='settings.png')}}" alt="user pic">
+                <img src="{{ url_for('static',filename='settings.svg')}}" alt="user pic">
             <h2>Settings</h2>
             </center>
         </div></a>
     </div>
+{% if not voting_started and not voting_ended %}
+<p id='voting_state' style='color:#FCED47;display:inline-block;'>VOTING STATE: AWAITING &nbsp;</p><p id='voting_state' style="color:{{ color_scheme[house_choice][0] }};display:inline-block;"> &nbsp;&nbsp; HOUSE: {{ makeupper(house_choice) }}</p>
+{% elif voting_started and not voting_ended %}
+    <p id='voting_state' style='color:#7CFC00;display: inline-block;'>VOTING STATE: STARTED</p><p id='voting_state' style="color:{{ color_scheme[house_choice][0] }};display:inline-block;"> &nbsp;&nbsp; HOUSE: {{ makeupper(house_choice) }}</p>
+{% else %}
+    <p id='voting_state' style='color:red;'>VOTING STATE: ENDED</p>
+{% endif %}
 </center>
 {% endblock %}

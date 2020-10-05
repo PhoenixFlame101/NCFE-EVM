@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/voting_settings.css') }}">
+{% endblock %}
+
+{% block body %}
+<a href="{{ url_for('dashboard') }}"><input type="button" value="BACK" id='back'></a>
+<center>
+{% if valid %}
+<div class='voting_box'>
+<p class='hide_after_confirm'>Voting has Started</p>
+<p class='hide_before_confirm'>Are you Sure?</p>
+<div>
+<input type="button" value="STOP VOTING" class='button' class='hide_after_confirm' id='confirm_button' onclick="confirm()">
+<a href="{{ url_for('stop_voting') }}" class='hide_before_confirm'><input type="button" value="STOP VOTING" class='button' class='hide_before_confirm'></a>
+</div>
+</div>
+
+{% else %}
+<div class='voting_box'>
+<p>Voting has not been Started</p>
+</div></div>
+<div>
+    <a href="{{ url_for('start_voting') }}"><input type="button" value="START VOTING" class='button'></a>
+    </div>
+<P style='font-size:2em;font-family:"text";'>Number of pages of codes to be generated:{{ no_of_codes }}</P>
+{% endif %}
+
+<h1 class='missing_photos'><u>MISSING PHOTOS:</u></h1>
+{% for post in not_there %}
+    {% if len(d[post]) > 1 %}
+        <div class='missing_photos'>
+        {% if len(not_there[post]) != 0 %}
+        <h2 style='display:inline-block;'>{{ underscore_remove(post) }}:</h2>
+        {% endif %}
+        {% for name in not_there[post] %}
+            <h3 style='display:inline-block;'>{{ makeupper(name) }}</h3>
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+</center>
+<script>
+$(document).ready(function(){
+    $('.hide_before_confirm').hide();
+});
+function confirm(){
+    $('.hide_after_confirm').hide();
+    $('#confirm_button').hide();
+    $('.hide_before_confirm').show();
+}
+
+</script>
+
+
+{% endblock %}

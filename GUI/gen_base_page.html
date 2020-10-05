@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+    <script src="{{ url_for('static',filename='jquery.js') }}"></script>
+    <script src="{{ url_for('static',filename='inspect_element_disabler.js') }}"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/gen.css') }}">
+
+    <style>
+        :root{
+            --bg:{{ color_scheme[base_page_name][0] }};
+            --box:{{ color_scheme[base_page_name][1] }};
+            --text:{{ color_scheme[base_page_name][2] }};
+        }
+        .picbox{
+            {% if len(d[p]) == 5 %}
+                height:33vh;
+            {% else %}
+                height:40vh;
+            {% endif %}
+        }
+    </style>
+
+
+    {% if (cur_posts[-1]+'_choice') in session %}
+        <style>#jump_to_review{display:block;}</style>
+    {% else %}
+        <style>#jump_to_review{display:none;}</style>
+    {% endif %}
+    </head>
+<body>
+        <center>
+            <h1 id='post'>{{ pname }}</h1>
+            <div id='container'>
+              {% for x in d[p] %}
+                <div class='picbox' onclick="color();single_click(this);">
+                {% if base_page_name == 'major' %}
+                  <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_picture.svg') }}">
+                {% else %}
+                  <img src="{{ url_for('download_file',filename=(x)) }}" alt="user pic" onerror=this.src="{{ url_for('static',filename='default_white.svg') }}">
+                {% endif %}
+                    <p>{{  x  }}</p>
+                </div>
+              {% endfor %}
+        
+            </div>
+            <form action="{{ url_for('load_post',post=p) }}" method="post">
+              {% if p != cur_posts[0] and not lastthere %}
+              <a href="{{ url_for('load_post',post=prev_post(p)) }}"><input type="button" value="BACK" id='back'></a>
+              {% endif %}
+        
+              <input type="button" name="{{ p+'_button' }}" id='btn' value="SUBMIT" onclick="btn_click()">
+        
+              {% if lastthere %}
+              <input type="submit" id='next_page_btn'  value="BACK TO REVIEW PAGE">
+              {% else %}
+              <input type="submit" id='next_page_btn'  value="NEXT PAGE">
+              {% endif %}
+
+              <input type="hidden" name="{{ p+'_choice' }}" style="display: none;" id="hidden" value="{{ session[p+'_choice'] }}">
+              <p id="lehidden">{{ session[p+'_choice'] }}</p>
+            </form>
+
+            </center>
+</body>
+    <script>
+        var is_clicked = false;
+        var submitted = false;
+        var clicked_obj;
+        var prev_vote;
+        var bg = '{{ color_scheme[base_page_name][0] }}';
+        var box = '{{ color_scheme[base_page_name][1] }}';
+        
+        
+        $(document).ready(function(){
+            $('#btn').click(function(){
+              if (clicked_obj){
+              $('#post').hide('slow');
+              $('#btn').html('NEXT PAGE');
+              $('#btn').fadeOut('slow',function(){
+                $('#next_page_btn').fadeIn('slow');
+              });
+              }
+            })
+          });
+        
+        function single_click(the_obj){
+          if (submitted == false){
+            if (is_clicked == false){
+                the_obj.style.backgroundColor = bg;
+                is_clicked = true;
+                clicked_obj = the_obj;
+            } else {
+              clicked_obj.style.backgroundColor = box;
+              clicked_obj = the_obj;
+              the_obj.style.backgroundColor = bg;
+            }
+          }
+        }
+        
+        function color(){
+          if (prev_vote){
+            prev_vote.style.backgroundColor=box;
+          }
+        }
+        
+        function btn_click(){
+          var selected_candidate = clicked_obj.firstChild.nextSibling.nextSibling.nextSibling.textContent;
+          document.getElementById('hidden').value = selected_candidate;
+        
+          submitted = true;
+        }
+        
+        function load(){
+          voted = document.getElementById("lehidden").innerHTML;
+        
+          $("#container").children().each(function () {
+                    var element = $(this).children("p").prop("innerHTML");
+                    if (element == voted){
+                      $(this).css("background-color", bg);
+                      prev_vote = $(this).get(0);
+                      clicked_obj = prev_vote;
+                    }
+                });
+        }
+        $(document).ready(function(){
+          load();
+        });
+    </script>
+    </html>

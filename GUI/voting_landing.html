@@ -1,0 +1,27 @@
+{% extends "base_page.html" %}
+{% block head %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/landing.css') }}">
+{% endblock %}
+
+{% block body %}
+<form method='post' autocomplete="off">
+    <h1>Enter Security Code</h1>
+    <input type="text" placeholder="Enter code here" name='pwd_box' spellcheck="false" maxlength="5">
+    {% if not voting_started and not voting_ended %}
+    <p id='session_invalid'>VOTING HAS NOT BEEN STARTED</p>
+    <input type="button" value="SUBMIT" id='voting_not_allowed'>
+    {% elif voting_started and not voting_ended %}
+    <input type="submit" value="SUBMIT" id='voting_allowed'>
+    {% else %}
+    <p id='session_invalid' style='margin-left:30vw;'>VOTING HAS ENDED</p>
+    <input type="button" value="SUBMIT" id='voting_not_allowed'>
+    {% endif %}
+</form>
+<script>
+document.onkeydown  = function(e){
+    if (e.which == 192 && e.shiftKey){
+        window.location.href = "{{ url_for('admin_page') }}";
+    }
+}
+</script>
+{% endblock %}

@@ -1,6 +1,9 @@
 body{
     background-color: #121212;
-    color:#f6c90e;
+    color:#FCED47;
+}
+*{
+    outline:none;
 }
 @font-face{
     font-family:'text';
@@ -12,8 +15,8 @@ body{
 }
 #container{
     display:flex;
-    margin-top:10%;
-    margin-left:-4%;
+    margin-top:7%;
+    margin-left:-7%;
     height:60%;
     width:85%;
     align-items:stretch;
@@ -31,6 +34,7 @@ h1{
     padding:10% 10% 5% 10%;
     width:85%;
     height:90%;
+    border:1px solid transparent;
     text-decoration: none;
     outline:none;
     /*change the height and width here to change the icon sizes*/
@@ -41,12 +45,35 @@ img{
 }
 .in:hover{
     background-color: #161616;
-    border:1px solid #f6c90e;
+    border:1px solid #FCED47;
+    width:85%-1px;
+    height:90%-1px;
 }
 h2,a{
     text-decoration:none;
-    color:#f6c90e;
+    color:#FCED47;
     align-self:center;
     font-family:'heading';
     font-weight:lighter;
+}
+#logout{
+    position: absolute;
+    left:3%;
+    top:5%;
+    border:none;
+    outline:none;
+    color:#FCED47;
+    background-color: #333333;
+    height:6%;
+    width:13%;
+}
+#logout:hover{
+    border:1px solid #FCED47;
+}
+#voting_state{
+    font-family:'heading';
+    /*position:absolute;*/
+    font-size:2.5em;
+    /*margin-left:40vw;*/
+    margin-top:10vh;
 }

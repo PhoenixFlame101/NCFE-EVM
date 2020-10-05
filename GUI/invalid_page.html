@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/invalid_page.css') }}">
+    <script src="{{ url_for('static',filename='inspect_element_disabler.js') }}"></script>
+</head>
+<body><center>
+    <h1>CODE {{ msg }}</h1>
+    <a href="{{ url_for('home') }}"><button>OK</button></a>
+</center>
+    <script>
+window.setTimeout(function(){
+window.location.href = "{{ url_for('home') }}";
+}, 5000);
+    </script>
+</body>

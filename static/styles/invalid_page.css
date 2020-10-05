@@ -1,0 +1,33 @@
+@font-face{
+    font-family: 'heading';
+    src:url('heading.ttf');
+}
+body{
+    background-color: #161616;
+}
+h1{
+    /*position: absolute;*/
+    margin-top:35vh;
+    color:red;
+    font-family:'heading';
+    font-size: 3.125em;
+    text-transform:uppercase;
+}
+button:hover{
+    background-color: #121212!important;
+    border:1px solid #FCED47;
+}
+button{
+    width:35vh;
+    height:10vh;
+    margin-top:18%;
+    background-color: #212121;
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'text';
+    color:#fced47;
+    font-size:20px;
+    /*position:absolute;*/
+    outline: none;
+}

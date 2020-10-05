@@ -1,0 +1,54 @@
+@font-face{
+    font-family:'text';
+    src:url('text.ttf');
+}
+@font-face{
+    font-family: 'heading';
+    src:url('heading.ttf');
+}
+::-webkit-scrollbar{
+    visibility: hidden;
+}
+body{
+    background-color: #161616;
+    color:#FCED47;
+}
+#back{
+    margin-left:3vw;
+    width:35vh;
+    height:10vh;
+    background-color: #212121;
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'text';
+    color:#fced47;
+    font-size:23px;
+    position: absolute;
+    outline: none;
+    top:2vw;
+}
+#back:hover,.button:hover{
+    border:1px solid #FCED47;
+}
+.voting_box{
+    font-size:3em;
+    margin-top:15vh;
+    font-family:'text';
+}
+.button{
+    width:35vh;
+    height:10vh;
+    background-color: #212121;
+    text-align:center;
+    border: none;
+    border-radius:20px;
+    font-family:'text';
+    color:#fced47;
+    font-size:23px;
+    outline: none;
+}
+.missing_photos{
+    color:red;
+    font-family:'heading';
+}

@@ -25,13 +25,13 @@ h2{
 }
 form{
     font-family:'text';
-    margin-left: 15%;
+    margin-left: 5%;
 }
 input[type="submit"]{
     width:25%;
     height:10%;
-    bottom:10%;
-    right:37.5%;
+    bottom:7%;
+    right:5%;
     background-color: #212121;
     text-align:center;
     border: none;
@@ -46,10 +46,12 @@ input[type="submit"]:hover{
     border:1px solid #fced47;
 }
 div{
-    display:flexbox;
+    display:flex;
     height:15vh;
+    width:80vw;
 }
 input[type="button"]{
+    margin-right:4%;
     height:75%;
     width:20%;
     font-family:'text';
@@ -64,7 +66,7 @@ input[type="button"]:hover{
     border:1px solid white;
 }
 #kf{
-    background-color: #9ed7f6;
+    background-color: #29c0ee;
 }
 #fl{
     background-color: #E05707;
