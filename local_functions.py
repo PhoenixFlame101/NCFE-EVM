@@ -2,7 +2,6 @@
 
 from PIL import Image
 
-
 def resize_image(picture_path):
 	pic = Image.open(picture_path)
 	aspect_ratio = pic.size[1]/pic.size[0]
@@ -12,20 +11,20 @@ def resize_image(picture_path):
 
 
 def store_house_choice(choice):
-	try:
-		with open('local_vars.encrypted', 'r+') as f:
-			uri = f.readlines()[-1]
-			f.truncate(0)
-			f.seek(0)
-			f.writelines([f'House Choice: {choice.lower()}'+'\n', uri])
-	except:
-		with open('local_vars.encrypted', 'w+') as f:
-			f.writelines([f'House Choice: {choice.lower()}'+'\n'])
+	with open('local_vars.encrypted', 'r+') as f:
+		uri = f.readlines()[-1]
+		f.truncate(0)
+		f.seek(0)
+		f.writelines([f'House Choice: {choice.lower()}'+'\n', uri])
 
 
 def get_house_choice():
-	with open('local_vars.encrypted', 'r+') as f:
-		return f.readlines()[0][14:-1]
+	try:
+		with open('local_vars.encrypted', 'r+') as f:
+			return f.readlines()[0][14:-1]
+	except FileNotFoundError:
+		store_house_choice('kingfisher')
+		return get_house_choice()
 
 
 def store_db_uri(uri):
@@ -41,13 +40,13 @@ def store_db_uri(uri):
 
 
 def get_db_uri():
-	with open('local_vars.encrypted', 'r+') as f:
-		uri = f.readlines()[1][8:]
-		if '/' not in uri:
-			return 'mongodb://localhost:27017/'
-		else:
-			return uri
-
-
-if get_house_choice() not in ['kingfisher','flamingo','eagle','falcon']:
-	store_house_choice('falcon')
+	try:
+		with open('local_vars.encrypted', 'r+') as f:
+			uri = f.readlines()[1][8:]
+			if '/' not in uri:
+				return 'mongodb://localhost:27017/'
+			else:
+				return uri
+	except FileNotFoundError:
+		store_db_uri('')
+		return get_db_uri()
