@@ -427,6 +427,11 @@ def get_custom_post_load_list():
 	load_list = [y.lower().replace(' ',"_") for y in load_list]
 	cp = candidates.keys()
 	result = list(set(load_list)^set(cp))
+	filtered_result = []
+	for post in result:
+		if post not in load_list:
+			filtered_result.append(post)
+	result = filtered_result
 	final = []
 	temp = []
 	temp1 = []
