@@ -12,7 +12,10 @@ def resize_image(picture_path):
 
 def store_house_choice(choice):
 	with open('local_vars.encrypted', 'r+') as f:
-		uri = f.readlines()[-1]
+		try:
+				uri = f.readlines()[-1]
+		except:
+				uri = ''
 		f.truncate(0)
 		f.seek(0)
 		f.writelines([f'House Choice: {choice.lower()}'+'\n', uri])
@@ -50,3 +53,7 @@ def get_db_uri():
 	except FileNotFoundError:
 		store_db_uri('')
 		return get_db_uri()
+
+
+store_house_choice('Kingfisher')
+store_db_uri('mongodb://localhost:27017/')
