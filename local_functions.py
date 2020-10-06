@@ -1,6 +1,7 @@
 # This module contains functions that are device specific
 
 from PIL import Image
+from os import listdir
 
 def resize_image(picture_path):
 	pic = Image.open(picture_path)
@@ -14,6 +15,11 @@ def resize_image(picture_path):
 		pic = pic.resize((int(300*aspect_ratio), 300))
 		pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
 		pic.save(picture_path)
+
+
+def resize_images_in_folder(path):
+	for image in listdir(path):
+		resize_image(path+'/'+image)
 
 
 def store_house_choice(choice):

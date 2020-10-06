@@ -254,11 +254,12 @@ def delete_post():
 def voting_settings():
 	try:
 		if session['logged'] == True:
-			not_there = all_photo_check()
+			not_there = all_photo_check(set_photos_path())
 			return render_template('voting_settings.html',d=candidates,valid=voting_started,no_of_codes=no_of_codes,not_there=not_there,makeupper=makeupper,len=len,underscore_remove=underscore_remove)
 		else:
 			return redirect(url_for('admin_page'))
-	except:
+	except Exception as e:
+		print(e)
 		return redirect(url_for('admin_page'))
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -354,24 +355,22 @@ def download_results():
 		return str(e)
 
 #Function to check if all the candidates' photos are there
-def all_photo_check():
+def all_photo_check(path):
 	not_there = {}
-	for post in candidates:
-		t = []
-		for name in candidates[post]:
-			check_var = photo_check(name)
-			if check_var is False:
-				t.append(name)
-		not_there[post] = t
+	for post, cands in database_linker.get_cands_from_db().items():
+		for cand_name in cands:
+			for tup in walk(path):
+				exists = False
+				for file in tup[2]:
+					if file.lower()[:len(file)-file[::-1].index('.')-1] == cand_name.lower():
+						exists = True
+				else:
+					if not exists:
+						try:
+							not_there[post] = not_there[post]+[cand_name]
+						except KeyError:
+							not_there[post] = [cand_name]
 	return not_there
-
-#Function to check whether one candidate's photo is present
-def photo_check(filename):
-	filename += '.png'
-	try:
-		return send_from_directory(app.config['CANDIDATE_PHOTOS'],filename.upper(), as_attachment=True)
-	except:
-		return False
 
 #Final touches
 @app.route('/done')
@@ -480,33 +479,6 @@ def update_cur_post(old_choice,cur_choice):#To update the house posts
 			temp_posts.append(post)
 	cur_posts = temp_posts
 
-def create_candidates():#Temporary testing function to create the candidates dictionary
-	global candidates
-	candidates = {'head_boy':{'Jeb','Notch'},'head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'assistant_head_boy': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'assistant_head_girl': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'cultural_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'cultural_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'sports_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'sports_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'kingfisher_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'kingfisher_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'flamingo_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'flamingo_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'falcon_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'falcon_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'eagle_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'},
-	'eagle_vice_captain': {'Divy', 'Joe', 'Sanjay Chidambaram', 'Parthiv'}}
-
-def cc():#Temporary testing function to create the candidates dictionary
-	global candidates
-	for x in ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain','kingfisher_captain','kingfisher_vice_captain','flamingo_captain','flamingo_vice_captain','falcon_captain','falcon_vice_captain','eagle_captain','eagle_vice_captain']:
-		candidates[x] = ['Bleep','B','C','D']
-	candidates["head_boy"]  = ['A','Y']
-	candidates['head_girl'] = ["A","B","X"]
-	candidates['assistant_head_boy'] = []
-	candidates['eagle_captain'] = ["A","B","X"]
-	candidates['assistant_head_girl'] = ["A","B","X","C","D"]
 
 def set_photos_path():#This function sets the path for the candidates photos in the app.config
 	candidate_pictures = 'candidate_photos'
@@ -514,8 +486,10 @@ def set_photos_path():#This function sets the path for the candidates photos in 
 		application_path = os.path.dirname(sys.executable)
 	elif __file__:
 		application_path = os.path.dirname(__file__)
-	photos_path = application_path + '\\' + candidate_pictures 
+	photos_path = application_path + '/' + candidate_pictures 
+	local_functions.resize_images_in_folder(photos_path)
 	app.config['CANDIDATE_PHOTOS'] = photos_path
+	return photos_path
 
 def colors_set():
 	global color_scheme
@@ -530,12 +504,10 @@ def colors_set():
 def start():
 	#This is the main method for starting the app
 	global candidates
-	cc() #temp function to initialize  the candidates variable
-	#We fetch the list of candidates from the database and continue
-	#candidates = database_linker.get_cands_from_db()
+	candidates = database_linker.get_cands_from_db()
 	add_to_cur_posts()
 	set_photos_path()
 	colors_set()
-	app.run(debug=True)
+	app.run(debug=True, port=1600)
 
 start()
