@@ -5,9 +5,15 @@ from PIL import Image
 def resize_image(picture_path):
 	pic = Image.open(picture_path)
 	aspect_ratio = pic.size[1]/pic.size[0]
-	pic = pic.resize((300, int(300*aspect_ratio)))
-	pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
-	pic.save(picture_path)
+	if aspect_ratio >= 1:
+		pic = pic.resize((300, int(300*aspect_ratio)))
+		pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
+		pic.save(picture_path)
+	elif aspect_ratio < 1:
+		aspect_ratio = pic.size[0]/pic.size[1]
+		pic = pic.resize((int(300*aspect_ratio), 300))
+		pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
+		pic.save(picture_path)
 
 
 def store_house_choice(choice):
@@ -53,7 +59,3 @@ def get_db_uri():
 	except FileNotFoundError:
 		store_db_uri('')
 		return get_db_uri()
-
-
-store_house_choice('Kingfisher')
-store_db_uri('mongodb://localhost:27017/')
