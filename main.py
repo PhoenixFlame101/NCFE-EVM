@@ -1,5 +1,4 @@
 from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
-from os import walk
 import database_linker
 import sec_code
 import os,sys
@@ -31,13 +30,14 @@ def home():
 		#This part whether the security code is valid by asking the database
 		receivedpwd = request.form['pwd_box']
 		validity = sec_code.code_is_valid(receivedpwd)
-		if validity is True:
+		if validity and voting_started:
 			global valid
 			valid = True
 			session['home_choice'] = True
+			print(cur_posts)
 			return redirect(url_for('load_post',post=cur_posts[0]))
 		else:
-			return redirect(url_for('invalid_code',msg=validity))
+			return redirect(url_for('invalid_code',msg=(validity if voting_started else 'Invalid - Voting not started')))
 
 @app.route('/invalid_code/<msg>')
 def invalid_code(msg):
@@ -140,7 +140,6 @@ def admin_page():
 			session['logged'] = True
 			return redirect(url_for('dashboard'))
 		else:
-			print(receivedpwd)
 			return redirect(url_for('admin_page'))
 
 @app.route('/dashboard')
@@ -209,7 +208,6 @@ def add_custom_post():
 
 					database_linker.initializing(candidates)
 					cur_posts = cur_posts_order
-					print(cur_posts)
 				else:
 					return redirect(url_for('add_custom_post'))
 		else:
@@ -289,8 +287,6 @@ def settings():
 				if type(t) is int:
 					if t>0:
 						no_of_codes = t
-
-				print(no_of_codes)
 				return redirect(url_for('settings'))
 	except Exception as e:
 		print(e)
@@ -338,7 +334,7 @@ def download_file(filename):#Function to download the file
 		pass
 
 def get_image_folder_path(path,cand_name):#Function that returns file with any extension
-	for tup in walk(path):
+	for tup in os.walk(path):
 		for file in tup[2]:
 			if file.lower()[:len(file)-file[::-1].index('.')-1] == cand_name.lower():
 				if not file.lower().startswith('default'):
@@ -347,7 +343,6 @@ def get_image_folder_path(path,cand_name):#Function that returns file with any e
 @app.route('/download_results')
 def download_results():
 	x = "".join([y+'\\' for y in app.config['CANDIDATE_PHOTOS'].split('\\')[:-1]])
-	print(x)
 	try:
 		return send_from_directory(x,filename='results.pdf')
 	except Exception as e:
@@ -359,7 +354,7 @@ def all_photo_check(path):
 	not_there = {}
 	for post, cands in database_linker.get_cands_from_db().items():
 		for cand_name in cands:
-			for tup in walk(path):
+			for tup in os.walk(path):
 				exists = False
 				for file in tup[2]:
 					if file.lower()[:len(file)-file[::-1].index('.')-1] == cand_name.lower():
@@ -393,7 +388,6 @@ def store_result(dt):#We can change this to call the function to store the voter
 	for x in dt:
 		if dt[x] != 'DNE':
 			dt1[x] = dt[x]
-	print(dt1)
 	database_linker.add_votes_to_db(dict(dt1))
 
 def underscore_remove(t):#This function is used to remove all the underscores in string and return it in captial
@@ -458,7 +452,6 @@ def replace_house_name(l):
 
 def fetch_changed_house_choice():
 	hc = request.values.get('house_choice')
-	print(hc)
 
 def add_to_cur_posts():#To create teh current posts variable
 	global cur_posts
@@ -508,6 +501,6 @@ def start():
 	add_to_cur_posts()
 	set_photos_path()
 	colors_set()
-	app.run(debug=True, port=1600)
+	app.run(debug=True)
 
 start()
