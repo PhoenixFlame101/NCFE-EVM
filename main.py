@@ -11,6 +11,7 @@ cur_posts =[]                                              #Stores the order of 
 no_of_codes = 4                                            #Stores the number of pages of codes to be generated
 all_candidates_photos_there = None                         #Boolean telling whether all the candidates' photos are there
 color_scheme = {}                                          #Stores the various colors of the different houses
+voting_order_modified = False							   #Tells if the voting order has been modified
 
 valid = False                                              #Flask's file variable for showing session validity
 voting_started = False                                     #Status of voting; affects the admin dashboard
@@ -236,6 +237,10 @@ def show_candidate():
 							new_l.append(y)
 					updated_candidates[post] = new_l
 
+				#If no custom post has been added,it creates the cur_post variable
+				if not voting_order_modified:
+					add_to_cur_posts()
+
 				#Updates the candidates and stores the same in the database
 				candidates = updated_candidates
 				database_linker.initializing(candidates)
@@ -253,7 +258,7 @@ def add_custom_post():
 
 	try:
 		if session['logged'] == True:
-			global cur_posts,candidates
+			global cur_posts,candidates,voting_order_modified
 
 			if request.method== 'GET':
 				return render_template('add_custom_post.html',str=str,cur_post=cur_posts,u=underscore_remove,replace_house_name=replace_house_name)
@@ -293,6 +298,7 @@ def add_custom_post():
 					#Store candidates in the database and updates value of cur_posts
 					database_linker.initializing(candidates)
 					cur_posts = cur_posts_order
+					voting_order_modified = True
 				else:
 					return redirect(url_for('add_custom_post'))
 		else:
@@ -501,7 +507,7 @@ def add_to_cur_posts():
 	global cur_posts
 	l = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain',house_choice+'_captain',house_choice+'_vice_captain']
 	for y in l:
-		if y in candidates:
+		if y in candidates and y not in cur_posts:
 			if len(candidates[y])>1:
 				cur_posts.append(y)
 
