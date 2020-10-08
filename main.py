@@ -517,7 +517,7 @@ def set_photos_path():
 		photos_path = application_path + '\\' + candidate_pictures
 		local_functions.resize_images_in_folder(photos_path)
 		app.config['CANDIDATE_PHOTOS'] = photos_path
-	except:
+	except FileNotFoundError:
 		#creates folder if not there
 		app_path = "/".join(os.path.dirname(__file__).split('/'))
 		os.mkdir(app_path+'/candidate_photos')
@@ -633,9 +633,6 @@ def is_house_post(t):
 
 def replace_house_name(l):
 	return [post.replace(house_choice,'house') if post.startswith(house_choice) else post for post in l]
-
-def fetch_changed_house_choice():
-	hc = request.values.get('house_choice')
 
 def start():
 	'''This is the main method for starting the app'''
