@@ -1,20 +1,25 @@
 # This module contains functions that are device specific
 
-from PIL import Image
-from os import listdir
+from PIL import Image, UnidentifiedImageError
+from os import listdir, rename
 
 def resize_image(picture_path):
-	pic = Image.open(picture_path)
-	aspect_ratio = pic.size[1]/pic.size[0]
-	if aspect_ratio >= 1:
-		pic = pic.resize((300, int(300*aspect_ratio)))
-		pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
-		pic.save(picture_path)
-	elif aspect_ratio < 1:
-		aspect_ratio = pic.size[0]/pic.size[1]
-		pic = pic.resize((int(300*aspect_ratio), 300))
-		pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
-		pic.save(picture_path)
+	try:
+		pic = Image.open(picture_path)
+		aspect_ratio = pic.size[1]/pic.size[0]
+		if aspect_ratio >= 1:
+			pic = pic.resize((300, int(300*aspect_ratio)))
+			pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
+			pic.save(picture_path)
+		elif aspect_ratio < 1:
+			aspect_ratio = pic.size[0]/pic.size[1]
+			pic = pic.resize((int(300*aspect_ratio), 300))
+			pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
+			pic.save(picture_path)
+	except UnidentifiedImageError:
+		image_name = picture_path[len(picture_path)-picture_path[::-1].index('/'):]
+		if not image_name.startswith('[Corrupt]'):
+			rename(picture_path, picture_path[:len(picture_path)-picture_path[::-1].index('/')-1]+'/[Corrupt] '+image_name)
 
 
 def resize_images_in_folder(path):
