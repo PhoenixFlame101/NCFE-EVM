@@ -554,7 +554,6 @@ def set_photos_path():
 		elif __file__:
 			application_path = os.path.dirname(__file__)
 		photos_path = application_path + '\\' + candidate_pictures
-		local_functions.resize_images_in_folder(photos_path)
 		app.config['CANDIDATE_PHOTOS'] = photos_path
 	except FileNotFoundError:
 		#creates folder if not there
@@ -680,7 +679,7 @@ def start():
 	candidates = database_linker.get_cands_from_db()
 
 	add_to_cur_posts()
-	set_photos_path()
+	local_functions.resize_images_in_folder(set_photos_path())
 	colors_set()
 
 	app.run(debug=True)
