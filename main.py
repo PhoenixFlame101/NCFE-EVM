@@ -496,14 +496,21 @@ def add_to_cur_posts():
 def set_photos_path():
 	'''This function sets the path for the candidates photos in the app.config'''
 
-	candidate_pictures = 'candidate_photos'
-	if getattr(sys, 'frozen', False):
-		application_path = os.path.dirname(sys.executable)
-	elif __file__:
-		application_path = os.path.dirname(__file__)
-	photos_path = application_path + '/' + candidate_pictures 
-	local_functions.resize_images_in_folder(photos_path)
-	app.config['CANDIDATE_PHOTOS'] = photos_path
+	try:
+		candidate_pictures = 'candidate_photos'
+		if getattr(sys, 'frozen', False):
+			application_path = os.path.dirname(sys.executable)
+		elif __file__:
+			application_path = os.path.dirname(__file__)
+		photos_path = application_path + '/' + candidate_pictures
+		local_functions.resize_images_in_folder(photos_path)
+		app.config['CANDIDATE_PHOTOS'] = photos_path
+	except:
+		#creates folder if not there
+		app_path = "/".join(os.path.dirname(__file__).split('/'))
+		os.mkdir(app_path+'/candidate_photos')
+		set_photos_path()
+
 	return photos_path
 
 def colors_set():
