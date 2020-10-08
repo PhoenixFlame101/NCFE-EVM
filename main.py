@@ -279,6 +279,10 @@ def add_custom_post():
 						new_post_name = house_choice+'_'+new_post_name.replace(' ','_')
 					cur_posts_order = [post.replace('house',house_choice) if post.startswith('house') else post for post in cur_posts_order]
 
+					#Doesn't add the post if it already exists
+					if new_post_name.replace(' ','_') in cur_posts:
+						return redirect(url_for('show_candiate'))
+
 					#Store candidates in the database and updates value of cur_posts
 					database_linker.initializing(candidates)
 					cur_posts = cur_posts_order
