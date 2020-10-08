@@ -71,18 +71,22 @@ def results_print():
 	pdf.add_page()
 	for post in results:  # The results list is a list of MongoDB documents
 		if len(post.items()) > 2:
+			total_num_votes = sum(_ for _ in post.values() if type(_) == int)
 			for key, value in post.items():
 				# If the current value contans the post name, use it as a heading
-					if key == '_id':
-						pdf.set_font("Arial", 'U', size=14)
-						pdf.cell(200, 10, txt=value, align='C')
-						pdf.ln(7)
-					else:
-						pdf.set_font("Arial", size=12)
-						pdf.cell(55, 10)
-						pdf.cell(75, 10, txt=key, align='L')
-						pdf.cell(10, 10, txt=str(value), align='C')
-						pdf.ln(7)
+				if key == '_id':
+					pdf.set_font("Arial", 'U', size=14)
+					pdf.cell(200, 10, txt=value, align='C')
+					pdf.ln(10)
+					pdf.set_font("Arial", size=12)
+					pdf.cell(200, 10, txt='Total Votes: '+str(total_num_votes), align='C')
+					pdf.ln(7)
+				else:
+					pdf.set_font("Arial", size=12)
+					pdf.cell(55, 10)
+					pdf.cell(75, 10, txt=key, align='L')
+					pdf.cell(10, 10, txt=str(value), align='C')
+					pdf.ln(7)
 			else:
 				pdf.ln()
 	pdf.output('results.pdf')
