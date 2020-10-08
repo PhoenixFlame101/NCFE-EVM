@@ -9,7 +9,7 @@
     <a href="{{ url_for('logout') }}"><input value="LOGOUT" type="button" id='logout'></a>
     <h1>NCFE EVM DASHBOARD</h1>
     <div id='container'>
-        <a href="{{ url_for('show_candidate') }}"><div id='enter_candidates' class='in'>
+        <a {% if not voting_ended %}href="{{ url_for('show_candidate') }}"{% endif %}><div id='enter_candidates' class='in'>
             <center>
                 <img src="{{ url_for('static',filename='default_picture.svg')}}" alt="user pic">
                 {% if not voting_started %}

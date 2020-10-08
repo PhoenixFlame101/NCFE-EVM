@@ -30,13 +30,8 @@
 {% for post in not_there %}
     {% if len(d[post]) > 1 %}
         <div class='missing_photos'>
-        {% if len(not_there[post]) != 0 %}
-        <h2 style='display:inline-block;'>{{ underscore_remove(post) }}:</h2>
-        {% endif %}
-        {% for name in not_there[post][:1] %}
-            <h3 style='display:inline-block;'>{{ makeupper(name) }} ,</h3>
-        {% endfor %}
-            <h3 style='display:inline-block;'>{{ makeupper(not_there[post][-1]) }}</h3>
+            <h2 style='display:inline-block;'>{{ underscore_remove(post) }}:</h2>
+            <h3 style='display:inline-block;'>{{ makeupper(not_there[post]) }}</h3>
         </div>
     {% endif %}
 {% endfor %}

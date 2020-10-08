@@ -151,7 +151,7 @@ def final():
 		if session[cur_posts[-1]+'_choice']:
 			if request.method == "GET":
 				#Session dictionary is passed to make the table in the webpage
-				return render_template('review_page.html',session=dict(session),cur_posts=cur_posts)
+				return render_template('review_page.html',session=dict(session),cur_posts=cur_posts,title=title)
 			else:
 				return redirect(url_for('over'))
 
@@ -237,12 +237,13 @@ def show_candidate():
 							new_l.append(y)
 					updated_candidates[post] = new_l
 
+				#Updates the candidates and stores the same in the database
+				candidates = updated_candidates
+
 				#If no custom post has been added,it creates the cur_post variable
 				if not voting_order_modified:
 					add_to_cur_posts()
 
-				#Updates the candidates and stores the same in the database
-				candidates = updated_candidates
 				database_linker.initializing(candidates)
 
 				return redirect(url_for('show_candidate'))
@@ -339,6 +340,8 @@ def delete_post():
 						else:
 							if post == post_to_delete:
 								del candidates[post]
+
+					database_linker.initializing(candidates)
 				except Exception as e:
 					print(e)
 					pass
@@ -477,7 +480,7 @@ def get_image_folder_path(path,cand_name):
 def all_photo_check(path):
 	'''This function checks if all the candidates' photos are there'''
 
-	#Format of not_there : {post1:[missing_candidate_1,missing_candidate_2,..],post2:[...]...}
+	#Format of not_there : {post1:'missing_candidate_1,missing_candidate_2,..',post2:'...'...}
 	not_there = {}
 
 	for post, cands in database_linker.get_cands_from_db().items():
@@ -494,6 +497,11 @@ def all_photo_check(path):
 						except KeyError:
 							not_there[post] = [cand_name]
 
+	#Converts the posts into a single string to be passed into the html template
+	for post in not_there:
+		ret_str = ",".join(not_there[post])
+		not_there[post] = ret_str
+
 	return not_there
 
 
@@ -504,12 +512,42 @@ def all_photo_check(path):
 def add_to_cur_posts():
 	'''This function creates the current posts variable'''
 
-	global cur_posts
-	l = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain',house_choice+'_captain',house_choice+'_vice_captain']
-	for y in l:
-		if y in candidates and y not in cur_posts:
-			if len(candidates[y])>1:
-				cur_posts.append(y)
+	global cur_posts,candidates
+
+	cur_posts = []
+	houses = ['kingfisher','flamingo','falcon','eagle']
+	major_temp = []
+	house_temp = []
+	default_major_order = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain']
+	default_house_order = [house_choice+'_captain',house_choice+'_vice_captain']
+
+	for post in candidates:
+		is_house_post = False
+		for house in houses:
+			if post.startswith(house):
+				is_house_post = True
+
+		if is_house_post:
+			if post.startswith(house_choice):
+				house_temp.append(post)
+		else:
+			if len(candidates[post])>1 or post not in default_major_order:
+				major_temp.append(post)
+
+
+	for post in default_major_order:
+		if post in major_temp:
+			cur_posts.append(post)
+			major_temp.remove(post)
+	for post in major_temp:
+		cur_posts.append(post)
+
+	for post in default_house_order:
+		if post in house_temp:
+			cur_posts.append(post)
+			house_temp.remove(post)
+	for post in house_temp:
+		cur_posts.append(post)
 
 def set_photos_path():
 	'''This function sets the path for the candidates photos in the app.config'''
