@@ -480,7 +480,7 @@ def get_image_folder_path(path,cand_name):
 def all_photo_check(path):
 	'''This function checks if all the candidates' photos are there'''
 
-	#Format of not_there : {post1:[missing_candidate_1,missing_candidate_2,..],post2:[...]...}
+	#Format of not_there : {post1:'missing_candidate_1,missing_candidate_2,..',post2:'...'...}
 	not_there = {}
 
 	for post, cands in database_linker.get_cands_from_db().items():
@@ -496,6 +496,11 @@ def all_photo_check(path):
 							not_there[post] = not_there[post]+[cand_name]
 						except KeyError:
 							not_there[post] = [cand_name]
+
+	#Converts the posts into a single string to be passed into the html template
+	for post in not_there:
+		ret_str = ",".join(not_there[post])
+		not_there[post] = ret_str
 
 	return not_there
 
