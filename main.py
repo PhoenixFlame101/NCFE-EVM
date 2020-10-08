@@ -405,7 +405,7 @@ def start_voting():
 	voting_ended = False
 
 	#Prints the pdf containing the security codes for voting
-	sec_code.code_print()
+	sec_code.code_print(no_of_codes)
 
 	return redirect(url_for("voting_settings"))
 
@@ -433,6 +433,7 @@ def download_results():
 	'''This function downloads the results and displays the same in the browser'''
 
 	x = "".join([y+'\\' for y in app.config['CANDIDATE_PHOTOS'].split('\\')[:-1]])
+
 	try:
 		return send_from_directory(x,filename='results.pdf')
 	except Exception as e:
@@ -506,7 +507,7 @@ def set_photos_path():
 			application_path = os.path.dirname(sys.executable)
 		elif __file__:
 			application_path = os.path.dirname(__file__)
-		photos_path = application_path + '/' + candidate_pictures
+		photos_path = application_path + '\\' + candidate_pictures
 		local_functions.resize_images_in_folder(photos_path)
 		app.config['CANDIDATE_PHOTOS'] = photos_path
 	except:
