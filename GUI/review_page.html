@@ -18,7 +18,7 @@
                 <tr>
 
                     <td class="postside"><a href="{{ url_for('load_post',post=post) }}">{{ post.replace('_',' ').replace('choice','') }}</a></td>
-                    <td class="candidateside">{{ session[post+'_choice'] }}</td>
+                    <td class="candidateside">{{ title(session[post+'_choice']) }}</td>
 
                 </tr>
             {% endif %}
