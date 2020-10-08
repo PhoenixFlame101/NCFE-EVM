@@ -269,19 +269,26 @@ def add_custom_post():
 					#If the added post is not a house post
 					if not response['for_house']:
 						cur_posts_order = [new_post_name.replace(' ','_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+
+						#Doesn't add the post if it already exists
+						if new_post_name.replace(' ','_') in cur_posts:
+							return redirect(url_for('show_candidate'))
+
 						candidates[new_post_name.replace(' ','_')] = []
 
 					#If the added post is a house opst
 					else:
 						cur_posts_order = [house_choice+'_'+new_post_name.replace(' ','_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+
+						#Doesn't add the post if it already exists
+						if house_choice + '_' + new_post_name.replace(' ','_') in cur_posts:
+							return redirect(url_for('show_candidate'))
+
 						for house in ['kingfisher','falcon','flamingo','eagle']:
 							candidates[house+'_'+new_post_name.replace(' ','_')] = []
 						new_post_name = house_choice+'_'+new_post_name.replace(' ','_')
-					cur_posts_order = [post.replace('house',house_choice) if post.startswith('house') else post for post in cur_posts_order]
 
-					#Doesn't add the post if it already exists
-					if new_post_name.replace(' ','_') in cur_posts:
-						return redirect(url_for('show_candiate'))
+					cur_posts_order = [post.replace('house',house_choice) if post.startswith('house') else post for post in cur_posts_order]
 
 					#Store candidates in the database and updates value of cur_posts
 					database_linker.initializing(candidates)
