@@ -35,7 +35,7 @@ def home():
 		#Checks validity of security code
 		receivedpwd = request.form['pwd_box']
 		validity = sec_code.code_is_valid(receivedpwd)
-		if validity and voting_started:
+		if (validity == True) and voting_started:
 			global valid
 			valid = True
 			session['home_choice'] = True
