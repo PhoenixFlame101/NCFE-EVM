@@ -1,9 +1,12 @@
+""" main file that initializes flask and the GUI """
+
 import sys
 import os
 from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
 import database_linker
 import sec_code
 import local_functions
+
 
 house_choice = local_functions.get_house_choice().lower()  #Fetches the house choice locally stored
 
@@ -13,62 +16,63 @@ no_of_codes = 4  # Stores the number of pages of codes to be generated
 color_scheme = {}  # Stores the various colors of the different houses
 voting_order_modified = False  # Tells if the voting order has been modified
 
-valid = False                                              #Flask's file variable for showing session validity
-voting_started = False                                     #Status of voting; affects the admin dashboard
-voting_ended = False                                       #Shows if voting has ended
+valid = False  # Flask's file variable for showing session validity
+voting_started = False  # Status of voting; affects the admin dashboard
+voting_ended = False  # Shows if voting has ended
 
 app = Flask(__name__,template_folder='./GUI/')
 app.secret_key = 'abc'
 
 
-#Voting page things
 @app.route('/',methods=["GET",'POST'])
 def home():
-    '''This is the voting landing page'''
+    ''' This is the voting landing page; contains text box for entering sec code '''
 
     if request.method == "GET":
-        #Template is rendered
+        # Template is rendered
         session["logged"] = False
         return render_template('voting_landing.html',voting_started=voting_started,voting_ended=voting_ended)
 
     else:
-        #Checks validity of security code
+        # Checks validity of security code
         receivedpwd = request.form['pwd_box']
         validity = sec_code.code_is_valid(receivedpwd)
+
+        # Checks that validity is not 'Invalid' or 'Already Used'
         if (validity == True) and voting_started:
             global valid
             valid = True
             session['home_choice'] = True
             return redirect(url_for('load_post',post=cur_posts[0]))
-        else:
-            return redirect(url_for('invalid_code',msg=(validity if voting_started else 'Invalid - Voting not started')))
+        
+        return redirect(url_for('invalid_code',msg=(validity if voting_started else 'Invalid - Voting not started')))
+
 
 @app.route('/invalid_code/<msg>')
 def invalid_code(msg):
-    '''Loads the template in case of an invalid code and provides apt message'''
+    ''' Loads the template in case of an invalid code and provides apt message '''
 
     return render_template('invalid_page.html',msg=msg)
 
 @app.route('/post/<post>',methods=["GET",'POST'])
 def load_post(post):
-    '''This function is used to render the posts and receive the choices of the voter'''
+    ''' This function is used to render the posts and receive the choices of the voter '''
 
-    #Handles if the post to be rendered is not in cur_posts
+    # Handles if the post to be rendered is not in cur_posts
     if post == 'home':
         return redirect(url_for('home'))
-    if post == 'final':
+    elif post == 'final':
         return redirect(url_for('final'))
 
-    #Initialize variables to get information about posts around the current post
-    global cur_posts
+    # Initialize variables to get information about posts around the current post
+    # global cur_posts
     p = post
     pc = post+'_choice'
     next_p = next_post(p)
     prev_p = prev_post(p)
-    prev_pc = prev_p+'_choice'
 
     try:
-        if session[prev_pc]:
+        if session[prev_p+'_choice']:
             if request.method == "POST":
                 #We take the choice of the voter
                 post_choice = request.form[pc]
