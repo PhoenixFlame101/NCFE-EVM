@@ -1,6 +1,6 @@
 """ This module contains functions that manipulate local_var.encrypted and resizes images"""
 
-from os import listdir, rename
+from os import listdir, rename, mkdir
 from PIL import Image, UnidentifiedImageError
 
 def resize_images_in_folder(path):
@@ -8,32 +8,36 @@ def resize_images_in_folder(path):
         It crops and resizes images in candidate_photos to 300x300 px """
 
     # Iterates through all images in the given folder
-    for image in listdir(path):
-        picture_path = path+'/'+image
+    try:
+        for image in listdir(path):
+            picture_path = path+'/'+image
 
-        try:
-            # Resizes and crops images depending on the orientation of the image
-            pic = Image.open(picture_path)
-            aspect_ratio = pic.size[1]/pic.size[0]
+            try:
+                # Resizes and crops images depending on the orientation of the image
+                pic = Image.open(picture_path)
+                aspect_ratio = pic.size[1]/pic.size[0]
 
-            if aspect_ratio >= 1: # If image is in portrait/square orientation
-                pic = pic.resize((300, int(300*aspect_ratio)))
-                pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
-                pic.save(picture_path)
+                if aspect_ratio >= 1: # If image is in portrait/square orientation
+                    pic = pic.resize((300, int(300*aspect_ratio)))
+                    pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
+                    pic.save(picture_path)
 
-            elif aspect_ratio < 1: # If the image in landscape orientation
-                aspect_ratio = pic.size[0]/pic.size[1]
-                pic = pic.resize((int(300*aspect_ratio), 300))
-                pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
-                pic.save(picture_path)
+                elif aspect_ratio < 1: # If the image in landscape orientation
+                    aspect_ratio = pic.size[0]/pic.size[1]
+                    pic = pic.resize((int(300*aspect_ratio), 300))
+                    pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
+                    pic.save(picture_path)
 
-        except UnidentifiedImageError:
-            # Run if the file is not an image file
-            # Places '[Corrupt] at the beginning of the file name 
-            image_name = picture_path[len(picture_path)-picture_path[::-1].index('/'):]
-            if not image_name.startswith('[Corrupt]'):
-                rename(picture_path, picture_path[:len(picture_path)-picture_path[::-1]  \
-                .index('/')-1]+'/[Corrupt] '+image_name)
+            except UnidentifiedImageError:
+                # Run if the file is not an image file
+                # Places '[Corrupt] at the beginning of the file name 
+                image_name = picture_path[len(picture_path)-picture_path[::-1].index('/'):]
+                if not image_name.startswith('[Corrupt]'):
+                    rename(picture_path, picture_path[:len(picture_path)-picture_path[::-1]  \
+                    .index('/')-1]+'/[Corrupt] '+image_name)
+    except FileNotFoundError:
+        mkdir('candidate_photos')
+        resize_images_in_folder(path)
 
 
 def store_house_choice(choice):
