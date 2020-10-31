@@ -44,7 +44,7 @@ def home():
             valid = True
             session['home_choice'] = True
             return redirect(url_for('load_post',post=cur_posts[0]))
-        
+
         return redirect(url_for('invalid_code',msg=(validity if voting_started else 'Invalid - Voting not started')))
 
 
@@ -528,6 +528,7 @@ def add_to_cur_posts():
     default_major_order = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain']
     default_house_order = [house_choice+'_captain',house_choice+'_vice_captain']
 
+    #Classifies the posts into a house post or major post
     for post in candidates:
         is_house_post = False
         for house in houses:
@@ -541,19 +542,24 @@ def add_to_cur_posts():
             if len(candidates[post])>1 or post not in default_major_order:
                 major_temp.append(post)
 
-
+    #Adds the major posts in an order to cur_posts
     for post in default_major_order:
+        #First adds default major posts
         if post in major_temp:
             cur_posts.append(post)
             major_temp.remove(post)
     for post in major_temp:
+        #Second adds the custom major posts(if any)
         cur_posts.append(post)
 
+    #Adds the house posts in an order to cur_posts
     for post in default_house_order:
+        #First adds the default house posts
         if post in house_temp:
             cur_posts.append(post)
             house_temp.remove(post)
     for post in house_temp:
+        #Second adds the custom house posts(if any)
         cur_posts.append(post)
 
 def set_photos_path():
@@ -607,36 +613,42 @@ def store_result(dt):
 def get_custom_post_load_list():
     '''This function returns the list of custom posts to be loaded in the show/enter candidates page'''
 
+    #This is the order that we want for the default posts
     load_list = ['Head Boy','Head Girl','Sports Captain','Cultural Captain','Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain','Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain','Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']
     load_list = [y.lower().replace(' ',"_") for y in load_list]
 
+    #We load the name of the posts
     cp = candidates.keys()
 
+    #We take the symmetric difference so we get custom posts (and also default posts without candidates if any)
     result = list(set(load_list)^set(cp))
     filtered_result = []
 
-    #Adds posts which are not default
+    #Adds recognized custom posts (sometimes there may be default posts without candidates the will be present in the symmetric difference)
     for post in result:
         if post not in load_list:
             filtered_result.append(post)
     result = filtered_result
 
     final = []
-    temp = []
-    temp1 = []
+    major_posts = []
+    house_posts = []
 
+    #Classifies as a house post or as a major post
     for post in result:
         if is_house_post(post):
             if post.startswith('kingfisher'):
-                temp1.append(post)
+                house_posts.append(post)
         else:
-            temp.append(post)
+            major_posts.append(post)
 
-    for post in temp1:
+    #We add the house custom posts since we want to have them first
+    for post in house_posts:
         post = post.split('_')[1:]
         for house in ["kingfisher",'flamingo','falcon','eagle']:
             final.append(house+"".join(['_'+y for y in post]))
-    final.extend(temp)
+    #We keep the major posts at the end of the order
+    final.extend(major_posts)
 
     return final
 
