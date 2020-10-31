@@ -262,7 +262,7 @@ def show_candidate():
 
 @app.route('/add_custom_post',methods=['GET', 'POST'])
 def add_custom_post():
-    '''This function renders the page for adding a custom post'''
+    '''This function renders the page for adding a custom post and changing the order of voting'''
 
     try:
         if session['logged'] == True:
@@ -308,6 +308,11 @@ def add_custom_post():
                     cur_posts = cur_posts_order
                     voting_order_modified = True
                 else:
+                    #Changes the order of voting is no post is added
+                    cur_posts_order = response['cur_posts_order']
+                    cur_posts_order.remove('new_post')
+                    cur_posts = [(post.replace('house',house_choice) if post.startswith('house') else post) for post in cur_posts_order]
+
                     return redirect(url_for('add_custom_post'))
         else:
             return redirect(url_for('admin_page'))
