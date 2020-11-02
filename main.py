@@ -1,6 +1,5 @@
 """ main file that initializes flask and the GUI """
 
-import sys
 import os
 from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
 import database_linker
@@ -572,10 +571,7 @@ def set_photos_path():
 
     try:
         candidate_pictures = 'candidate_photos'
-        if getattr(sys, 'frozen', False):
-            application_path = os.path.dirname(sys.executable)
-        elif __file__:
-            application_path = os.path.dirname(__file__)
+        application_path = os.path.dirname(__file__)
         photos_path = application_path + '\\' + candidate_pictures
         app.config['CANDIDATE_PHOTOS'] = photos_path
     except FileNotFoundError:
