@@ -12,7 +12,7 @@ These do not have to be installed separately.
 
 These can be installed from the command line using `pip`.
 
-    pip install flask pymono cryptography pillow
+    pip install flask pymongo cryptography pillow
 
 **Admin Specific Dependencies (Only required on one computer)** — `fpdf`.
 
