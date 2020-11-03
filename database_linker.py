@@ -93,7 +93,7 @@ def results_print():
     pdf.output('results.pdf')
 
     # Drops colleciton and codes after voting is over
-    #collection.drop()
+    collection.drop()
     db.codes.drop()
 
 
