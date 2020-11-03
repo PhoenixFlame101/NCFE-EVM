@@ -3,6 +3,7 @@
 from os import listdir, rename, mkdir
 from PIL import Image, UnidentifiedImageError
 
+
 def resize_images_in_folder(path):
     """ This function is run at the start of the program.
         It crops and resizes images in candidate_photos to 300x300 px """
@@ -17,40 +18,46 @@ def resize_images_in_folder(path):
                 pic = Image.open(picture_path)
                 aspect_ratio = pic.size[1]/pic.size[0]
 
-                if aspect_ratio >= 1: # If image is in portrait/square orientation
+                if aspect_ratio >= 1:  # If image is in portrait/square orientation
                     pic = pic.resize((300, int(300*aspect_ratio)))
-                    pic = pic.crop((0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
+                    pic = pic.crop(
+                        (0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
                     pic.save(picture_path)
 
-                elif aspect_ratio < 1: # If the image in landscape orientation
+                elif aspect_ratio < 1:  # If the image in landscape orientation
                     aspect_ratio = pic.size[0]/pic.size[1]
                     pic = pic.resize((int(300*aspect_ratio), 300))
-                    pic = pic.crop(((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
+                    pic = pic.crop(
+                        ((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
                     pic.save(picture_path)
 
             except UnidentifiedImageError:
                 # Run if the file is not an image file
-                # Places '[Corrupt] at the beginning of the file name 
-                image_name = picture_path[len(picture_path)-picture_path[::-1].index('/'):]
+                # Places '[Corrupt] at the beginning of the file name
+                image_name = picture_path[len(
+                    picture_path)-picture_path[::-1].index('/'):]
                 if not image_name.startswith('[Corrupt]'):
-                    rename(picture_path, picture_path[:len(picture_path)-picture_path[::-1]  \
-                    .index('/')-1]+'/[Corrupt] '+image_name)
+                    rename(picture_path, picture_path[:len(picture_path)-picture_path[::-1]
+                                                      .index('/')-1]+'/[Corrupt] '+image_name)
     except FileNotFoundError:
-        mkdir('candidate_photos')
-        resize_images_in_folder(path)
+        try:
+            mkdir('candidate_photos')
+        except FileExistsError:
+            pass
 
 
-def store_house_choice(choice):
+def store_house_choice(choice, *type):
     """ Adds house choice to the file local_vars.encrypted """
 
-    with open('local_vars.encrypted', 'r+') as file:
+    open_type = 'r+' if not type else 'w+'
+    with open('local_vars.encrypted', open_type) as file:
 
         # Attempts to retreive db uri; default is blank
         try:
             uri = file.readlines()[-1]
         except IndexError:
             uri = 'DB URI: '
-        
+
         # File is overwritten with the given house choice and db uri
         file.truncate(0)
         file.seek(0)
@@ -64,7 +71,7 @@ def get_house_choice():
         with open('local_vars.encrypted', 'r+') as file:
             return file.readlines()[0][14:-1]
     except FileNotFoundError:
-        store_house_choice('kingfisher')
+        store_house_choice('kingfisher', 'w+')
         return get_house_choice()
 
 
