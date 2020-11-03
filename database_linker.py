@@ -67,6 +67,9 @@ def results_print():
     # Writes the results to a PDF file
     pdf = FPDF()
     pdf.add_page()
+    pdf.set_font("Arial", 'BU', size=22)
+    pdf.cell(200, 10, txt='RESULTS', align='C')
+    pdf.ln(20)
     # 'results' is a list of MongoDB documents (dictionaries)
     for post in results:
         if len(post.items()) > 2:
@@ -90,7 +93,7 @@ def results_print():
     pdf.output('results.pdf')
 
     # Drops colleciton and codes after voting is over
-    collection.drop()
+    #collection.drop()
     db.codes.drop()
 
 
