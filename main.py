@@ -1,13 +1,15 @@
 """ main file that initializes flask and the GUI """
 
 import os
-from flask import Flask,redirect,url_for,render_template,request,session,send_from_directory
+import sys
+from flask import Flask, redirect, url_for, render_template, request, session, send_from_directory
 import database_linker
 import sec_code
 import local_functions
 
 
-house_choice = local_functions.get_house_choice().lower()  #Fetches the house choice locally stored
+# Fetches the house choice locally stored
+house_choice = local_functions.get_house_choice().lower()
 
 candidates = {}  # Store the candidates in the form {post:[cand1,cand2, ...]}
 cur_posts = []  # Stores the order of voting
@@ -19,18 +21,24 @@ valid = False  # Flask's file variable for showing session validity
 voting_started = False  # Status of voting; affects the admin dashboard
 voting_ended = False  # Shows if voting has ended
 
-app = Flask(__name__,template_folder='./GUI/')
+if getattr(sys, 'frozen', False):
+    template_folder = os.path.join(sys._MEIPASS, 'GUI')
+    static_folder = os.path.join(sys._MEIPASS, 'static')
+    app = Flask(__name__, template_folder=template_folder,
+                static_folder=static_folder)
+else:
+    app = Flask(__name__, template_folder='./GUI/')
 app.secret_key = 'abc'
 
 
-@app.route('/',methods=["GET",'POST'])
+@app.route('/', methods=["GET", 'POST'])
 def home():
     ''' This is the voting landing page; contains text box for entering sec code '''
 
     if request.method == "GET":
         # Template is rendered
         session["logged"] = False
-        return render_template('voting_landing.html',voting_started=voting_started,voting_ended=voting_ended)
+        return render_template('voting_landing.html', voting_started=voting_started, voting_ended=voting_ended)
 
     else:
         # Checks validity of security code
@@ -42,18 +50,19 @@ def home():
             global valid
             valid = True
             session['home_choice'] = True
-            return redirect(url_for('load_post',post=cur_posts[0]))
+            return redirect(url_for('load_post', post=cur_posts[0]))
 
-        return redirect(url_for('invalid_code',msg=(validity if voting_started else 'Invalid - Voting not started')))
+        return redirect(url_for('invalid_code', msg=(validity if voting_started else 'Invalid - Voting not started')))
 
 
 @app.route('/invalid_code/<msg>')
 def invalid_code(msg):
     ''' Loads the template in case of an invalid code and provides apt message '''
 
-    return render_template('invalid_page.html',msg=msg)
+    return render_template('invalid_page.html', msg=msg)
 
-@app.route('/post/<post>',methods=["GET",'POST'])
+
+@app.route('/post/<post>', methods=["GET", 'POST'])
 def load_post(post):
     ''' This function is used to render the posts and receive the choices of the voter '''
 
@@ -82,7 +91,7 @@ def load_post(post):
                     if next_p == 'final':
                         return redirect(url_for('final'))
                     else:
-                        return redirect(url_for('load_post',post=next_p))
+                        return redirect(url_for('load_post', post=next_p))
                 else:
                     return redirect(url_for('final'))
 
@@ -90,12 +99,12 @@ def load_post(post):
                 #Loads the page based on the conditions given
 
                 if p in candidates:
-                    if len(candidates[p])<=1:
+                    if len(candidates[p]) <= 1:
                         #This block excutes if post's list of candidates is empty or has only one candidate
 
                         if (cur_posts[-1]+'_choice') not in session:
                             session[pc] = 'DNE'
-                            return redirect(url_for('load_post',post=next_p))
+                            return redirect(url_for('load_post', post=next_p))
                         else:
                             return redirect(url_for("final"))
 
@@ -104,35 +113,38 @@ def load_post(post):
 
                         pname = "".join([x+' ' for x in p.split('_')])
                         lastthere = (cur_posts[-1]+'_choice') in session
-                        house_keys={'kingfisher':'kf','flamingo':'fl','falcon':'fa','eagle':'ea'}
+                        house_keys = {
+                            'kingfisher': 'kf', 'flamingo': 'fl', 'falcon': 'fa', 'eagle': 'ea'}
 
                         #Checks if the post is a house post
                         for house in house_keys:
                             if p.startswith(house):
                                 #Template is rendered with the house name passed as parameter
-                                return render_template('gen_base_page.html',base_page_name=house,p=p,pname=pname,d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme,len=len)
-                        return render_template('gen_base_page.html',p=p,pname=pname,base_page_name='major',d=candidates,cur_posts=cur_posts,lastthere=lastthere,house_choice=house_choice,prev_post=prev_post,color_scheme=color_scheme,len=len)
+                                return render_template('gen_base_page.html', base_page_name=house, p=p, pname=pname, d=candidates, cur_posts=cur_posts, lastthere=lastthere, house_choice=house_choice, prev_post=prev_post, color_scheme=color_scheme, len=len)
+                        return render_template('gen_base_page.html', p=p, pname=pname, base_page_name='major', d=candidates, cur_posts=cur_posts, lastthere=lastthere, house_choice=house_choice, prev_post=prev_post, color_scheme=color_scheme, len=len)
                 else:
                     #For a post not in candidates,we put a placeholder for the voter's choice which we remove later
                     session[pc] = 'DNE'
-                    return redirect(url_for('load_post',post=next_p))
+                    return redirect(url_for('load_post', post=next_p))
     except Exception as e:
         print(e)
         if prev_p == 'home':
             return redirect(url_for('home'))
         else:
-            return redirect(url_for('load_post',post=prev_p))
+            return redirect(url_for('load_post', post=prev_p))
+
 
 def prev_post(p):
     '''This function returns the post behind the current one'''
 
     cur_post = p
     cur_index = cur_posts.index(cur_post)
-    if cur_index>0:
+    if cur_index > 0:
         return cur_posts[cur_index-1]
     else:
         #In case the post entered is the first post
         return 'home'
+
 
 def next_post(p):
     '''This function returns the post in front of the current one'''
@@ -145,7 +157,8 @@ def next_post(p):
         #In case the post entered is the last
         return 'final'
 
-@app.route('/review',methods=['GET','POST'])
+
+@app.route('/review', methods=['GET', 'POST'])
 def final():
     '''This function is called once all the posts have been voted for, renders the table'''
 
@@ -154,13 +167,14 @@ def final():
         if session[cur_posts[-1]+'_choice']:
             if request.method == "GET":
                 #Session dictionary is passed to make the table in the webpage
-                return render_template('review_page.html',session=dict(session),cur_posts=cur_posts,title=title)
+                return render_template('review_page.html', session=dict(session), cur_posts=cur_posts, title=title)
             else:
                 return redirect(url_for('over'))
 
     except Exception as e:
         print(e)
-        return redirect(url_for('load_post',post=cur_posts[-1]))
+        return redirect(url_for('load_post', post=cur_posts[-1]))
+
 
 @app.route('/done')
 def over():
@@ -183,13 +197,13 @@ def over():
 # Admin things
 
 
-@app.route('/admin',methods=['GET','POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 def admin_page():
     '''This function renders the admin login page. In case of any exception/error redirection here.'''
 
     if request.method == 'GET':
         return render_template('admin_landing.html')
-    elif request.method =="POST" :
+    elif request.method == "POST":
         #Validation of the admin password
         # session['logged'] stores whether the admin is logged in and is checked for when every admin page is opened
         receivedpwd = request.form['pwd_box']
@@ -199,6 +213,7 @@ def admin_page():
         else:
             return redirect(url_for('admin_page'))
 
+
 @app.route('/dashboard')
 def dashboard():
     '''This function renders the template for the admin dashboard page'''
@@ -206,12 +221,13 @@ def dashboard():
     try:
         if session['logged'] == True:
             #Renders the dashboard only if the admin password is valid
-            return render_template('dashboard.html',voting_started=voting_started,voting_ended=voting_ended,no_of_codes=no_of_codes,house_choice=house_choice,color_scheme=color_scheme,makeupper=makeupper)
+            return render_template('dashboard.html', voting_started=voting_started, voting_ended=voting_ended, no_of_codes=no_of_codes, house_choice=house_choice, color_scheme=color_scheme, makeupper=makeupper)
         else:
             return redirect(url_for('admin_page'))
     except Exception as e:
         print(e)
         return redirect(url_for('admin_page'))
+
 
 @app.route('/show_candidate', methods=['GET', 'POST'])
 def show_candidate():
@@ -221,12 +237,14 @@ def show_candidate():
         if session['logged'] == True:
             global candidates
             if request.method == "GET":
-                load_list = [['Head Boy','Head Girl','Sports Captain','Cultural Captain'],
-                ['Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain'],
-                ['Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain'],
-                ['Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']]
+                load_list = [['Head Boy', 'Head Girl', 'Sports Captain', 'Cultural Captain'],
+                             ['Assistant Head Boy', 'Assistant Head Girl',
+                                 'Sports Vice Captain', 'Cultural Vice Captain'],
+                             ['Kingfisher Captain', 'Flamingo Captain',
+                                 'Falcon Captain', 'Eagle Captain'],
+                             ['Kingfisher Vice Captain', 'Flamingo Vice Captain', 'Falcon Vice Captain', 'Eagle Vice Captain']]
                 custom_post_load_list = get_custom_post_load_list()
-                return render_template('show_candidates.html',candidates=candidates,str=str,voting_started=voting_started,voting_ended=voting_ended,getcolor=getcolor,load_list=load_list,title=title,startswith=startswith,custom_posts=custom_post_load_list,len=len)
+                return render_template('show_candidates.html', candidates=candidates, str=str, voting_started=voting_started, voting_ended=voting_ended, getcolor=getcolor, load_list=load_list, title=title, startswith=startswith, custom_posts=custom_post_load_list, len=len)
 
             else:
                 #Fetches and parses the candidates list from json format
@@ -255,20 +273,21 @@ def show_candidate():
                 return redirect(url_for('show_candidate'))
         else:
             return redirect(url_for('admin_page'))
-    except Exception as  e:
+    except Exception as e:
         print(e)
         return redirect(url_for('admin_page'))
 
-@app.route('/add_custom_post',methods=['GET', 'POST'])
+
+@app.route('/add_custom_post', methods=['GET', 'POST'])
 def add_custom_post():
     '''This function renders the page for adding a custom post and changing the order of voting'''
 
     try:
         if session['logged'] == True:
-            global cur_posts,candidates,voting_order_modified
+            global cur_posts, candidates, voting_order_modified
 
-            if request.method== 'GET':
-                return render_template('add_custom_post.html',str=str,cur_post=cur_posts,u=underscore_remove,replace_house_name=replace_house_name)
+            if request.method == 'GET':
+                return render_template('add_custom_post.html', str=str, cur_post=cur_posts, u=underscore_remove, replace_house_name=replace_house_name)
 
             else:
                 #Get the response from the page's AJAX
@@ -280,27 +299,32 @@ def add_custom_post():
                 if new_post_name != '':
                     #If the added post is not a house post
                     if not response['for_house']:
-                        cur_posts_order = [new_post_name.replace(' ','_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                        cur_posts_order = [new_post_name.replace(
+                            ' ', '_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
 
                         #Doesn't add the post if it already exists
-                        if new_post_name.replace(' ','_') in cur_posts:
+                        if new_post_name.replace(' ', '_') in cur_posts:
                             return redirect(url_for('show_candidate'))
 
-                        candidates[new_post_name.replace(' ','_')] = []
+                        candidates[new_post_name.replace(' ', '_')] = []
 
                     #If the added post is a house opst
                     else:
-                        cur_posts_order = [house_choice+'_'+new_post_name.replace(' ','_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
+                        cur_posts_order = [house_choice+'_'+new_post_name.replace(
+                            ' ', '_') if pname == 'new_post' else pname for pname in response['cur_posts_order']]
 
                         #Doesn't add the post if it already exists
-                        if house_choice + '_' + new_post_name.replace(' ','_') in cur_posts:
+                        if house_choice + '_' + new_post_name.replace(' ', '_') in cur_posts:
                             return redirect(url_for('show_candidate'))
 
-                        for house in ['kingfisher','falcon','flamingo','eagle']:
-                            candidates[house+'_'+new_post_name.replace(' ','_')] = []
-                        new_post_name = house_choice+'_'+new_post_name.replace(' ','_')
+                        for house in ['kingfisher', 'falcon', 'flamingo', 'eagle']:
+                            candidates[house+'_' +
+                                       new_post_name.replace(' ', '_')] = []
+                        new_post_name = house_choice+'_' + \
+                            new_post_name.replace(' ', '_')
 
-                    cur_posts_order = [post.replace('house',house_choice) if post.startswith('house') else post for post in cur_posts_order]
+                    cur_posts_order = [post.replace('house', house_choice) if post.startswith(
+                        'house') else post for post in cur_posts_order]
 
                     #Store candidates in the database and updates value of cur_posts
                     database_linker.initializing(candidates)
@@ -310,33 +334,36 @@ def add_custom_post():
                     #Changes the order of voting is no post is added
                     cur_posts_order = response['cur_posts_order']
                     cur_posts_order.remove('new_post')
-                    cur_posts = [(post.replace('house',house_choice) if post.startswith('house') else post) for post in cur_posts_order]
+                    cur_posts = [(post.replace('house', house_choice) if post.startswith(
+                        'house') else post) for post in cur_posts_order]
 
                     return redirect(url_for('add_custom_post'))
         else:
             return redirect(url_for('admin_page'))
-    except Exception as  e:
+    except Exception as e:
         print(e)
         return redirect(url_for('admin_page'))
 
-@app.route('/delete_post',methods=['GET', 'POST'])
+
+@app.route('/delete_post', methods=['GET', 'POST'])
 def delete_post():
     '''This function renders the page for deleting a post'''
 
     try:
-        global cur_posts,candidates
+        global cur_posts, candidates
         if session['logged'] == True:
             if request.method == 'GET':
-                return render_template('delete_post.html',cur_post=cur_posts,u=underscore_remove,replace_house_name=replace_house_name)
+                return render_template('delete_post.html', cur_post=cur_posts, u=underscore_remove, replace_house_name=replace_house_name)
 
             else:
                 #Obtain the response from the page and parse the same
                 response = request.get_json()
                 post_to_delete = response['post_to_delete'].strip()
-                post_to_delete = post_to_delete.replace(' ','_').lower()
+                post_to_delete = post_to_delete.replace(' ', '_').lower()
 
                 if post_to_delete.startswith('house'):
-                    post_to_delete = post_to_delete.replace('house',house_choice)
+                    post_to_delete = post_to_delete.replace(
+                        'house', house_choice)
 
                 try:
                     cur_posts.remove(post_to_delete)
@@ -362,6 +389,7 @@ def delete_post():
     except:
         return redirect(url_for('admin_page'))
 
+
 @app.route('/voting_settings')
 def voting_settings():
     '''This function renders the page for changing the settings of voting status'''
@@ -369,12 +397,13 @@ def voting_settings():
     try:
         if session['logged'] == True:
             not_there = all_photo_check(set_photos_path())
-            return render_template('voting_settings.html',d=candidates,valid=voting_started,no_of_codes=no_of_codes,not_there=not_there,makeupper=makeupper,len=len,underscore_remove=underscore_remove)
+            return render_template('voting_settings.html', d=candidates, valid=voting_started, no_of_codes=no_of_codes, not_there=not_there, makeupper=makeupper, len=len, underscore_remove=underscore_remove)
         else:
             return redirect(url_for('admin_page'))
     except Exception as e:
         print(e)
         return redirect(url_for('admin_page'))
+
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
@@ -382,10 +411,10 @@ def settings():
 
     try:
         if session['logged'] == True:
-            global house_choice,no_of_codes
+            global house_choice, no_of_codes
 
             if request.method == "GET":
-                return render_template('settings.html',house_choice=house_choice,no_of_codes=no_of_codes)
+                return render_template('settings.html', house_choice=house_choice, no_of_codes=no_of_codes)
 
             elif request.method == "POST":
                 #Checks for the changed house_choice and updates the same in cur_posts
@@ -394,7 +423,7 @@ def settings():
                 house_choice = request.form['hc']
                 house_choice = house_choice.lower()
                 local_functions.store_house_choice(house_choice)
-                update_cur_post(old_house_choice,house_choice)
+                update_cur_post(old_house_choice, house_choice)
 
                 #Checks for the changed password and updates the same
                 changed_pwd = request.form['changed_pwd']
@@ -405,7 +434,7 @@ def settings():
                 changed_no_of_codes = request.form['changed_no_of_codes']
                 t = eval(changed_no_of_codes.split()[0])
                 if type(t) is int:
-                    if t>0:
+                    if t > 0:
                         no_of_codes = t
 
                 return redirect(url_for('settings'))
@@ -413,6 +442,7 @@ def settings():
     except Exception as e:
         print(e)
         return redirect(url_for('admin_page'))
+
 
 @app.route('/logout')
 def logout():
@@ -423,11 +453,12 @@ def logout():
 
 #Functions called by voting settings function
 
+
 @app.route('/start_voting')
 def start_voting():
     '''This function is called when then admin presses the start voting button'''
 
-    global voting_started,voting_ended
+    global voting_started, voting_ended
     voting_started = True
     voting_ended = False
 
@@ -436,11 +467,12 @@ def start_voting():
 
     return redirect(url_for("voting_settings"))
 
+
 @app.route('/stop_voting')
 def stop_voting():
     '''This function is called when the admin presses the stop voting button'''
 
-    global voting_started,voting_ended
+    global voting_started, voting_ended
     voting_started = False
     voting_ended = True
 
@@ -449,37 +481,42 @@ def stop_voting():
 
     return redirect(url_for('result'))
 
+
 @app.route('/results')
 def result():
     '''This function opens the admin dashboard and also the results in a new folder'''
 
     return render_template('results.html')
 
+
 @app.route('/download_results')
 def download_results():
     '''This function downloads the results and displays the same in the browser'''
 
-    x = "".join([y+'\\' for y in app.config['CANDIDATE_PHOTOS'].split('\\')[:-1]])
+    x = "".join(
+        [y+'\\' for y in app.config['CANDIDATE_PHOTOS'].split('\\')[:-1]])
 
     try:
-        return send_from_directory(x,filename='results.pdf')
+        return send_from_directory(x, filename='results.pdf')
     except Exception as e:
         print(e)
         return str(e)
+
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
     '''This function downloads the given file'''
 
     try:
-        x = get_image_folder_path(app.config['CANDIDATE_PHOTOS'],filename)
+        x = get_image_folder_path(app.config['CANDIDATE_PHOTOS'], filename)
         folder = "".join([y+'/' for y in x.split('/')[:-1]])
         filename = x.split('/')[-1]
-        return send_from_directory(folder,filename, as_attachment=True)
+        return send_from_directory(folder, filename, as_attachment=True)
     except:
         pass
 
-def get_image_folder_path(path,cand_name):
+
+def get_image_folder_path(path, cand_name):
     '''This function returns the path of the image file with any extension'''
 
     for tup in os.walk(path):
@@ -487,6 +524,7 @@ def get_image_folder_path(path,cand_name):
             if file.lower()[:len(file)-file[::-1].index('.')-1] == cand_name.lower():
                 if not file.lower().startswith('default'):
                     return tup[0].replace('\\', '/')+'/'+file
+
 
 def all_photo_check(path):
     '''This function checks if all the candidates' photos are there'''
@@ -523,14 +561,16 @@ def all_photo_check(path):
 def add_to_cur_posts():
     '''This function creates the current posts variable'''
 
-    global cur_posts,candidates
+    global cur_posts, candidates
 
     cur_posts = []
-    houses = ['kingfisher','flamingo','falcon','eagle']
+    houses = ['kingfisher', 'flamingo', 'falcon', 'eagle']
     major_temp = []
     house_temp = []
-    default_major_order = ['head_boy','head_girl','assistant_head_boy','assistant_head_girl','cultural_captain','cultural_vice_captain','sports_captain','sports_vice_captain']
-    default_house_order = [house_choice+'_captain',house_choice+'_vice_captain']
+    default_major_order = ['head_boy', 'head_girl', 'assistant_head_boy', 'assistant_head_girl',
+                           'cultural_captain', 'cultural_vice_captain', 'sports_captain', 'sports_vice_captain']
+    default_house_order = [house_choice +
+                           '_captain', house_choice+'_vice_captain']
 
     #Classifies the posts into a house post or major post
     for post in candidates:
@@ -543,7 +583,7 @@ def add_to_cur_posts():
             if post.startswith(house_choice):
                 house_temp.append(post)
         else:
-            if len(candidates[post])>1 or post not in default_major_order:
+            if len(candidates[post]) > 1 or post not in default_major_order:
                 major_temp.append(post)
 
     #Adds the major posts in an order to cur_posts
@@ -566,12 +606,16 @@ def add_to_cur_posts():
         #Second adds the custom house posts(if any)
         cur_posts.append(post)
 
+
 def set_photos_path():
     '''This function sets the path for the candidates photos in the app.config'''
 
     try:
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(sys.executable)
+        else:
+            application_path = os.path.dirname(__file__)
         candidate_pictures = 'candidate_photos'
-        application_path = os.path.dirname(__file__)
         photos_path = application_path + '\\' + candidate_pictures
         app.config['CANDIDATE_PHOTOS'] = photos_path
     except FileNotFoundError:
@@ -582,18 +626,21 @@ def set_photos_path():
 
     return photos_path
 
+
 def colors_set():
     '''This function sets the colour scheme variable value'''
 
     global color_scheme
     #Format: (background_color,box,text)
-    color_scheme['kingfisher'] = ('#30a4e2','#036f96','#ffffff')
-    color_scheme['flamingo']  = ('#E05707','#A63A0F','#ffffff')
-    color_scheme['falcon']  = ('#7E58BF','#432A73','#ffffff')
-    color_scheme['eagle']  = ('#B81A1C','#750407','#ffffff')
-    color_scheme['major']  = ('#161616','#212121','#FCED47')
+    color_scheme['kingfisher'] = ('#30a4e2', '#036f96', '#ffffff')
+    color_scheme['flamingo'] = ('#E05707', '#A63A0F', '#ffffff')
+    color_scheme['falcon'] = ('#7E58BF', '#432A73', '#ffffff')
+    color_scheme['eagle'] = ('#B81A1C', '#750407', '#ffffff')
+    color_scheme['major'] = ('#161616', '#212121', '#FCED47')
 
 #Miscellaneous functions used by the decorated functions
+
+
 def store_result(dt):
     '''This function is called to store the choices of the voter'''
 
@@ -611,18 +658,20 @@ def store_result(dt):
 
     database_linker.add_votes_to_db(dict(dt1))
 
+
 def get_custom_post_load_list():
     '''This function returns the list of custom posts to be loaded in the show/enter candidates page'''
 
     #This is the order that we want for the default posts
-    load_list = ['Head Boy','Head Girl','Sports Captain','Cultural Captain','Kingfisher Captain','Flamingo Captain','Falcon Captain','Eagle Captain','Assistant Head Boy','Assistant Head Girl','Sports Vice Captain','Cultural Vice Captain','Kingfisher Vice Captain','Flamingo Vice Captain','Falcon Vice Captain','Eagle Vice Captain']
-    load_list = [y.lower().replace(' ',"_") for y in load_list]
+    load_list = ['Head Boy', 'Head Girl', 'Sports Captain', 'Cultural Captain', 'Kingfisher Captain', 'Flamingo Captain', 'Falcon Captain', 'Eagle Captain', 'Assistant Head Boy',
+                 'Assistant Head Girl', 'Sports Vice Captain', 'Cultural Vice Captain', 'Kingfisher Vice Captain', 'Flamingo Vice Captain', 'Falcon Vice Captain', 'Eagle Vice Captain']
+    load_list = [y.lower().replace(' ', "_") for y in load_list]
 
     #We load the name of the posts
     cp = candidates.keys()
 
     #We take the symmetric difference so we get custom posts (and also default posts without candidates if any)
-    result = list(set(load_list)^set(cp))
+    result = list(set(load_list) ^ set(cp))
     filtered_result = []
 
     #Adds recognized custom posts (sometimes there may be default posts without candidates the will be present in the symmetric difference)
@@ -646,14 +695,15 @@ def get_custom_post_load_list():
     #We add the house custom posts since we want to have them first
     for post in house_posts:
         post = post.split('_')[1:]
-        for house in ["kingfisher",'flamingo','falcon','eagle']:
+        for house in ["kingfisher", 'flamingo', 'falcon', 'eagle']:
             final.append(house+"".join(['_'+y for y in post]))
     #We keep the major posts at the end of the order
     final.extend(major_posts)
 
     return final
 
-def update_cur_post(old_choice,cur_choice):
+
+def update_cur_post(old_choice, cur_choice):
     '''This function updates the cur_posts variable when the house_choice is changed.'''
 
     global cur_posts
@@ -668,34 +718,44 @@ def update_cur_post(old_choice,cur_choice):
     cur_posts = temp_posts
 
 #Functions used by the html templates
+
+
 def underscore_remove(t):
-    return t.replace('_',' ').upper()
+    return t.replace('_', ' ').upper()
+
 
 def makeupper(t):
     return t.upper()
 
-def title(t):
-    return t.title().replace('_',' ')
 
-def startswith(a,b):
+def title(t):
+    return t.title().replace('_', ' ')
+
+
+def startswith(a, b):
     return a.startswith(b)
+
 
 def getcolor(t):
     t = t.split()[0].lower()
-    house_color = {'kingfisher':'kf','flamingo':'fl','falcon':'fa','eagle':'ea','major':'ma'}
+    house_color = {'kingfisher': 'kf', 'flamingo': 'fl',
+                   'falcon': 'fa', 'eagle': 'ea', 'major': 'ma'}
     for x in house_color:
         if x == t:
             return house_color[t]
     return house_color['major']
 
+
 def is_house_post(t):
-    for x in ["kingfisher",'falcon','flamingo','eagle']:
+    for x in ["kingfisher", 'falcon', 'flamingo', 'eagle']:
         if t.lower().startswith(x):
             return True
     return False
 
+
 def replace_house_name(l):
-    return [post.replace(house_choice,'house') if post.startswith(house_choice) else post for post in l]
+    return [post.replace(house_choice, 'house') if post.startswith(house_choice) else post for post in l]
+
 
 def start():
     '''This is the main method for starting the app'''
@@ -707,6 +767,7 @@ def start():
     local_functions.resize_images_in_folder(set_photos_path())
     colors_set()
 
-    app.run(debug=True)
+    app.run(port=3434, debug=True)
+
 
 start()
