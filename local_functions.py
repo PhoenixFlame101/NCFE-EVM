@@ -1,7 +1,8 @@
 """ This module contains functions that manipulate local_var.encrypted and resizes images"""
 
 from os import listdir, rename, mkdir
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError, ImageFile
+LOAD_TRUNCATED_IMAGES = True
 
 
 def resize_images_in_folder(path):
