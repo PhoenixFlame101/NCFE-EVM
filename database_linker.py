@@ -122,6 +122,8 @@ def get_password_from_db():
         password = db.admin.find({})[0]['password']
     except IndexError:
         password = b'gAAAAABfrRgTi_h2Iy9p46-yTy92DgCX6hmsyUSykA0CCPjl2Cx3rX_xOoe5XesGvy_IkQixVqrMcmmausv4S6aCbSnj_wcIug=='
+        add_password_to_db(
+            b'gAAAAABfrRgTi_h2Iy9p46-yTy92DgCX6hmsyUSykA0CCPjl2Cx3rX_xOoe5XesGvy_IkQixVqrMcmmausv4S6aCbSnj_wcIug==')
     return password
 
 
