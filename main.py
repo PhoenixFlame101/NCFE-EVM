@@ -3,13 +3,348 @@
 import os
 import sys
 from flask import Flask, redirect, url_for, render_template, request, session, send_from_directory
-import database_linker
-import sec_code
-import local_functions
+from pymongo import MongoClient
+from os import listdir, rename, mkdir
+from PIL import Image, UnidentifiedImageError, ImageFile
+import random
+import string
+from cryptography.fernet import Fernet
+from fpdf import FPDF
 
+# A predetermined key for symmetric AES-128 enctryption
+
+# print(Fernet.generate_key())
+key = Fernet(b'GNFQEE-YYy0MKcslcEnCh4ASBikmtb9VRLAZeOuFPk4=')
+
+
+def pass_set(_pass):
+    """ Sets the admin password to the string provided as an arguement
+        123 is set by default """
+
+    # Encrypts the bytes string of _pass and stores it in the db
+    add_password_to_db(key.encrypt(_pass.encode('utf-8')))
+
+
+def pass_is_valid(_pass):
+    """ Checks if the entered password is the admin password or not """
+
+    # Takes the password from the MongoDB database
+    password = get_password_from_db()
+    return _pass == key.decrypt(password).decode('utf-8')
+
+
+def code_gen(num_of_codes):
+    """ Generates 1936 unique codes and encrypts and stores them in a text file
+        Run before the voting begins """
+
+    # Generates random 5 character alphanumeric codes and adds them to a set 'codes'
+    plaintext_codes = set()
+    while len(plaintext_codes) != num_of_codes:
+        plaintext_codes.add(''.join(random.choice(
+            string.ascii_uppercase + string.digits) for _ in range(5)))
+
+    # Encrypts the codes
+    encrypted_codes = list(map(lambda x: key.encrypt(
+        x.encode('utf-8')), list(plaintext_codes)))
+
+    # Adds the encrypted codes to the db, along with an empty array for used codes
+    add_codes_to_db(encrypted_codes)
+    add_codes_to_used([])
+
+    # Returns unencrypted codes which are then printed as codes.pdf
+    return plaintext_codes
+
+
+def code_is_valid(code):
+    """ Checks if the code entered is valid
+        Run before voting to initiate the program """
+
+    # Fetches and decrypts the codes from the db
+    codes = get_codes_from_db()
+    codes = list(map(lambda x: key.decrypt(x).decode('utf-8'), list(codes)))
+    code = code.upper()
+
+    # Check the provided code against the codes in the db
+    if code in set(codes):
+        # Removes the entered codes from the file so it cannot be reused
+        codes.remove(code)
+
+        # Reencrypts the codes and adds them back to the db
+        codes = list(map(lambda x: key.encrypt(
+            x.encode('utf-8')), list(codes)))
+        add_codes_to_db(codes)
+
+        # Adds the used codes to the 'used_codes' collection in the db
+        add_codes_to_used(get_used_codes()+[key.encrypt(code.encode('utf-8'))])
+        return True
+
+    # Determines the error code depending on whether or not the code was previously used
+    used_codes = list(
+        map(lambda x: key.decrypt(x).decode('utf-8'), get_used_codes()))
+    return 'Already Used' if code in used_codes else 'Invalid'
+
+
+def split(arr, num):
+    """ Splits a list into a 2D array of lists of n elements each """
+    for i in range(0, len(arr), num):
+        yield arr[i: i+num]
+
+
+def code_print(*args):
+    """ Generates a PDF of codes """
+    num_of_codes = 1936 if args == () else (484*args[0])
+    # 2D array of 11 codes in each list
+    codes = list(split(list(code_gen(num_of_codes)), 11))
+
+    # Writes the codes to a PDF file
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font('Courier', size=12)
+    for row in codes:
+        for code in row:
+            pdf.cell(17, 6, txt=code, border=True, ln=0, align='C')
+        pdf.ln()
+    pdf.output('codes.pdf')
+
+
+LOAD_TRUNCATED_IMAGES = True
+def resize_images_in_folder(path):
+    """ This function is run at the start of the program.
+        It crops and resizes images in candidate_photos to 300x300 px """
+
+    # Iterates through all images in the given folder
+    try:
+        for image in listdir(path):
+            picture_path = path+'/'+image
+
+            try:
+                # Resizes and crops images depending on the orientation of the image
+                pic = Image.open(picture_path)
+                aspect_ratio = pic.size[1]/pic.size[0]
+
+                if aspect_ratio >= 1:  # If image is in portrait/square orientation
+                    pic = pic.resize((300, int(300*aspect_ratio)))
+                    pic = pic.crop(
+                        (0, (pic.size[1]-300)/2, 300, pic.size[1]-(pic.size[1]-300)/2))
+                    pic.save(picture_path)
+
+                elif aspect_ratio < 1:  # If the image in landscape orientation
+                    aspect_ratio = pic.size[0]/pic.size[1]
+                    pic = pic.resize((int(300*aspect_ratio), 300))
+                    pic = pic.crop(
+                        ((pic.size[0]-300)/2, 0, pic.size[0]-(pic.size[0]-300)/2, 300))
+                    pic.save(picture_path)
+
+            except UnidentifiedImageError:
+                # Run if the file is not an image file
+                # Places '[Corrupt] at the beginning of the file name
+                image_name = picture_path[len(
+                    picture_path)-picture_path[::-1].index('/'):]
+                if not image_name.startswith('[Corrupt]'):
+                    rename(picture_path, picture_path[:len(picture_path)-picture_path[::-1]
+                                                      .index('/')-1]+'/[Corrupt] '+image_name)
+    except FileNotFoundError:
+        try:
+            mkdir('candidate_photos')
+        except FileExistsError:
+            pass
+
+
+def store_house_choice(choice, *type):
+    """ Adds house choice to the file local_vars.encrypted """
+
+    open_type = 'r+' if not type else 'w+'
+    with open('local_vars.encrypted', open_type) as file:
+
+        # Attempts to retreive db uri; default is blank
+        try:
+            uri = file.readlines()[-1]
+        except IndexError:
+            uri = 'DB URI: '
+
+        # File is overwritten with the given house choice and db uri
+        file.truncate(0)
+        file.seek(0)
+        file.writelines([f'House Choice: {choice.lower()}'+'\n', uri])
+
+
+def get_house_choice():
+    """ Retrieves the house choice from local_vars.encrypted """
+
+    try:
+        with open('local_vars.encrypted', 'r+') as file:
+            return file.readlines()[0][14:-1]
+    except FileNotFoundError:
+        store_house_choice('kingfisher', 'w+')
+        return get_house_choice()
+
+
+def store_db_uri(uri):
+    """ Adds database connection string to the file local_vars.encrypted """
+
+    try:
+        with open('local_vars.encrypted', 'r+') as file:
+            house_choice = file.readlines()[0]
+            file.truncate(0)
+            file.seek(0)
+            file.writelines([house_choice, f'DB URI: {uri}'])
+    except (IndexError, FileNotFoundError):
+        with open('local_vars.encrypted', 'w+') as file:
+            file.writelines(['House Choice: ', f'DB URI: {uri}'])
+
+
+def get_db_uri():
+    """ Retrieves the db uri from local_vars.encrypted """
+
+    try:
+        with open('local_vars.encrypted', 'r+') as file:
+            try:
+                uri = file.readlines()[1][8:]
+            except IndexError:
+                return 'mongodb://localhost:27017/'
+            if '/' not in uri:
+                return 'mongodb://localhost:27017/'
+            return uri
+    except FileNotFoundError:
+        return 'mongodb://localhost:27017/'
+
+# Connecting to the database hosted on the main computer
+client = MongoClient(get_db_uri())  # URI is stored in local_var.encrypted
+db = client.EVM
+collection = db.voting_results
+
+
+def initializing(_input):
+    """ Used to add the candidates standing for the election to the DB
+        Is run before the voting begins """
+
+    collection.drop()
+
+    # Takes _input in the form {post:{cand1, cand2, ...}} and convets it to
+    # the dict {'_id':post, cand1:0, cand2:0, ...} and adds it to the db
+    for tup in _input.items():
+        post_name = ' '.join(tup[0].split('_')).title()
+        candidates = list(map(lambda x: x.title(), tup[1]))
+        record = {i: 0 for i in candidates}
+        record['_id'] = post_name
+        collection.insert_one(record)
+
+
+def get_cands_from_db():
+    """ Gets the candidate names from the database """
+
+    temp = {}  # Dictionary that will be returned
+
+    # 'values' is a list of documents (dictionaries) in the collections
+    values = list(collection.find({}))
+    for post_document in values:
+        cands = []
+        for key, value in post_document.items():
+            if key == '_id':
+                post_name = '_'.join(value.split()).lower()
+            else:
+                cands.append(key)
+        temp[post_name] = cands
+
+    # Return value is of the type {post:{cand1, cand2, ...}}
+    return temp
+
+
+def add_votes_to_db(pointers):
+    """ Used to increment the votes of the candidates who where voted for d"""
+
+    for vote in pointers.items():
+        post_name, cand_name = ' '.join(
+            vote[0].split('_')[:-1]).title(), vote[1].title()
+        collection.update_one(
+            {'_id': post_name},
+            {'$inc': {cand_name: 1}},
+            upsert=True
+        )
+
+
+def results_print():
+    """ Used to print the results in PDF format """
+
+    # Results are taken from the MongoDB database
+    results = list(collection.find({}))
+
+    # Writes the results to a PDF file
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", 'BU', size=22)
+    pdf.cell(200, 10, txt='RESULTS', align='C')
+    pdf.ln(20)
+    # 'results' is a list of MongoDB documents (dictionaries)
+    for post in results:
+        if len(post.items()) > 2:
+            total_num_votes = sum(_ for _ in post.values()
+                                  if isinstance(_, int))
+            for key, value in post.items():
+                # If the current value contains the post name, use it as a heading
+                if key == '_id':
+                    pdf.set_font("Arial", 'U', size=14)
+                    pdf.cell(200, 10, txt=value, align='C')
+                    pdf.ln(10)
+                    pdf.set_font("Arial", size=12)
+                    pdf.cell(200, 10, txt='Total Votes: ' +
+                             str(total_num_votes), align='C')
+                    pdf.ln(7)
+                else:
+                    pdf.set_font("Arial", size=12)
+                    pdf.cell(55, 10)
+                    pdf.cell(75, 10, txt=key, align='L')
+                    pdf.cell(10, 10, txt=str(value), align='C')
+                    pdf.ln(7)
+            pdf.ln()
+    pdf.output('results.pdf')
+
+    # Drops colleciton and codes after voting is over
+    collection.drop()
+    db.codes.drop()
+
+
+def add_password_to_db(password):
+    """ Adds password to database; called in pass_set() """
+    db.admin.drop()
+    db.admin.insert_one({'_id': 'password', 'password': password})
+
+
+def add_codes_to_db(codes):
+    """ Adds codes to database; called in code_gen() """
+    db.codes.delete_one({'_id': 'codes'})
+    db.codes.insert_one({'_id': 'codes', 'codes': codes})
+
+
+def add_codes_to_used(codes):
+    """ Moves codes from 'codes' to 'used_codes' in the database """
+    db.codes.delete_one({'_id': 'used_codes'})
+    db.codes.insert_one({'_id': 'used_codes', 'used_codes': codes})
+
+
+def get_password_from_db():
+    """ Returns admin password stored in the db; if it doesn't exist, 123 is the fallback """
+    password = ''
+    try:
+        password = db.admin.find({})[0]['password']
+    except IndexError:
+        password = b'gAAAAABfrRgTi_h2Iy9p46-yTy92DgCX6hmsyUSykA0CCPjl2Cx3rX_xOoe5XesGvy_IkQixVqrMcmmausv4S6aCbSnj_wcIug=='
+        add_password_to_db(
+            b'gAAAAABfrRgTi_h2Iy9p46-yTy92DgCX6hmsyUSykA0CCPjl2Cx3rX_xOoe5XesGvy_IkQixVqrMcmmausv4S6aCbSnj_wcIug==')
+    return password
+
+
+def get_codes_from_db():
+    """ Returns unused codes from the db; called in code_is_valid() """
+    return db.codes.find_one({'_id': 'codes'})['codes']
+
+
+def get_used_codes():
+    """ Returns used codes from the db; used to check if a code is reused """
+    return db.codes.find_one({'_id': 'used_codes'})['used_codes']
 
 # Fetches the house choice locally stored
-house_choice = local_functions.get_house_choice().lower()
+house_choice = get_house_choice().lower()
 
 candidates = {}  # Store the candidates in the form {post:[cand1,cand2, ...]}
 cur_posts = []  # Stores the order of voting
@@ -43,7 +378,7 @@ def home():
     else:
         # Checks validity of security code
         receivedpwd = request.form['pwd_box']
-        validity = sec_code.code_is_valid(receivedpwd)
+        validity = code_is_valid(receivedpwd)
 
         # Checks that validity is not 'Invalid' or 'Already Used'
         if (validity == True) and voting_started:
@@ -207,7 +542,7 @@ def admin_page():
         #Validation of the admin password
         # session['logged'] stores whether the admin is logged in and is checked for when every admin page is opened
         receivedpwd = request.form['pwd_box']
-        if sec_code.pass_is_valid(receivedpwd):
+        if pass_is_valid(receivedpwd):
             session['logged'] = True
             return redirect(url_for('dashboard'))
         else:
@@ -268,7 +603,8 @@ def show_candidate():
                 if not voting_order_modified:
                     add_to_cur_posts()
 
-                database_linker.initializing(candidates)
+                
+                initializing(candidates)
 
                 return redirect(url_for('show_candidate'))
         else:
@@ -328,7 +664,7 @@ def add_custom_post():
                         'house') else post for post in cur_posts_order]
 
                     #Store candidates in the database and updates value of cur_posts
-                    database_linker.initializing(candidates)
+                    initializing(candidates)
                     cur_posts = cur_posts_order
                     voting_order_modified = True
                 else:
@@ -381,7 +717,7 @@ def delete_post():
                             if post == post_to_delete:
                                 del candidates[post]
 
-                    database_linker.initializing(candidates)
+                    initializing(candidates)
                 except Exception as e:
                     print(e)
                     pass
@@ -424,13 +760,13 @@ def settings():
                 old_house_choice = house_choice
                 house_choice = request.form['hc']
                 house_choice = house_choice.lower()
-                local_functions.store_house_choice(house_choice)
+                store_house_choice(house_choice)
                 update_cur_post(old_house_choice, house_choice)
 
                 #Checks for the changed password and updates the same
                 changed_pwd = request.form['changed_pwd']
-                if not sec_code.pass_is_valid(changed_pwd) and changed_pwd != '':
-                    sec_code.pass_set(changed_pwd)
+                if not pass_is_valid(changed_pwd) and changed_pwd != '':
+                    pass_set(changed_pwd)
 
                 #Checks if the number of pages of codes to be printed is changed and updaes the same
                 changed_no_of_codes = request.form['changed_no_of_codes']
@@ -465,7 +801,7 @@ def start_voting():
     voting_ended = False
 
     #Prints the pdf containing the security codes for voting
-    sec_code.code_print(no_of_codes)
+    code_print(no_of_codes)
 
     return redirect(url_for("voting_settings"))
 
@@ -479,7 +815,7 @@ def stop_voting():
     voting_ended = True
 
     #Prints the pdf containin the results of voting
-    database_linker.results_print()
+    results_print()
 
     return redirect(url_for('result'))
 
@@ -534,7 +870,7 @@ def all_photo_check(path):
     #Format of not_there : {post1:'missing_candidate_1,missing_candidate_2,..',post2:'...'...}
     not_there = {}
 
-    for post, cands in database_linker.get_cands_from_db().items():
+    for post, cands in get_cands_from_db().items():
         for cand_name in cands:
             for tup in os.walk(path):
                 exists = False
@@ -658,7 +994,7 @@ def store_result(dt):
         if dt[x] != 'DNE':
             dt1[x] = dt[x]
 
-    database_linker.add_votes_to_db(dict(dt1))
+    add_votes_to_db(dict(dt1))
 
 
 def get_custom_post_load_list():
@@ -763,13 +1099,13 @@ def start():
     '''This is the main method for starting the app'''
 
     global candidates
-    candidates = database_linker.get_cands_from_db()
+    candidates = get_cands_from_db()
 
     add_to_cur_posts()
-    local_functions.resize_images_in_folder(set_photos_path())
+    resize_images_in_folder(set_photos_path())
     colors_set()
 
-    app.run(port=3434, debug=True)
+    app.run(debug=False)
 
 
 start()
