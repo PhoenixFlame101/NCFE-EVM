@@ -287,7 +287,8 @@ def add_custom_post():
             global cur_posts, candidates, voting_order_modified
 
             if request.method == 'GET':
-                return render_template('add_custom_post.html', str=str, cur_post=cur_posts, u=underscore_remove, replace_house_name=replace_house_name)
+                site = request.host
+                return render_template('add_custom_post.html', str=str, cur_post=cur_posts, u=underscore_remove, replace_house_name=replace_house_name,site=site)
 
             else:
                 #Get the response from the page's AJAX
@@ -353,7 +354,8 @@ def delete_post():
         global cur_posts, candidates
         if session['logged'] == True:
             if request.method == 'GET':
-                return render_template('delete_post.html', cur_post=cur_posts, u=underscore_remove, replace_house_name=replace_house_name)
+                site = request.host
+                return render_template('delete_post.html', cur_post=cur_posts, u=underscore_remove, replace_house_name=replace_house_name,site=site)
 
             else:
                 #Obtain the response from the page and parse the same
