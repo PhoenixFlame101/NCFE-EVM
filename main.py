@@ -769,7 +769,7 @@ def start():
     local_functions.resize_images_in_folder(set_photos_path())
     colors_set()
 
-    app.run(port=3434, debug=True)
+    app.run(debug=True)
 
 
 start()
