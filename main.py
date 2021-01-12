@@ -1,5 +1,6 @@
 """ main file that initializes flask and the GUI """
 
+import subprocess
 import os
 import sys
 from flask import Flask, redirect, url_for, render_template, request, session, send_from_directory
@@ -769,7 +770,10 @@ def start():
     local_functions.resize_images_in_folder(set_photos_path())
     colors_set()
 
+    if getattr(sys, 'frozen', False):
+        subprocess.call(
+            '%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe --profile-directory=Default --app="http://127.0.0.1:5000" --kiosk', shell=True)
+    
     app.run(debug=True)
-
 
 start()
