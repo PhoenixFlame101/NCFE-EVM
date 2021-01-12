@@ -104,9 +104,12 @@ def add_password_to_db(password):
 
 
 def add_codes_to_db(codes):
-    """ Adds codes to database; called in code_gen() """
-    db.codes.delete_one({'_id': 'codes'})
-    db.codes.insert_one({'_id': 'codes', 'codes': codes})
+    """ Adds codes to database; called in code_gen() if there are no codes """
+    if not get_codes_from_db():
+        db.codes.delete_one({'_id': 'codes'})
+        db.codes.insert_one({'_id': 'codes', 'codes': codes})
+        return True
+    return False
 
 
 def add_codes_to_used(codes):
@@ -128,9 +131,11 @@ def get_password_from_db():
 
 
 def get_codes_from_db():
-    """ Returns unused codes from the db; called in code_is_valid() """
-    return db.codes.find_one({'_id': 'codes'})['codes']
-
+    """ Returns unused codes from the db if available; called in code_is_valid() """
+    try:
+        return db.codes.find_one({'_id': 'codes'})['codes']
+    except TypeError:
+        return False
 
 def get_used_codes():
     """ Returns used codes from the db; used to check if a code is reused """
@@ -141,3 +146,4 @@ def get_used_codes():
 initializing({'head_boy': ['Apple', 'Banana', 'Orange', '123', '456'], 'kingfisher_captain': ['Mango', 'Cherry', 'Kiwi', 'Red Grapes', 'Red Stuff'], 'head_girl': ['789', 'A', 'B', 'C', 'Cereal Bowl'], 'sports_captain': ['D', 'E', 'Tomatoes', 'Strawberries'], 'cultural_captain': ['Long Boi', 'Salad', 'Q', 'W', 'F'], 'assistant_head_boy': [], 'assistant_head_girl': ['G', 'H', 'I', 'J', 'K'], 'sports_vice_captain': ['Sandwich', 'Spices', 
 'S'], 'cultural_vice_captain': ['Z', 'Y', 'X', 'L'], 'flamingo_captain': ['W', 'Y', 'Garlic Bread'], 'falcon_captain': ['O', 'P', 'M', 'N'], 'eagle_captain': ['Ladybug', 'Lemon Slices', 'Heart Fruit'], 'kingfisher_vice_captain': ['Hacker', 'Cookies', 'Avacado', 'Pastry'], 'flamingo_vice_captain': ['Nuggets', 'Orange Bowl', 'Pineapple', 'Pink Pineapple'], 'falcon_vice_captain': ['Sliced Fruit', 'Lemon Tree', 'Lemon', 'Essential Oil', 'R'], 'eagle_vice_captain': ['T', 'U', 'Strawberry Boxes'], 'liaison': ['69420', 'Grapefruit'], 'vice_liaison': ['Sunflower'], 'kingfisher_prefect': ['Fruit Model', 'Lemon Egg'], 'falcon_prefect': ['Bob', 'Joe'], 'flamingo_prefect': ['Happy Boi', 'Egg Lemon'], 'eagle_prefect': ['Ur', 'Mother']})
 '''
+# db.codes.drop()
