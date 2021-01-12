@@ -18,9 +18,13 @@ no_of_codes = 4  # Stores the number of pages of codes to be generated
 color_scheme = {}  # Stores the various colors of the different houses
 voting_order_modified = False  # Tells if the voting order has been modified
 
-valid = False  # Flask's file variable for showing session validity
-voting_started = False  # Status of voting; affects the admin dashboard
-voting_ended = False  # Shows if voting has ended
+# Flask's file variable for showing session validity
+valid = False
+# Status of voting; affects the admin dashboard
+voting_started = database_linker.set_voting_status()
+# Shows if voting has ended
+voting_ended = False
+
 
 if getattr(sys, 'frozen', False):
     template_folder = os.path.join(sys._MEIPASS, 'GUI')
@@ -462,8 +466,11 @@ def start_voting():
     '''This function is called when then admin presses the start voting button'''
 
     global voting_started, voting_ended
+
+    database_linker.set_voting_status(True)
     voting_started = True
     voting_ended = False
+
 
     #Prints the pdf containing the security codes for voting
     sec_code.code_print(no_of_codes)
@@ -476,6 +483,7 @@ def stop_voting():
     '''This function is called when the admin presses the stop voting button'''
 
     global voting_started, voting_ended
+    database_linker.set_voting_status(False)
     voting_started = False
     voting_ended = True
 

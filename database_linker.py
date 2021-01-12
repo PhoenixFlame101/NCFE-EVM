@@ -99,7 +99,7 @@ def results_print():
 
 def add_password_to_db(password):
     """ Adds password to database; called in pass_set() """
-    db.admin.drop()
+    db.admin.delete_one({'_id': 'password'})
     db.admin.insert_one({'_id': 'password', 'password': password})
 
 
@@ -116,6 +116,19 @@ def add_codes_to_used(codes):
     """ Moves codes from 'codes' to 'used_codes' in the database """
     db.codes.delete_one({'_id': 'used_codes'})
     db.codes.insert_one({'_id': 'used_codes', 'used_codes': codes})
+
+
+def set_voting_status(*args):
+    """ Sets the voting status in the db; and returns it if no arguements are given """
+    if args:
+        db.admin.delete_one({'_id': 'voting_status'})
+        db.admin.insert_one({'_id': 'voting_status', 'voting_status': args[0]})
+    else:
+        try:
+            return db.admin.find({})[1]['voting_status']
+        except IndexError:
+            set_voting_status(False)
+            return False
 
 
 def get_password_from_db():
@@ -146,4 +159,3 @@ def get_used_codes():
 initializing({'head_boy': ['Apple', 'Banana', 'Orange', '123', '456'], 'kingfisher_captain': ['Mango', 'Cherry', 'Kiwi', 'Red Grapes', 'Red Stuff'], 'head_girl': ['789', 'A', 'B', 'C', 'Cereal Bowl'], 'sports_captain': ['D', 'E', 'Tomatoes', 'Strawberries'], 'cultural_captain': ['Long Boi', 'Salad', 'Q', 'W', 'F'], 'assistant_head_boy': [], 'assistant_head_girl': ['G', 'H', 'I', 'J', 'K'], 'sports_vice_captain': ['Sandwich', 'Spices', 
 'S'], 'cultural_vice_captain': ['Z', 'Y', 'X', 'L'], 'flamingo_captain': ['W', 'Y', 'Garlic Bread'], 'falcon_captain': ['O', 'P', 'M', 'N'], 'eagle_captain': ['Ladybug', 'Lemon Slices', 'Heart Fruit'], 'kingfisher_vice_captain': ['Hacker', 'Cookies', 'Avacado', 'Pastry'], 'flamingo_vice_captain': ['Nuggets', 'Orange Bowl', 'Pineapple', 'Pink Pineapple'], 'falcon_vice_captain': ['Sliced Fruit', 'Lemon Tree', 'Lemon', 'Essential Oil', 'R'], 'eagle_vice_captain': ['T', 'U', 'Strawberry Boxes'], 'liaison': ['69420', 'Grapefruit'], 'vice_liaison': ['Sunflower'], 'kingfisher_prefect': ['Fruit Model', 'Lemon Egg'], 'falcon_prefect': ['Bob', 'Joe'], 'flamingo_prefect': ['Happy Boi', 'Egg Lemon'], 'eagle_prefect': ['Ur', 'Mother']})
 '''
-# db.codes.drop()
