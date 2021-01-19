@@ -150,7 +150,7 @@ def get_password_from_db():
     """ Returns admin password stored in the db; if it doesn't exist, 123 is the fallback """
     password = ''
     try:
-        password = db.admin.find({})[0]['password']
+        password = db.admin.find({'_id': 'password'})[0]['password']
     except IndexError:
         password = b'gAAAAABfrRgTi_h2Iy9p46-yTy92DgCX6hmsyUSykA0CCPjl2Cx3rX_xOoe5XesGvy_IkQixVqrMcmmausv4S6aCbSnj_wcIug=='
         add_password_to_db(
