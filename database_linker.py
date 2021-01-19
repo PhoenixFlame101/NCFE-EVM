@@ -125,10 +125,25 @@ def set_voting_status(*args):
         db.admin.insert_one({'_id': 'voting_status', 'voting_status': args[0]})
     else:
         try:
-            return db.admin.find({})[1]['voting_status']
+            return db.admin.find({'_id': 'voting_status'})[0]['voting_status']
         except IndexError:
             set_voting_status(False)
             return False
+
+
+def set_voting_order(*args):
+    """ Sets the voting order in the db; and returns it if no arguements are given """
+    if args:
+        db.admin.delete_one({'_id': 'voting_order'})
+        db.admin.insert_one({'_id': 'voting_order', 'voting_order': args[0]})
+    else:
+        try:
+            return db.admin.find({'_id': 'voting_order'})[0]['voting_order']
+        except IndexError:
+            set_voting_order(['head_boy', 'head_girl', 'assistant_head_boy', 'assistant_head_girl',
+                              'cultural_captain', 'cultural_vice_captain', 'sports_captain', 'sports_vice_captain'])
+            return ['head_boy', 'head_girl', 'assistant_head_boy', 'assistant_head_girl',
+                    'cultural_captain', 'cultural_vice_captain', 'sports_captain', 'sports_vice_captain']
 
 
 def get_password_from_db():
@@ -159,3 +174,5 @@ def get_used_codes():
 initializing({'head_boy': ['Apple', 'Banana', 'Orange', '123', '456'], 'kingfisher_captain': ['Mango', 'Cherry', 'Kiwi', 'Red Grapes', 'Red Stuff'], 'head_girl': ['789', 'A', 'B', 'C', 'Cereal Bowl'], 'sports_captain': ['D', 'E', 'Tomatoes', 'Strawberries'], 'cultural_captain': ['Long Boi', 'Salad', 'Q', 'W', 'F'], 'assistant_head_boy': [], 'assistant_head_girl': ['G', 'H', 'I', 'J', 'K'], 'sports_vice_captain': ['Sandwich', 'Spices', 
 'S'], 'cultural_vice_captain': ['Z', 'Y', 'X', 'L'], 'flamingo_captain': ['W', 'Y', 'Garlic Bread'], 'falcon_captain': ['O', 'P', 'M', 'N'], 'eagle_captain': ['Ladybug', 'Lemon Slices', 'Heart Fruit'], 'kingfisher_vice_captain': ['Hacker', 'Cookies', 'Avacado', 'Pastry'], 'flamingo_vice_captain': ['Nuggets', 'Orange Bowl', 'Pineapple', 'Pink Pineapple'], 'falcon_vice_captain': ['Sliced Fruit', 'Lemon Tree', 'Lemon', 'Essential Oil', 'R'], 'eagle_vice_captain': ['T', 'U', 'Strawberry Boxes'], 'liaison': ['69420', 'Grapefruit'], 'vice_liaison': ['Sunflower'], 'kingfisher_prefect': ['Fruit Model', 'Lemon Egg'], 'falcon_prefect': ['Bob', 'Joe'], 'flamingo_prefect': ['Happy Boi', 'Egg Lemon'], 'eagle_prefect': ['Ur', 'Mother']})
 '''
+
+print(set_voting_order())
