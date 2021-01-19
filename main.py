@@ -781,12 +781,9 @@ def start():
     colors_set()
 
     if getattr(sys, 'frozen', False):
-        try:
-            subprocess.call(
-                f'%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe --profile-directory=Default --app="http://127.0.0.1:{port_number}" --kiosk', shell=True)
-        except:
-            pass
-
-    app.run(debug=True, port=port_number)
+        subprocess.call(
+            f"\"%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe\" --profile-directory=Default --app=\"http://127.0.0.1:{port_number}\" --kiosk", shell=True)
+    
+    app.run(debug=False, port=port_number)
 
 start()
