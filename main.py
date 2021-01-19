@@ -771,6 +771,8 @@ def replace_house_name(l):
 def start():
     '''This is the main method for starting the app'''
 
+    port_number = 5000
+    
     global candidates
     candidates = database_linker.get_cands_from_db()
 
@@ -779,9 +781,12 @@ def start():
     colors_set()
 
     if getattr(sys, 'frozen', False):
-        subprocess.call(
-            '%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe --profile-directory=Default --app="http://127.0.0.1:5000" --kiosk', shell=True)
-    
-    app.run(debug=True)
+        try:
+            subprocess.call(
+                f'%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe --profile-directory=Default --app="http://127.0.0.1:{port_number}" --kiosk', shell=True)
+        except:
+            pass
+
+    app.run(debug=True, port=port_number)
 
 start()
