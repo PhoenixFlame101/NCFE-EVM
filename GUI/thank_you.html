@@ -11,16 +11,22 @@
             /*top:40%;*/
             /*left:26.5%;*/
             margin:auto;
-            margin-top:45vh;
+            margin-top:10vh;
             color:#FCED47;
             font-family: 'heading';
             font-size: 3.125em;
             text-transform:uppercase;
         }
+        img{
+            margin-top:-10vh;
+            height:65vh;
+            width:50vw;
+        }
     </style>
 </head>
 <body>
-    <center><h1>Thank you for voting</h1></center>
+    <center><h1>Thank you for voting</h1>
+        <img src="{{ url_for('static',filename='thank_you.jpg')}}" alt="user pic">    </center>
 
     <script>
 window.setTimeout(function(){

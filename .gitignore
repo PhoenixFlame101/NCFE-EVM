@@ -1,6 +1,8 @@
 
+*.exe
 *.pyc
 *.pdf
 *.encrypted
-*.jpg
 *.png
+*.jpg
+!thank_you.jpg
