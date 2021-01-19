@@ -1,0 +1,1 @@
+pyinstaller --windowed --onefile --icon=ballot_picture.ico --add-data "GUI;GUI" --add-data "static;static" main.py
