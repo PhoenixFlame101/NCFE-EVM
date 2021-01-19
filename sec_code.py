@@ -44,7 +44,7 @@ def code_gen(num_of_codes):
         x.encode('utf-8')), list(plaintext_codes)))
 
     # Adds the encrypted codes to the db, along with an empty array for used codes
-    added = database_linker.add_codes_to_db(encrypted_codes)
+    added = database_linker.add_codes_to_db(encrypted_codes, first_run=True)
     database_linker.add_codes_to_used([])
 
     # Returns unencrypted codes which are then printed as codes.pdf

@@ -103,13 +103,17 @@ def add_password_to_db(password):
     db.admin.insert_one({'_id': 'password', 'password': password})
 
 
-def add_codes_to_db(codes):
+def add_codes_to_db(codes, first_run=False):
     """ Adds codes to database; called in code_gen() if there are no codes """
-    if not get_codes_from_db():
+    if first_run:
+        if not get_codes_from_db():
+            db.codes.delete_one({'_id': 'codes'})
+            db.codes.insert_one({'_id': 'codes', 'codes': codes})
+            return True
+        return False
+    else:
         db.codes.delete_one({'_id': 'codes'})
         db.codes.insert_one({'_id': 'codes', 'codes': codes})
-        return True
-    return False
 
 
 def add_codes_to_used(codes):
@@ -125,7 +129,7 @@ def set_voting_status(*args):
         db.admin.insert_one({'_id': 'voting_status', 'voting_status': args[0]})
     else:
         try:
-            return db.admin.find({'_id': 'voting_status'})[0]['voting_status']
+            return db.admin.find_one({'_id': 'voting_status'})['voting_status']
         except IndexError:
             set_voting_status(False)
             return False
@@ -138,7 +142,7 @@ def set_voting_order(*args):
         db.admin.insert_one({'_id': 'voting_order', 'voting_order': args[0]})
     else:
         try:
-            return db.admin.find({'_id': 'voting_order'})[0]['voting_order']
+            return db.admin.find_one({'_id': 'voting_order'})['voting_order']
         except IndexError:
             set_voting_order(['head_boy', 'head_girl', 'assistant_head_boy', 'assistant_head_girl',
                               'cultural_captain', 'cultural_vice_captain', 'sports_captain', 'sports_vice_captain'])
@@ -150,7 +154,7 @@ def get_password_from_db():
     """ Returns admin password stored in the db; if it doesn't exist, 123 is the fallback """
     password = ''
     try:
-        password = db.admin.find({'_id': 'password'})[0]['password']
+        password = db.admin.find_one({'_id': 'password'})['password']
     except IndexError:
         password = b'gAAAAABfrRgTi_h2Iy9p46-yTy92DgCX6hmsyUSykA0CCPjl2Cx3rX_xOoe5XesGvy_IkQixVqrMcmmausv4S6aCbSnj_wcIug=='
         add_password_to_db(
@@ -174,5 +178,3 @@ def get_used_codes():
 initializing({'head_boy': ['Apple', 'Banana', 'Orange', '123', '456'], 'kingfisher_captain': ['Mango', 'Cherry', 'Kiwi', 'Red Grapes', 'Red Stuff'], 'head_girl': ['789', 'A', 'B', 'C', 'Cereal Bowl'], 'sports_captain': ['D', 'E', 'Tomatoes', 'Strawberries'], 'cultural_captain': ['Long Boi', 'Salad', 'Q', 'W', 'F'], 'assistant_head_boy': [], 'assistant_head_girl': ['G', 'H', 'I', 'J', 'K'], 'sports_vice_captain': ['Sandwich', 'Spices', 
 'S'], 'cultural_vice_captain': ['Z', 'Y', 'X', 'L'], 'flamingo_captain': ['W', 'Y', 'Garlic Bread'], 'falcon_captain': ['O', 'P', 'M', 'N'], 'eagle_captain': ['Ladybug', 'Lemon Slices', 'Heart Fruit'], 'kingfisher_vice_captain': ['Hacker', 'Cookies', 'Avacado', 'Pastry'], 'flamingo_vice_captain': ['Nuggets', 'Orange Bowl', 'Pineapple', 'Pink Pineapple'], 'falcon_vice_captain': ['Sliced Fruit', 'Lemon Tree', 'Lemon', 'Essential Oil', 'R'], 'eagle_vice_captain': ['T', 'U', 'Strawberry Boxes'], 'liaison': ['69420', 'Grapefruit'], 'vice_liaison': ['Sunflower'], 'kingfisher_prefect': ['Fruit Model', 'Lemon Egg'], 'falcon_prefect': ['Bob', 'Joe'], 'flamingo_prefect': ['Happy Boi', 'Egg Lemon'], 'eagle_prefect': ['Ur', 'Mother']})
 '''
-
-print(set_voting_order())
