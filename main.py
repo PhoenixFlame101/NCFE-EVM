@@ -27,12 +27,21 @@ voting_ended = False
 
 
 if getattr(sys, 'frozen', False):
+    # Changes folder paths after freezing
     template_folder = os.path.join(sys._MEIPASS, 'GUI')
     static_folder = os.path.join(sys._MEIPASS, 'static')
     app = Flask(__name__, template_folder=template_folder,
                 static_folder=static_folder)
+    
+    # Removes console logs when frozen
+    import logging
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)
+    from flask import cli
+    cli.show_server_banner = lambda *_: None
+
 else:
     app = Flask(__name__, template_folder='./GUI/')
+
 app.secret_key = 'abc'
 
 
@@ -782,11 +791,13 @@ def start():
 
     if getattr(sys, 'frozen', False):
         try:
-            subprocess.call(
-                f'%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe --profile-directory=Default --app="http://127.0.0.1:{port_number}" --kiosk', shell=True)
+            subprocess.run(
+                f"\"%ProgramFiles%\\Google\\Chrome\\Application\\chrome_proxy.exe\" --profile-directory=Default --app=\"http://127.0.0.1:{port_number}\" --kiosk", shell=True)
+            subprocess.run(
+                f"\"%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome_proxy.exe\" --profile-directory=Default --app=\"http://127.0.0.1:{port_number}\" --kiosk", shell=True)
         except:
             pass
 
-    app.run(debug=True, port=port_number)
+    app.run(debug=False, port=port_number)
 
 start()
