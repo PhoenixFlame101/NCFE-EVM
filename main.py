@@ -278,9 +278,8 @@ def show_candidate():
                 #Updates the candidates and stores the same in the database
                 candidates = updated_candidates
 
-                #If no custom post has been added,it creates the cur_post variable
-                if not voting_order_modified:
-                    add_to_cur_posts()
+                #If no custom post has been added,it creates the cur_post variable, eventually adding the candidates to cur_posts variable
+                add_to_cur_posts()
 
                 database_linker.initializing(candidates)
 
@@ -736,6 +735,7 @@ def update_cur_post(old_choice, cur_choice):
             temp_posts.append(post)
 
     cur_posts = temp_posts
+    add_to_cur_posts()
 
 #Functions used by the html templates
 
