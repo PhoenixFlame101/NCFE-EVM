@@ -10,7 +10,7 @@ import database_linker
 # A predetermined key for symmetric AES-128 enctryption
 
 # print(Fernet.generate_key())
-key = Fernet(b'GNFQEE-YYy0MKcslcEnCh4ASBikmtb9VRLAZeOuFPk4=')
+key = Fernet(b'QuJyG2K9wQ9m_KIfToPma283YeGVhJaeN9G7c-IKdIk=')  # Generate a new key for a prod env
 
 
 def pass_set(_pass):
